@@ -26,6 +26,33 @@
 
 ---
 
+## 2025-01-17 - Widget de barra de menú para macOS
+
+### Lo que se hizo
+- Investigación de opciones para widget de macOS (xbar, rumps, SwiftUI)
+- Implementación de plugin xbar para monitoreo desde la barra de menú
+- Monitoreo de CPU, memoria y estado de sesiones en tiempo real
+- Navegación rápida a sesiones con un click
+- Instalador automático para el widget
+
+### Decisiones tomadas
+- Usar xbar como plataforma por su integración perfecta con bash
+- Actualización cada 5 segundos (configurable)
+- Estados de sesión: activa (CPU > 5%) vs esperando
+- Mantener consistencia con scripts existentes
+
+### Desafíos/Aprendizajes
+- xbar permite crear widgets complejos solo con bash
+- El monitoreo de CPU requiere parsing cuidadoso de `ps`
+- La integración con AppleScript funciona bien desde xbar
+
+### Próximos pasos
+- Considerar notificaciones cuando las sesiones terminen
+- Añadir gráficos de uso histórico
+- Posible versión standalone con rumps/Python
+
+---
+
 ## 2025-01-16 - Creación inicial del proyecto
 
 ### Lo que se hizo

@@ -5,6 +5,8 @@ Navegación automática e inteligente entre pestañas de terminal donde tienes s
 ## ✨ Características
 
 - **Navegación automática**: Salta directamente a la pestaña correcta donde está tu sesión Claude
+- **Widget de barra de menú**: Monitorea sesiones desde la barra superior de macOS
+- **Monitoreo en tiempo real**: CPU, memoria y estado de cada sesión
 - **Detección inteligente**: Identifica sesiones por TTY en Terminal.app
 - **Multi-terminal**: Soporte para Terminal.app (completo) y Ghostty (parcial)
 - **Gestión de sesiones**: Rastrea y limpia automáticamente sesiones muertas
@@ -23,6 +25,14 @@ Navegación automática e inteligente entre pestañas de terminal donde tienes s
 ```bash
 cd /Users/jorge/claude-terminal-navigator
 ./install.sh
+```
+
+### Widget de barra de menú (Opcional)
+
+Para instalar el widget que muestra las sesiones en la barra de menú:
+
+```bash
+./install-widget.sh
 ```
 
 ### Instalación manual
@@ -68,6 +78,15 @@ clj  # Navegación automática
 - `clj` - Salta automáticamente a pestañas Claude
 - `check-permissions` - Verifica permisos de Terminal
 - `claude-cleanup` - Limpia manualmente sesiones muertas
+
+### Widget de barra de menú
+
+El widget muestra:
+- 🟢 Sesiones activas (CPU > 5%)
+- 🟡 Sesiones en espera
+- 📊 Uso de CPU y memoria en tiempo real
+- ⏱️ Duración de cada sesión
+- Click para navegar instantáneamente
 
 ## 🖥️ Soporte por Terminal
 
@@ -131,10 +150,16 @@ claude-terminal-navigator/
 │   ├── claude-cleanup      # Limpiador de sesiones
 │   └── check-permissions   # Verificador de permisos
 ├── docs/
+│   ├── DIARY.md           # Diario de desarrollo
 │   └── TROUBLESHOOTING.md  # Guía detallada de problemas
+├── xbar-plugin/
+│   └── claude-monitor.5s.sh # Plugin para widget de barra de menú
 ├── config/
 │   └── example.conf        # Configuración de ejemplo
 ├── install.sh              # Instalador automático
+├── install-widget.sh       # Instalador del widget
+├── DOCS.md                # Índice de documentación
+├── CLAUDE.md              # Guía para Claude Code
 └── README.md              # Este archivo
 ```
 
