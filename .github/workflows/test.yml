@@ -24,7 +24,7 @@ jobs:
     - name: Check Swift syntax
       run: |
         cd SwiftApp
-        swift build --dry-run
+        swift package describe
     
     - name: Build Debug
       run: |
@@ -45,9 +45,9 @@ jobs:
     - name: Check Info.plist
       run: |
         cd SwiftApp
-        test -f Info.plist
-        /usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" Info.plist
-        /usr/libexec/PlistBuddy -c "Print :CFBundleName" Info.plist
+        test -f ClaudeNavigator/Info.plist
+        /usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" ClaudeNavigator/Info.plist
+        /usr/libexec/PlistBuddy -c "Print :CFBundleName" ClaudeNavigator/Info.plist
         echo "✅ Info.plist is valid"
     
     - name: Test App Bundle Creation
@@ -55,7 +55,7 @@ jobs:
         cd SwiftApp
         mkdir -p "ClaudeNavigator.app/Contents/MacOS"
         cp .build/release/ClaudeNavigator "ClaudeNavigator.app/Contents/MacOS/"
-        cp Info.plist "ClaudeNavigator.app/Contents/"
+        cp ClaudeNavigator/Info.plist "ClaudeNavigator.app/Contents/"
         
         # Verify bundle structure
         test -f "ClaudeNavigator.app/Contents/MacOS/ClaudeNavigator"

@@ -45,7 +45,7 @@ jobs:
         mkdir -p "ClaudeNavigator.app/Contents/MacOS"
         mkdir -p "ClaudeNavigator.app/Contents/Resources"
         cp .build/release/ClaudeNavigator "ClaudeNavigator.app/Contents/MacOS/"
-        cp Info.plist "ClaudeNavigator.app/Contents/"
+        cp ClaudeNavigator/Info.plist "ClaudeNavigator.app/Contents/"
         
         # Update version in Info.plist
         /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString ${{ steps.version.outputs.VERSION }}" "ClaudeNavigator.app/Contents/Info.plist"
@@ -111,7 +111,7 @@ jobs:
         mkdir -p "ClaudeNavigator.app/Contents/MacOS"
         mkdir -p "ClaudeNavigator.app/Contents/Resources"
         cp .build/release/ClaudeNavigator "ClaudeNavigator.app/Contents/MacOS/"
-        cp Info.plist "ClaudeNavigator.app/Contents/"
+        cp ClaudeNavigator/Info.plist "ClaudeNavigator.app/Contents/"
         
         # Update version in Info.plist
         /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString ${{ steps.version.outputs.VERSION }}" "ClaudeNavigator.app/Contents/Info.plist"
