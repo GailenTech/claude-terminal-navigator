@@ -197,15 +197,46 @@ class ClaudeSessionMonitor {
     }
     
     private func getWorkingDirectory(for pid: String) async -> String? {
+        // Try multiple methods to get working directory
+        
+        // Method 1: Try pwdx (most reliable)
         do {
-            // Use lsof to get current working directory
-            let output = try await ShellExecutor.run("lsof -p \(pid) | grep 'cwd' | awk '{print $NF}'")
-            let cwd = output.trimmingCharacters(in: .whitespacesAndNewlines)
-            return cwd.isEmpty ? nil : cwd
+            let output = try await ShellExecutor.run("pwdx \(pid) 2>/dev/null")
+            let components = output.trimmingCharacters(in: .whitespacesAndNewlines).split(separator: ":", maxSplits: 1)
+            if components.count == 2 {
+                let cwd = String(components[1]).trimmingCharacters(in: .whitespacesAndNewlines)
+                if !cwd.isEmpty && !cwd.contains("No such process") {
+                    return cwd
+                }
+            }
         } catch {
-            print("Error getting working directory for PID \(pid): \(error)")
-            return nil
+            // pwdx failed, try next method
         }
+        
+        // Method 2: Try lsof with better error handling
+        do {
+            let output = try await ShellExecutor.run("lsof -p \(pid) 2>/dev/null | grep 'cwd' | awk '{print $NF}'")
+            let cwd = output.trimmingCharacters(in: .whitespacesAndNewlines)
+            if !cwd.isEmpty && !cwd.contains("usage:") && !cwd.contains("lsof:") && !cwd.hasPrefix("-") {
+                return cwd
+            }
+        } catch {
+            // lsof failed, try next method
+        }
+        
+        // Method 3: Try /proc-style approach (fallback)
+        do {
+            let output = try await ShellExecutor.run("readlink /proc/\(pid)/cwd 2>/dev/null || echo ''")
+            let cwd = output.trimmingCharacters(in: .whitespacesAndNewlines)
+            if !cwd.isEmpty && !cwd.contains("No such file") {
+                return cwd
+            }
+        } catch {
+            // All methods failed
+        }
+        
+        print("⚠️ Could not determine working directory for PID \(pid)")
+        return nil
     }
     
     private func getTerminalInfo(for pid: String, ppid: String, tty: String) async -> (terminal: String, windowTitle: String) {
