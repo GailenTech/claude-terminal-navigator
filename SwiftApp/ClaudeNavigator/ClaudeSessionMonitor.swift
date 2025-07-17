@@ -2,7 +2,7 @@
 //  ClaudeSessionMonitor.swift
 //  ClaudeNavigator
 //
-//  Session monitoring and management
+//  Session monitoring and management - Standalone version
 //
 
 import Foundation
@@ -27,7 +27,7 @@ struct ClaudeSession: Codable {
     var gitBranch: String?
     var gitStatus: String?
     
-    // Coding keys to match JSON format
+    // Coding keys to match JSON format (kept for compatibility)
     enum CodingKeys: String, CodingKey {
         case pid
         case tty
@@ -81,47 +81,34 @@ struct ClaudeSession: Codable {
 // MARK: - Session Monitor
 
 class ClaudeSessionMonitor {
-    static let sessionsDirectory = FileManager.default.homeDirectoryForCurrentUser
-        .appendingPathComponent(".claude/sessions")
-    
-    private let scriptsDirectory: String
+    // Store discovered sessions in memory
+    private var knownSessions: [String: ClaudeSession] = [:] // PID -> Session
+    private let sessionQueue = DispatchQueue(label: "com.claudenavigator.sessions")
     
     init() {
-        // Get the actual path to scripts
-        self.scriptsDirectory = "/Volumes/DevelopmentProjects/Claude/claude-terminal-navigator/bin"
+        print("🚀 Initializing standalone ClaudeSessionMonitor")
     }
     
     func getActiveSessions() async throws -> [ClaudeSession] {
+        // Find all Claude processes
+        let claudeProcesses = try await findClaudeProcesses()
+        
+        // Convert processes to sessions
         var sessions: [ClaudeSession] = []
         
-        // First cleanup dead sessions
-        _ = await cleanupDeadSessions()
-        
-        // Check if sessions directory exists
-        guard FileManager.default.fileExists(atPath: Self.sessionsDirectory.path) else {
-            return []
-        }
-        
-        // Read all session files
-        let files = try FileManager.default.contentsOfDirectory(
-            at: Self.sessionsDirectory,
-            includingPropertiesForKeys: nil
-        ).filter { $0.pathExtension == "json" }
-        
-        // Process each file concurrently
-        await withTaskGroup(of: ClaudeSession?.self) { group in
-            for file in files {
-                group.addTask {
-                    await self.loadSession(from: file)
-                }
-            }
-            
-            for await session in group {
-                if let session = session {
-                    sessions.append(session)
+        for processInfo in claudeProcesses {
+            if let session = await createSession(from: processInfo) {
+                sessions.append(session)
+                
+                // Store in known sessions
+                sessionQueue.sync {
+                    knownSessions[session.pid] = session
                 }
             }
         }
+        
+        // Clean up dead sessions from memory
+        await cleanupDeadSessionsFromMemory()
         
         // Update CPU, memory and Git info for all sessions
         var updatedSessions: [ClaudeSession] = []
@@ -146,6 +133,183 @@ class ClaudeSessionMonitor {
         }
         
         return updatedSessions
+    }
+    
+    private func findClaudeProcesses() async throws -> [(pid: String, ppid: String, tty: String, startTime: String, command: String)] {
+        // Find all processes named "claude"
+        let output = try await ShellExecutor.run(
+            "ps -eo pid,ppid,tty,lstart,command | grep -E '/claude\\s*$|claude\\s*$' | grep -v grep | grep -v claude-nav | grep -v ClaudeNavigator"
+        )
+        
+        var processes: [(pid: String, ppid: String, tty: String, startTime: String, command: String)] = []
+        
+        let lines = output.split(separator: "\n")
+        for line in lines {
+            let components = line.split(separator: " ", maxSplits: 6, omittingEmptySubsequences: true)
+            if components.count >= 7 {
+                let pid = String(components[0])
+                let ppid = String(components[1])
+                let tty = String(components[2])
+                // lstart format: "Thu Jul 17 13:25:12 2025"
+                let startTime = components[3..<7].joined(separator: " ")
+                let command = String(components[6])
+                
+                processes.append((pid: pid, ppid: ppid, tty: tty, startTime: startTime, command: command))
+                print("🔍 Found Claude process: PID=\(pid), TTY=\(tty)")
+            }
+        }
+        
+        return processes
+    }
+    
+    private func createSession(from processInfo: (pid: String, ppid: String, tty: String, startTime: String, command: String)) async -> ClaudeSession? {
+        let pid = processInfo.pid
+        
+        // Get working directory
+        guard let workingDir = await getWorkingDirectory(for: pid) else {
+            print("❌ Could not get working directory for PID \(pid)")
+            return nil
+        }
+        
+        // Get terminal info
+        let terminalInfo = await getTerminalInfo(for: pid, ppid: processInfo.ppid, tty: processInfo.tty)
+        
+        // Convert start time to ISO format
+        let isoStartTime = convertToISOTime(processInfo.startTime)
+        
+        // Generate session ID
+        let sessionId = UUID().uuidString
+        
+        // Create session
+        let session = ClaudeSession(
+            pid: pid,
+            tty: processInfo.tty.hasPrefix("/dev/") ? processInfo.tty : "/dev/\(processInfo.tty)",
+            terminal: terminalInfo.terminal,
+            sessionId: sessionId,
+            windowTitle: terminalInfo.windowTitle,
+            startTime: isoStartTime,
+            workingDir: workingDir,
+            dirName: URL(fileURLWithPath: workingDir).lastPathComponent,
+            parentPid: processInfo.ppid
+        )
+        
+        return session
+    }
+    
+    private func getWorkingDirectory(for pid: String) async -> String? {
+        do {
+            // Use lsof to get current working directory
+            let output = try await ShellExecutor.run("lsof -p \(pid) | grep 'cwd' | awk '{print $NF}'")
+            let cwd = output.trimmingCharacters(in: .whitespacesAndNewlines)
+            return cwd.isEmpty ? nil : cwd
+        } catch {
+            print("Error getting working directory for PID \(pid): \(error)")
+            return nil
+        }
+    }
+    
+    private func getTerminalInfo(for pid: String, ppid: String, tty: String) async -> (terminal: String, windowTitle: String) {
+        // Find terminal by traversing parent process chain
+        var currentPid = ppid
+        var terminal = "Unknown"
+        
+        for _ in 0..<10 { // Limit traversal depth
+            do {
+                let output = try await ShellExecutor.run("ps -p \(currentPid) -o comm=,ppid=")
+                let components = output.trimmingCharacters(in: .whitespacesAndNewlines).split(separator: " ")
+                
+                if components.count >= 1 {
+                    let processName = String(components[0])
+                    
+                    if processName.contains("Terminal") {
+                        terminal = "Apple_Terminal"
+                        break
+                    } else if processName.contains("iTerm") {
+                        terminal = "iTerm2"
+                        break
+                    } else if processName.contains("Ghostty") || processName.contains("ghostty") {
+                        terminal = "Ghostty"
+                        break
+                    }
+                    
+                    // Move to parent
+                    if components.count >= 2 {
+                        currentPid = String(components[1])
+                    } else {
+                        break
+                    }
+                }
+            } catch {
+                break
+            }
+        }
+        
+        // Get window title for Terminal.app
+        var windowTitle = ""
+        if terminal == "Apple_Terminal" {
+            windowTitle = await getTerminalWindowTitle(for: tty) ?? ""
+        }
+        
+        return (terminal: terminal, windowTitle: windowTitle)
+    }
+    
+    private func getTerminalWindowTitle(for tty: String) async -> String? {
+        let script = """
+        tell application "Terminal"
+            repeat with w in windows
+                repeat with t in tabs of w
+                    try
+                        if (tty of t) is "\(tty)" then
+                            return name of w
+                        end if
+                    end try
+                end repeat
+            end repeat
+        end tell
+        return ""
+        """
+        
+        var error: NSDictionary?
+        if let scriptObject = NSAppleScript(source: script) {
+            let result = scriptObject.executeAndReturnError(&error)
+            if error == nil, let title = result.stringValue {
+                return title
+            }
+        }
+        return nil
+    }
+    
+    private func convertToISOTime(_ timeString: String) -> String {
+        // Convert "Thu Jul 17 13:25:12 2025" to ISO format
+        let formatter = DateFormatter()
+        formatter.dateFormat = "EEE MMM dd HH:mm:ss yyyy"
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        
+        if let date = formatter.date(from: timeString) {
+            let isoFormatter = ISO8601DateFormatter()
+            return isoFormatter.string(from: date)
+        }
+        
+        // Fallback to current time if parsing fails
+        return ISO8601DateFormatter().string(from: Date())
+    }
+    
+    private func cleanupDeadSessionsFromMemory() async {
+        var alivePids: Set<String> = []
+        
+        // Check which PIDs are still alive
+        for (pid, _) in knownSessions {
+            if await isProcessAlive(pid: pid) {
+                alivePids.insert(pid)
+            }
+        }
+        
+        // Update known sessions
+        sessionQueue.sync {
+            knownSessions = knownSessions.filter { pid, _ in
+                alivePids.contains(pid)
+            }
+        }
     }
     
     private func getCPUUsage(for pid: String) async -> Double? {
@@ -197,39 +361,12 @@ class ClaudeSessionMonitor {
         }
     }
     
-    private func loadSession(from url: URL) async -> ClaudeSession? {
-        do {
-            let data = try Data(contentsOf: url)
-            let session = try JSONDecoder().decode(ClaudeSession.self, from: data)
-            
-            // Check if process is still alive
-            let isAlive = await isProcessAlive(pid: session.pid)
-            return isAlive ? session : nil
-        } catch {
-            print("Error loading session from \(url): \(error)")
-            return nil
-        }
-    }
-    
     private func isProcessAlive(pid: String) async -> Bool {
         do {
             _ = try await ShellExecutor.run("kill -0 \(pid)")
             return true
         } catch {
             return false
-        }
-    }
-    
-    @discardableResult
-    func cleanupDeadSessions() async -> String? {
-        do {
-            let output = try await ShellExecutor.runScript(
-                "\(scriptsDirectory)/claude-cleanup"
-            )
-            return output
-        } catch {
-            print("Error cleaning up sessions: \(error)")
-            return nil
         }
     }
 }
@@ -322,7 +459,7 @@ class TerminalNavigator {
         
         var error: NSDictionary?
         if let scriptObject = NSAppleScript(source: script) {
-            let result = scriptObject.executeAndReturnError(&error)
+            _ = scriptObject.executeAndReturnError(&error)
             
             if let error = error {
                 throw ShellError.executionFailed(error.description)
@@ -333,8 +470,9 @@ class TerminalNavigator {
     }
     
     static func jumpUsingScript(pid: String) async throws {
-        let scriptsDir = "/Volumes/DevelopmentProjects/Claude/claude-terminal-navigator/bin"
-        _ = try await ShellExecutor.runScript("\(scriptsDir)/claude-jump", arguments: [pid])
+        // Fallback: Just activate Terminal app
+        // The standalone version doesn't rely on external scripts
+        _ = try await ShellExecutor.run("open -a Terminal")
     }
     
     @MainActor

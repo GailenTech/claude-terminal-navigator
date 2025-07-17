@@ -123,6 +123,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         detailWindow?.center()
         detailWindow?.isReleasedWhenClosed = false
         
+        // Make window stay on top
+        detailWindow?.level = .floating
+        detailWindow?.collectionBehavior = [.canJoinAllSpaces, .stationary]
+        
         // Create content view
         let contentView = createDetailedContentView(with: sessions)
         detailWindow?.contentView = contentView
@@ -134,6 +138,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func createDetailedContentView(with sessions: [ClaudeSession]) -> NSView {
         let contentView = NSView()
+        
+        // Create header label with instructions
+        let headerLabel = NSTextField(labelWithString: "Double-click any session to jump to it")
+        headerLabel.font = NSFont.systemFont(ofSize: 14)
+        headerLabel.textColor = NSColor.secondaryLabelColor
+        headerLabel.alignment = .center
+        headerLabel.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(headerLabel)
         
         // Create scroll view for sessions
         let scrollView = NSScrollView()
@@ -189,7 +201,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         // Layout constraints
         NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
+            headerLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 15),
+            headerLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            headerLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            
+            scrollView.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: 10),
             scrollView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             scrollView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
             scrollView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10)
@@ -199,7 +215,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func createSessionView(session: ClaudeSession) -> NSView {
-        let sessionView = NSView()
+        let sessionView = ClickableSessionView()
         
         // Background
         sessionView.wantsLayer = true
@@ -207,6 +223,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         sessionView.layer?.cornerRadius = 8
         sessionView.layer?.borderWidth = 1
         sessionView.layer?.borderColor = NSColor.separatorColor.cgColor
+        
+        // Add shadow for depth
+        sessionView.shadow = NSShadow()
+        sessionView.layer?.shadowColor = NSColor.black.cgColor
+        sessionView.layer?.shadowOpacity = 0.1
+        sessionView.layer?.shadowOffset = CGSize(width: 0, height: 2)
+        sessionView.layer?.shadowRadius = 4
         
         // Status indicator with better icons
         let statusIcon = NSTextField(labelWithString: session.isActive ? "🤖" : "💤")
@@ -332,19 +355,37 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         guard let sessionView = gesture.view,
               let pidString = sessionView.identifier?.rawValue else { return }
         
-        // Close the detailed window
-        detailWindow?.close()
-        
         Task {
             do {
                 let sessions = try await sessionMonitor.getActiveSessions()
                 if let session = sessions.first(where: { $0.pid == pidString }) {
                     try await TerminalNavigator.jumpToSession(session: session)
+                    
+                    // Fade out window after successful jump
+                    await MainActor.run {
+                        NSAnimationContext.runAnimationGroup({ context in
+                            context.duration = 0.5
+                            context.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+                            self.detailWindow?.animator().alphaValue = 0.0
+                        }, completionHandler: {
+                            self.detailWindow?.close()
+                        })
+                    }
                 }
             } catch {
                 print("Error jumping to session: \(error)")
                 // Fallback to script
                 try? await TerminalNavigator.jumpUsingScript(pid: pidString)
+                
+                // Still fade out on fallback
+                await MainActor.run {
+                    NSAnimationContext.runAnimationGroup({ context in
+                        context.duration = 0.5
+                        self.detailWindow?.animator().alphaValue = 0.0
+                    }, completionHandler: {
+                        self.detailWindow?.close()
+                    })
+                }
             }
         }
     }
@@ -528,7 +569,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                                   keyEquivalent: "")
         menu.addItem(launchItem)
         
-        let openSessionsItem = NSMenuItem(title: "📂 Open Sessions Folder", 
+        let openSessionsItem = NSMenuItem(title: "📂 Open Home Folder", 
                                         action: #selector(openSessionsFolder), 
                                         keyEquivalent: "")
         menu.addItem(openSessionsItem)
@@ -592,7 +633,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     @objc func cleanupSessions() {
         Task {
-            _ = await sessionMonitor.cleanupDeadSessions()
+            // Cleanup is now automatic during getActiveSessions
             refresh()
         }
     }
@@ -604,7 +645,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     @objc func openSessionsFolder() {
-        NSWorkspace.shared.open(ClaudeSessionMonitor.sessionsDirectory)
+        // Open home directory since we no longer use sessions folder
+        let homeDirectory = FileManager.default.homeDirectoryForCurrentUser
+        NSWorkspace.shared.open(homeDirectory)
     }
     
     @objc func showAbout() {
@@ -627,5 +670,85 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 NSWorkspace.shared.open(url)
             }
         }
+    }
+}
+
+// MARK: - Custom Clickable Session View
+
+class ClickableSessionView: NSView {
+    private var isPressed = false
+    private var trackingArea: NSTrackingArea?
+    
+    override func updateTrackingAreas() {
+        super.updateTrackingAreas()
+        
+        if let trackingArea = trackingArea {
+            removeTrackingArea(trackingArea)
+        }
+        
+        let options: NSTrackingArea.Options = [.mouseEnteredAndExited, .activeInKeyWindow]
+        trackingArea = NSTrackingArea(rect: bounds, options: options, owner: self, userInfo: nil)
+        addTrackingArea(trackingArea!)
+    }
+    
+    override func mouseEntered(with event: NSEvent) {
+        NSCursor.pointingHand.push()
+        animateHover(isHovering: true)
+    }
+    
+    override func mouseExited(with event: NSEvent) {
+        NSCursor.pop()
+        animateHover(isHovering: false)
+        if isPressed {
+            isPressed = false
+            animatePress(isPressed: false)
+        }
+    }
+    
+    override func mouseDown(with event: NSEvent) {
+        isPressed = true
+        animatePress(isPressed: true)
+    }
+    
+    override func mouseUp(with event: NSEvent) {
+        if isPressed {
+            isPressed = false
+            animatePress(isPressed: false)
+        }
+    }
+    
+    private func animateHover(isHovering: Bool) {
+        NSAnimationContext.runAnimationGroup({ context in
+            context.duration = 0.2
+            context.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+            
+            if isHovering {
+                self.animator().layer?.backgroundColor = NSColor.controlBackgroundColor.blended(withFraction: 0.05, of: NSColor.controlAccentColor)?.cgColor
+                self.animator().layer?.shadowOpacity = 0.15
+            } else {
+                self.animator().layer?.backgroundColor = NSColor.controlBackgroundColor.cgColor
+                self.animator().layer?.shadowOpacity = 0.1
+            }
+        })
+    }
+    
+    private func animatePress(isPressed: Bool) {
+        NSAnimationContext.runAnimationGroup({ context in
+            context.duration = 0.1
+            context.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+            
+            if isPressed {
+                // Scale down slightly and reduce shadow
+                let transform = CATransform3DMakeScale(0.98, 0.98, 1.0)
+                self.animator().layer?.transform = transform
+                self.animator().layer?.shadowOpacity = 0.05
+                self.animator().layer?.shadowOffset = CGSize(width: 0, height: 1)
+            } else {
+                // Return to normal
+                self.animator().layer?.transform = CATransform3DIdentity
+                self.animator().layer?.shadowOpacity = 0.1
+                self.animator().layer?.shadowOffset = CGSize(width: 0, height: 2)
+            }
+        })
     }
 }
