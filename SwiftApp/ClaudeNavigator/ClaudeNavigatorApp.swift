@@ -7,6 +7,7 @@
 
 import SwiftUI
 import QuartzCore
+import ServiceManagement
 
 @main
 struct ClaudeNavigatorApp: App {
@@ -554,33 +555,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             menu.addItem(NSMenuItem.separator())
         }
         
-        // Actions
-        let actionsItem = NSMenuItem(title: "Actions", action: nil, keyEquivalent: "")
-        actionsItem.isEnabled = false
-        menu.addItem(actionsItem)
-        
-        let cleanupItem = NSMenuItem(title: "🧹 Cleanup Dead Sessions", 
-                                   action: #selector(cleanupSessions), 
-                                   keyEquivalent: "")
-        menu.addItem(cleanupItem)
-        
-        let launchItem = NSMenuItem(title: "🚀 Launch New Claude", 
-                                  action: #selector(launchNewClaude), 
-                                  keyEquivalent: "")
-        menu.addItem(launchItem)
-        
-        let openSessionsItem = NSMenuItem(title: "📂 Open Home Folder", 
-                                        action: #selector(openSessionsFolder), 
-                                        keyEquivalent: "")
-        menu.addItem(openSessionsItem)
-        
+        // Settings
         menu.addItem(NSMenuItem.separator())
         
-        // Settings
-        let refreshItem = NSMenuItem(title: "🔄 Refresh Now", 
-                                   action: #selector(refresh), 
-                                   keyEquivalent: "r")
-        menu.addItem(refreshItem)
+        let settingsItem = NSMenuItem(title: "Settings", action: nil, keyEquivalent: "")
+        settingsItem.isEnabled = false
+        menu.addItem(settingsItem)
+        
+        let launchAtStartupItem = NSMenuItem(title: "Launch at Startup", 
+                                           action: #selector(toggleLaunchAtStartup), 
+                                           keyEquivalent: "")
+        launchAtStartupItem.state = LaunchAtStartup.isEnabled ? .on : .off
+        menu.addItem(launchAtStartupItem)
         
         menu.addItem(NSMenuItem.separator())
         
@@ -631,23 +617,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         pasteboard.setString(session.workingDir, forType: .string)
     }
     
-    @objc func cleanupSessions() {
-        Task {
-            // Cleanup is now automatic during getActiveSessions
-            refresh()
-        }
-    }
-    
-    @objc func launchNewClaude() {
-        Task {
-            _ = try? await ShellExecutor.run("open -a Terminal /opt/homebrew/bin/claude")
-        }
-    }
-    
-    @objc func openSessionsFolder() {
-        // Open home directory since we no longer use sessions folder
-        let homeDirectory = FileManager.default.homeDirectoryForCurrentUser
-        NSWorkspace.shared.open(homeDirectory)
+    @objc func toggleLaunchAtStartup() {
+        LaunchAtStartup.toggle()
+        refresh() // Refresh menu to update checkmark
     }
     
     @objc func showAbout() {
@@ -750,5 +722,69 @@ class ClickableSessionView: NSView {
                 self.animator().layer?.shadowOffset = CGSize(width: 0, height: 2)
             }
         })
+    }
+}
+
+// MARK: - Launch at Startup Helper
+
+class LaunchAtStartup {
+    static var isEnabled: Bool {
+        if #available(macOS 13.0, *) {
+            // Use the modern API for macOS 13+
+            return SMAppService.mainApp.status == .enabled
+        } else {
+            // For older macOS versions, check using legacy method
+            let jobDicts = SMCopyAllJobDictionaries(kSMDomainUserLaunchd).takeRetainedValue() as? [[String: Any]] ?? []
+            let bundleId = Bundle.main.bundleIdentifier ?? ""
+            return jobDicts.contains { dict in
+                if let label = dict["Label"] as? String {
+                    return label == bundleId
+                }
+                return false
+            }
+        }
+    }
+    
+    static func toggle() {
+        if #available(macOS 13.0, *) {
+            // Use the modern API for macOS 13+
+            do {
+                if isEnabled {
+                    try SMAppService.mainApp.unregister()
+                } else {
+                    try SMAppService.mainApp.register()
+                }
+            } catch {
+                print("Failed to toggle launch at startup: \(error)")
+            }
+        } else {
+            // For older macOS versions, use AppleScript
+            let script = isEnabled ? disableScript : enableScript
+            
+            var error: NSDictionary?
+            if let scriptObject = NSAppleScript(source: script) {
+                scriptObject.executeAndReturnError(&error)
+                if let error = error {
+                    print("Failed to toggle launch at startup: \(error)")
+                }
+            }
+        }
+    }
+    
+    private static var enableScript: String {
+        let appPath = Bundle.main.bundlePath
+        return """
+        tell application "System Events"
+            make new login item at end with properties {name:"ClaudeNavigator", path:"\(appPath)", hidden:false}
+        end tell
+        """
+    }
+    
+    private static var disableScript: String {
+        return """
+        tell application "System Events"
+            delete login item "ClaudeNavigator"
+        end tell
+        """
     }
 }
