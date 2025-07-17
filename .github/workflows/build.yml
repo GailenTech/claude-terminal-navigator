@@ -5,8 +5,18 @@ on:
     branches: [ main ]
     tags:
       - 'v*'
+    paths:
+      - 'ClaudeNavigator/**'
+      - 'Package.swift'
+      - 'build.sh'
+      - '.github/workflows/build.yml'
   pull_request:
     branches: [ main ]
+    paths:
+      - 'ClaudeNavigator/**'
+      - 'Package.swift'
+      - 'build.sh'
+      - '.github/workflows/build.yml'
 
 permissions:
   contents: write
