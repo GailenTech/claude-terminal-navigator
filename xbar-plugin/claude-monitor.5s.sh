@@ -8,7 +8,7 @@
 
 # Configuration
 CLAUDE_SESSIONS_DIR="${CLAUDE_NAV_DIR:-$HOME/.claude}/sessions"
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)/../bin"
+SCRIPT_DIR="/Volumes/DevelopmentProjects/Claude/claude-terminal-navigator/bin"
 CLAUDE_JUMP="$SCRIPT_DIR/claude-jump"
 CLAUDE_CLEANUP="$SCRIPT_DIR/claude-cleanup"
 

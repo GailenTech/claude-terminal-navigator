@@ -29,10 +29,20 @@ cd /Users/jorge/claude-terminal-navigator
 
 ### Widget de barra de menú (Opcional)
 
-Para instalar el widget que muestra las sesiones en la barra de menú:
+#### Opción 1: xbar (Simple)
+Para instalar el widget basado en xbar:
 
 ```bash
 ./install-widget.sh
+```
+
+#### Opción 2: App Nativa Swift (Recomendado)
+Para usar la aplicación nativa de macOS:
+
+```bash
+cd SwiftApp
+./build.sh
+open ClaudeNavigator.app
 ```
 
 ### Instalación manual

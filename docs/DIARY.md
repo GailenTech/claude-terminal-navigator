@@ -53,6 +53,34 @@
 
 ---
 
+## 2025-01-17 - Aplicación Swift nativa implementada
+
+### Lo que se hizo
+- Implementación completa de app Swift nativa para menu bar
+- Integración con scripts bash existentes (híbrido)
+- Monitoreo asíncrono de CPU y memoria
+- UI nativa con menús y submenús detallados
+- Script de compilación automatizado
+
+### Decisiones tomadas
+- Enfoque híbrido: Swift llama a scripts bash existentes
+- Usar SwiftUI/AppKit para máxima compatibilidad
+- Cachear valores de CPU/memoria para mejor rendimiento
+- Mantener compatibilidad con macOS 11+
+
+### Desafíos/Aprendizajes
+- Propiedades async en Swift requieren manejo especial
+- NSUserNotification deprecado, pero alternativas requieren más setup
+- La compilación con Swift Package Manager simplifica distribución
+
+### Próximos pasos
+- Añadir preferencias de usuario
+- Implementar auto-update con Sparkle
+- Mejorar iconos y recursos visuales
+- Considerar firma y notarización para distribución
+
+---
+
 ## 2025-01-16 - Creación inicial del proyecto
 
 ### Lo que se hizo
