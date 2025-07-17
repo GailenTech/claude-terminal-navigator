@@ -40,7 +40,8 @@ struct ClaudeSession: Codable {
     
     // Computed properties
     var isActive: Bool {
-        return (cachedCPU ?? 0) > 5.0
+        // Lower threshold to 1% to catch more active processes
+        return (cachedCPU ?? 0) > 1.0
     }
     
     var formattedDuration: String {
@@ -126,6 +127,7 @@ class ClaudeSessionMonitor {
             // Get CPU usage
             if let cpu = await getCPUUsage(for: session.pid) {
                 session.cachedCPU = cpu
+                print("📊 PID \(session.pid) CPU: \(cpu)%")
             }
             // Get memory usage
             if let memory = await getMemoryUsage(for: session.pid) {
@@ -140,7 +142,10 @@ class ClaudeSessionMonitor {
     private func getCPUUsage(for pid: String) async -> Double? {
         do {
             let output = try await ShellExecutor.run("ps -p \(pid) -o %cpu=")
-            return Double(output.trimmingCharacters(in: .whitespacesAndNewlines))
+            // Handle both comma and dot as decimal separator
+            let cleanOutput = output.trimmingCharacters(in: .whitespacesAndNewlines)
+                                   .replacingOccurrences(of: ",", with: ".")
+            return Double(cleanOutput)
         } catch {
             return nil
         }

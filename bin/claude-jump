@@ -106,8 +106,9 @@ EOF
     local result=$?
     
     if [ $result -eq 0 ]; then
-        # Notificación de éxito
-        osascript -e "display notification \"Saltado a $target_dir\" with title \"Claude Jump\""
+        # Notificación de éxito (desactivada)
+        # osascript -e "display notification \"Saltado a $target_dir\" with title \"Claude Jump\""
+        :  # No-op
     else
         echo "Error: No se pudo navegar a la pestaña. Posibles causas:"
         echo "1. Permisos de accesibilidad no otorgados"

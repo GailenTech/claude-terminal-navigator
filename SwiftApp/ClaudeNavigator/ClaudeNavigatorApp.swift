@@ -30,17 +30,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var lastWaitingCount = 0
     
     func applicationDidFinishLaunching(_ notification: Notification) {
+        print("🚀 ClaudeNavigator starting...")
+        
         // Hide dock icon for menu bar only app
         NSApp.setActivationPolicy(.accessory)
+        print("✅ Activation policy set to accessory")
         
-        // Create status bar item
+        // Create status bar item with variable length
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
-        
-        if let button = statusItem.button {
-            button.title = "Claude ⚪"
-            button.action = #selector(statusItemClicked)
-            button.sendAction(on: [.leftMouseUp, .rightMouseUp])
-        }
+        print("✅ Status item created")
         
         // Initialize session monitor
         sessionMonitor = ClaudeSessionMonitor()
@@ -48,22 +46,27 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Build initial menu
         buildMenu()
         
+        // Assign menu to status item
+        statusItem.menu = menu
+        
+        if let button = statusItem.button {
+            // Set initial icon
+            button.title = "🤖"
+            print("✅ Button configured with emoji title: \(button.title)")
+        } else {
+            print("❌ Failed to create status button!")
+        }
+        
         // Start refresh timer (5 seconds like xbar)
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             self.refresh()
         }
         
         // Initial refresh
+        print("🔄 Starting initial refresh...")
         refresh()
-    }
-    
-    @objc func statusItemClicked(sender: NSStatusBarButton) {
-        // Show menu on click
-        if let menu = menu {
-            statusItem.menu = menu
-            statusItem.button?.performClick(nil)
-            statusItem.menu = nil // Reset to allow clicks again
-        }
+        
+        print("✅ ClaudeNavigator fully initialized!")
     }
     
     func updateIcon(activeCount: Int, waitingCount: Int) {
@@ -77,15 +80,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         lastActiveCount = activeCount
         lastWaitingCount = waitingCount
         
+        let totalCount = activeCount + waitingCount
+        
         DispatchQueue.main.async {
+            // Very compact format to avoid notch issues
             if activeCount > 0 {
-                button.title = "Claude 🟢 \(activeCount)"
-                button.toolTip = "\(activeCount) active session\(activeCount == 1 ? "" : "s")"
+                button.title = "🤖\(activeCount)/\(totalCount)"
+                button.toolTip = "\(activeCount) active, \(waitingCount) waiting"
             } else if waitingCount > 0 {
-                button.title = "Claude 🟡 \(waitingCount)"
-                button.toolTip = "\(waitingCount) waiting session\(waitingCount == 1 ? "" : "s")"
+                button.title = "🤖0/\(totalCount)"
+                button.toolTip = "All \(waitingCount) sessions waiting"
             } else {
-                button.title = "Claude ⚪"
+                button.title = "🤖"
                 button.toolTip = "No active Claude sessions"
             }
         }
