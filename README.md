@@ -19,14 +19,10 @@ A macOS menu bar app that helps you navigate between active Claude CLI sessions.
 ## Usage
 
 ### Quick Menu
-Click the 🤖 icon to see all active sessions:
-
-![Quick Menu](https://github.com/GailenTech/claude-terminal-navigator/blob/main/docs/quick-menu.png)
+Click the 🤖 icon to see all active sessions with CPU usage and basic info.
 
 ### Detailed View
-Option+click the 🤖 icon for detailed session information:
-
-![Detailed View](https://github.com/GailenTech/claude-terminal-navigator/blob/main/docs/detailed-view.png)
+Option+click the 🤖 icon for detailed session information including Git status and full paths.
 
 ### Navigation
 - **Double-click any session** to jump to that terminal tab
