@@ -27,7 +27,7 @@
 
 ### Download from Releases
 
-1. Go to [Releases](https://github.com/yourusername/claude-terminal-navigator/releases/latest)
+1. Go to [Releases](https://github.com/GailenTech/claude-terminal-navigator/releases/latest)
 2. Download `ClaudeNavigator-latest.zip`
 3. Unzip the file
 4. Drag `ClaudeNavigator.app` to your Applications folder
@@ -41,7 +41,7 @@ Requirements:
 - Swift 5.9+ or Xcode 13+
 
 ```bash
-git clone https://github.com/yourusername/claude-terminal-navigator.git
+git clone https://github.com/GailenTech/claude-terminal-navigator.git
 cd claude-terminal-navigator
 swift build -c release
 
@@ -162,10 +162,9 @@ Contributions welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for guidel
 
 ## 🆘 Support
 
-- 📚 Check [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) for common issues
-- 🐛 [Report bugs](https://github.com/yourusername/claude-terminal-navigator/issues/new?template=bug_report.md)
-- 💡 [Request features](https://github.com/yourusername/claude-terminal-navigator/issues/new?template=feature_request.md)
-- 💬 [Start a discussion](https://github.com/yourusername/claude-terminal-navigator/discussions)
+- 🐛 [Report bugs](https://github.com/GailenTech/claude-terminal-navigator/issues/new)
+- 💡 [Request features](https://github.com/GailenTech/claude-terminal-navigator/issues/new)
+- 💬 [Start a discussion](https://github.com/GailenTech/claude-terminal-navigator/discussions)
 
 ---
 

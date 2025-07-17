@@ -7,7 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.0.0] - 2025-07-17
+## [1.0.2] - 2025-01-17
+
+### Fixed
+- Fixed working directory detection bug where lsof usage message appeared as session name
+- Improved error handling for process discovery with multiple fallback methods
+
+### Changed
+- Toned down marketing language in README (removed "beautiful animations" hyperbole)
+- Cleaned up project structure by removing development artifacts
+
+## [1.0.1] - 2025-01-17
+
+### Changed
+- Restructured project to focus solely on macOS widget
+- Moved legacy shell scripts to `old_shell_wrapper_version/` directory
+- Updated GitHub Actions to build from root instead of SwiftApp subdirectory
+- Rewrote README for better presentation and standalone widget focus
+
+## [1.0.0] - 2025-01-17
 
 ### Added
 - Initial release of Claude Terminal Navigator as a standalone macOS app
