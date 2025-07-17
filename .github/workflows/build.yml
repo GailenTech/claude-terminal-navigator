@@ -1,0 +1,181 @@
+name: Build and Release
+
+on:
+  push:
+    branches: [ main ]
+    tags:
+      - 'v*'
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: macos-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Swift
+      uses: swift-actions/setup-swift@v2
+      with:
+        swift-version: "5.9"
+    
+    - name: Extract Version
+      id: version
+      run: |
+        if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+          VERSION=${GITHUB_REF#refs/tags/v}
+        else
+          VERSION="dev"
+        fi
+        echo "VERSION=${VERSION}" >> $GITHUB_OUTPUT
+        echo "Building version: ${VERSION}"
+    
+    - name: Build App
+      run: |
+        cd SwiftApp
+        swift build -c release
+        
+    - name: Create App Bundle
+      run: |
+        cd SwiftApp
+        mkdir -p "ClaudeNavigator.app/Contents/MacOS"
+        mkdir -p "ClaudeNavigator.app/Contents/Resources"
+        cp .build/release/ClaudeNavigator "ClaudeNavigator.app/Contents/MacOS/"
+        cp Info.plist "ClaudeNavigator.app/Contents/"
+        
+        # Update version in Info.plist
+        /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString ${{ steps.version.outputs.VERSION }}" "ClaudeNavigator.app/Contents/Info.plist"
+        /usr/libexec/PlistBuddy -c "Set :CFBundleVersion ${{ steps.version.outputs.VERSION }}" "ClaudeNavigator.app/Contents/Info.plist"
+        
+    - name: Sign App (if certificate available)
+      if: env.MACOS_CERTIFICATE && env.MACOS_CERTIFICATE_PWD
+      env:
+        MACOS_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE }}
+        MACOS_CERTIFICATE_PWD: ${{ secrets.MACOS_CERTIFICATE_PWD }}
+      run: |
+        echo "Code signing is configured but not implemented yet"
+        # TODO: Add code signing steps here
+        
+    - name: Create ZIP
+      run: |
+        cd SwiftApp
+        zip -r "ClaudeNavigator-${{ steps.version.outputs.VERSION }}.zip" ClaudeNavigator.app
+        echo "Created ClaudeNavigator-${{ steps.version.outputs.VERSION }}.zip"
+        
+    - name: Calculate Checksum
+      id: checksum
+      run: |
+        cd SwiftApp
+        CHECKSUM=$(shasum -a 256 "ClaudeNavigator-${{ steps.version.outputs.VERSION }}.zip" | awk '{print $1}')
+        echo "SHA256=${CHECKSUM}" >> $GITHUB_OUTPUT
+        echo "SHA256 checksum: ${CHECKSUM}"
+        
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ClaudeNavigator-${{ steps.version.outputs.VERSION }}
+        path: SwiftApp/ClaudeNavigator-${{ steps.version.outputs.VERSION }}.zip
+        retention-days: 30
+
+  release:
+    needs: build
+    runs-on: macos-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Extract Version
+      id: version
+      run: |
+        VERSION=${GITHUB_REF#refs/tags/v}
+        echo "VERSION=${VERSION}" >> $GITHUB_OUTPUT
+    
+    - name: Set up Swift
+      uses: swift-actions/setup-swift@v2
+      with:
+        swift-version: "5.9"
+        
+    - name: Build App for Release
+      run: |
+        cd SwiftApp
+        swift build -c release
+        
+    - name: Create App Bundle
+      run: |
+        cd SwiftApp
+        mkdir -p "ClaudeNavigator.app/Contents/MacOS"
+        mkdir -p "ClaudeNavigator.app/Contents/Resources"
+        cp .build/release/ClaudeNavigator "ClaudeNavigator.app/Contents/MacOS/"
+        cp Info.plist "ClaudeNavigator.app/Contents/"
+        
+        # Update version in Info.plist
+        /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString ${{ steps.version.outputs.VERSION }}" "ClaudeNavigator.app/Contents/Info.plist"
+        /usr/libexec/PlistBuddy -c "Set :CFBundleVersion ${{ steps.version.outputs.VERSION }}" "ClaudeNavigator.app/Contents/Info.plist"
+        
+    - name: Create ZIP
+      run: |
+        cd SwiftApp
+        zip -r "ClaudeNavigator-${{ steps.version.outputs.VERSION }}.zip" ClaudeNavigator.app
+        
+    - name: Calculate Checksum
+      id: checksum
+      run: |
+        cd SwiftApp
+        CHECKSUM=$(shasum -a 256 "ClaudeNavigator-${{ steps.version.outputs.VERSION }}.zip" | awk '{print $1}')
+        echo "SHA256=${CHECKSUM}" >> $GITHUB_OUTPUT
+    
+    - name: Generate Release Notes
+      id: release_notes
+      run: |
+        cat << EOF > release_notes.md
+        # Claude Terminal Navigator v${{ steps.version.outputs.VERSION }}
+        
+        A standalone macOS menu bar app that helps you navigate between active Claude CLI sessions.
+        
+        ## 📦 Installation
+        
+        1. Download \`ClaudeNavigator-${{ steps.version.outputs.VERSION }}.zip\`
+        2. Unzip the file
+        3. Drag \`ClaudeNavigator.app\` to your Applications folder
+        4. Launch the app from Applications
+        5. (Optional) Enable "Launch at Startup" from the app menu
+        
+        ## ✨ Features
+        
+        - 🔍 Automatically detects all running Claude sessions
+        - 🚀 Jump to any session with a double-click
+        - 📊 Real-time CPU and memory monitoring
+        - 🌿 Git branch and status information
+        - ⏱️ Session duration tracking
+        - 🎨 Beautiful animations and visual feedback
+        - 🚫 No configuration needed - works out of the box!
+        
+        ## 🔒 Security
+        
+        \`\`\`
+        SHA256: ${{ steps.checksum.outputs.SHA256 }}
+        \`\`\`
+        
+        ## 📋 Requirements
+        
+        - macOS 11.0 or later
+        - Claude CLI installed
+        
+        ## 🆕 What's New
+        
+        See [CHANGELOG.md](https://github.com/GailenTech/claude-terminal-navigator/blob/main/CHANGELOG.md) for details.
+        EOF
+        
+    - name: Create Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: SwiftApp/ClaudeNavigator-${{ steps.version.outputs.VERSION }}.zip
+        body_path: release_notes.md
+        draft: false
+        prerelease: false
+        name: Claude Terminal Navigator v${{ steps.version.outputs.VERSION }}

@@ -1,0 +1,74 @@
+name: Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: macos-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Swift
+      uses: swift-actions/setup-swift@v2
+      with:
+        swift-version: "5.9"
+    
+    - name: Check Swift version
+      run: swift --version
+      
+    - name: Check Swift syntax
+      run: |
+        cd SwiftApp
+        swift build --dry-run
+    
+    - name: Build Debug
+      run: |
+        cd SwiftApp
+        swift build -c debug
+        
+    - name: Build Release
+      run: |
+        cd SwiftApp
+        swift build -c release
+    
+    - name: Verify build output
+      run: |
+        cd SwiftApp
+        test -f .build/release/ClaudeNavigator
+        echo "✅ Release binary exists"
+        
+    - name: Check Info.plist
+      run: |
+        cd SwiftApp
+        test -f Info.plist
+        /usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" Info.plist
+        /usr/libexec/PlistBuddy -c "Print :CFBundleName" Info.plist
+        echo "✅ Info.plist is valid"
+    
+    - name: Test App Bundle Creation
+      run: |
+        cd SwiftApp
+        mkdir -p "ClaudeNavigator.app/Contents/MacOS"
+        cp .build/release/ClaudeNavigator "ClaudeNavigator.app/Contents/MacOS/"
+        cp Info.plist "ClaudeNavigator.app/Contents/"
+        
+        # Verify bundle structure
+        test -f "ClaudeNavigator.app/Contents/MacOS/ClaudeNavigator"
+        test -f "ClaudeNavigator.app/Contents/Info.plist"
+        echo "✅ App bundle created successfully"
+        
+    - name: Security scan
+      run: |
+        cd SwiftApp
+        # Check for hardcoded secrets
+        if grep -r "password\|secret\|key\|token" ClaudeNavigator/*.swift | grep -v "// " | grep -i "="; then
+          echo "❌ Potential hardcoded secrets found!"
+          exit 1
+        else
+          echo "✅ No hardcoded secrets detected"
+        fi
