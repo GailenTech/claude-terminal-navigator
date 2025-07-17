@@ -21,13 +21,17 @@ A macOS menu bar app that helps you navigate between active Claude CLI sessions.
 ### Quick Menu
 Click the 🤖 icon to see all active sessions with CPU usage and basic info.
 
+![Quick Menu](docs/quick-menu.png)
+
 ### Detailed View
 Option+click the 🤖 icon for detailed session information including Git status and full paths.
 
+![Detailed View](docs/detailed-view.png)
+
 ### Navigation
-- **Double-click any session** to jump to that terminal tab
-- **Yellow dot** = active session (high CPU usage)
-- **Gray dot** = waiting session (idle)
+- **Click any session** to jump to that terminal tab
+- **🤖** = active session (high CPU usage)
+- **💤** = waiting session (idle)
 - **Git info** shows current branch and uncommitted changes
 
 ### Settings

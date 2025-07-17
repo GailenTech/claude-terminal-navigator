@@ -484,7 +484,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             }
             
             for session in sortedSessions {
-                let icon = session.isActive ? "🟢" : "🟡"
+                let icon = session.isActive ? "🤖" : "💤"
                 let title = "\(icon) \(session.dirName)"
                 
                 let sessionItem = NSMenuItem(title: title, 
