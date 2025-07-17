@@ -9,7 +9,7 @@
 
 <div align="center">
   <h3>A standalone macOS menu bar app that helps you navigate between active Claude CLI sessions</h3>
-  <p>🚀 Jump instantly to any Claude session • 📊 Real-time monitoring • 🎨 Beautiful native UI</p>
+  <p>🚀 Jump instantly to any Claude session • 📊 Real-time monitoring • 🎨 Clean native UI</p>
 </div>
 
 ## ✨ Features
@@ -18,7 +18,7 @@
 - **🚀 Instant navigation**: Jump to any session with a double-click
 - **📊 Real-time monitoring**: CPU usage, memory consumption, and session duration
 - **🌿 Git integration**: Shows current branch and repository status
-- **🎨 Beautiful animations**: Smooth transitions and visual feedback
+- **🎨 Smooth visual feedback**: Clean transitions and responsive UI
 - **🚫 Zero configuration**: Works out of the box, no scripts or dependencies needed
 - **🔄 Auto-refresh**: Updates every 5 seconds to keep information current
 - **⚡ Launch at startup**: Optional auto-launch when you start your Mac
@@ -97,7 +97,7 @@ The app uses native macOS APIs to:
 
 ### v1.0.1
 - 🏗️ Completely standalone - no shell script dependencies
-- 🎨 Improved animations with desynchronized timing
+- 🎨 Improved visual feedback and responsive UI
 - 🔧 Better CPU parsing for international locales
 - 🚫 Removed dangerous operations (kill button)
 - ⚡ Added "Launch at Startup" option
@@ -114,7 +114,7 @@ See [CHANGELOG.md](CHANGELOG.md) for full release history.
 | **UI experience** | Terminal-based menus | Native macOS interface |
 | **Error handling** | Manual troubleshooting | Built-in error recovery |
 | **Distribution** | Script dependencies | Single app bundle |
-| **Visual feedback** | Text-based status | Rich animations & icons |
+| **Visual feedback** | Text-based status | Clean UI & icons |
 
 ## 🔧 Development
 
