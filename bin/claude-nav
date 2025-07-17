@@ -1,0 +1,90 @@
+#!/bin/bash
+# claude-wrapper-advanced.sh - Wrapper avanzado para claude con registro de sesiones
+# Permite navegación automática a pestañas de terminal
+
+# Configuración
+CLAUDE_SESSIONS_DIR="${CLAUDE_NAV_DIR:-$HOME/.claude}/sessions"
+CLAUDE_ORIGINAL="/opt/homebrew/bin/claude"
+SESSION_FILE=""
+
+# Crear directorio de sesiones si no existe
+mkdir -p "$CLAUDE_SESSIONS_DIR"
+
+# Función para limpiar sesión al salir
+cleanup_session() {
+    if [ -n "$SESSION_FILE" ] && [ -f "$SESSION_FILE" ]; then
+        rm -f "$SESSION_FILE"
+    fi
+}
+
+# Función para detectar el tipo de terminal
+detect_terminal() {
+    if [ -n "$TERM_PROGRAM" ]; then
+        echo "$TERM_PROGRAM"
+    elif [ -n "$GHOSTTY" ] || pgrep -f "ghostty" > /dev/null 2>&1; then
+        echo "Ghostty"
+    else
+        echo "Unknown"
+    fi
+}
+
+# Función para establecer el título del terminal
+set_title() {
+    printf "\033]0;%s\007" "$1"
+}
+
+# Registrar trampa para limpieza
+trap cleanup_session EXIT INT TERM
+
+# Obtener información de la sesión
+PID=$$
+TTY=$(tty 2>/dev/null || echo "unknown")
+TERMINAL=$(detect_terminal)
+CWD=$(pwd)
+DIR_NAME="${PWD##*/}"
+PARENT_PID=$PPID
+START_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+# Información adicional según el terminal
+SESSION_ID=""
+WINDOW_TITLE=""
+
+if [ "$TERMINAL" = "Apple_Terminal" ]; then
+    # Terminal.app proporciona TERM_SESSION_ID
+    SESSION_ID="${TERM_SESSION_ID:-unknown}"
+    # Intentar obtener el título de la ventana
+    WINDOW_TITLE=$(osascript -e 'tell application "Terminal" to get name of front window' 2>/dev/null || echo "")
+elif [ "$TERMINAL" = "Ghostty" ]; then
+    # Ghostty puede tener variables diferentes
+    SESSION_ID="${GHOSTTY_SESSION_ID:-unknown}"
+fi
+
+# Establecer título del terminal
+set_title "$DIR_NAME — Claude"
+
+# Crear archivo de sesión
+SESSION_FILE="$CLAUDE_SESSIONS_DIR/${PID}.json"
+
+# Escribir información de sesión
+cat > "$SESSION_FILE" <<EOF
+{
+  "pid": "$PID",
+  "tty": "$TTY",
+  "terminal": "$TERMINAL",
+  "session_id": "$SESSION_ID",
+  "window_title": "$WINDOW_TITLE",
+  "start_time": "$START_TIME",
+  "working_dir": "$CWD",
+  "dir_name": "$DIR_NAME",
+  "parent_pid": "$PARENT_PID"
+}
+EOF
+
+# Limpiar sesiones muertas antes de ejecutar
+CLEANUP_SCRIPT="$(dirname "$0")/claude-cleanup"
+if [ -x "$CLEANUP_SCRIPT" ]; then
+    "$CLEANUP_SCRIPT" 2>/dev/null || true
+fi
+
+# Ejecutar el comando claude original con todos los argumentos
+exec "$CLAUDE_ORIGINAL" "$@"

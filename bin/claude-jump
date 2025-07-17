@@ -1,0 +1,243 @@
+#!/bin/bash
+# claude-jump-auto-fixed.sh - Navegación automática a pestañas de Claude (versión corregida)
+
+CLAUDE_SESSIONS_DIR="${CLAUDE_NAV_DIR:-$HOME/.claude}/sessions"
+
+# Función para limpiar sesiones muertas
+cleanup_sessions() {
+    CLEANUP_SCRIPT="$(dirname "$0")/claude-cleanup"
+    if [ -x "$CLEANUP_SCRIPT" ]; then
+        "$CLEANUP_SCRIPT" >/dev/null 2>&1
+    fi
+}
+
+# Función para obtener sesiones activas
+get_active_sessions() {
+    local sessions=()
+    
+    for session_file in "$CLAUDE_SESSIONS_DIR"/*.json; do
+        [ -e "$session_file" ] || continue
+        
+        # Leer el archivo JSON (bash puro, sin jq)
+        local content=$(cat "$session_file")
+        local pid=$(echo "$content" | grep -o '"pid": "[^"]*"' | cut -d'"' -f4)
+        local tty=$(echo "$content" | grep -o '"tty": "[^"]*"' | cut -d'"' -f4)
+        local terminal=$(echo "$content" | grep -o '"terminal": "[^"]*"' | cut -d'"' -f4)
+        local dir_name=$(echo "$content" | grep -o '"dir_name": "[^"]*"' | cut -d'"' -f4)
+        local working_dir=$(echo "$content" | grep -o '"working_dir": "[^"]*"' | cut -d'"' -f4)
+        
+        # Verificar que el proceso sigue vivo
+        if kill -0 "$pid" 2>/dev/null; then
+            sessions+=("$pid|$tty|$terminal|$dir_name|$working_dir")
+        fi
+    done
+    
+    printf '%s\n' "${sessions[@]}"
+}
+
+# Función para navegar a Terminal.app (versión corregida)
+jump_to_terminal_app() {
+    local target_tty="$1"
+    local target_dir="$2"
+    
+    # Primero activar Terminal.app
+    osascript -e 'tell application "Terminal" to activate' 2>/dev/null
+    sleep 0.2
+    
+    # AppleScript mejorado con mejor manejo de errores
+    osascript <<EOF 2>/dev/null
+on run
+    set targetTTY to "$target_tty"
+    set targetDir to "$target_dir"
+    
+    try
+        tell application "Terminal"
+            set foundTab to false
+            
+            -- Buscar en todas las ventanas
+            repeat with w from 1 to count of windows
+                try
+                    -- Obtener número de pestañas de forma segura
+                    set tabCount to count of tabs of window w
+                    
+                    repeat with t from 1 to tabCount
+                        try
+                            -- Verificar TTY
+                            if (tty of tab t of window w) is targetTTY then
+                                -- Activar ventana y pestaña
+                                set frontmost of window w to true
+                                set selected tab of window w to tab t of window w
+                                set foundTab to true
+                                exit repeat
+                            end if
+                        on error
+                            -- Continuar si hay error con una pestaña específica
+                        end try
+                    end repeat
+                on error
+                    -- Continuar si hay error con una ventana
+                end try
+                
+                if foundTab then exit repeat
+            end repeat
+            
+            if not foundTab then
+                -- Fallback: buscar por título de ventana
+                repeat with w from 1 to count of windows
+                    try
+                        set windowName to name of window w
+                        if windowName contains targetDir then
+                            set frontmost of window w to true
+                            set foundTab to true
+                            exit repeat
+                        end if
+                    end try
+                end repeat
+            end if
+            
+            return foundTab
+        end tell
+    on error errMsg
+        return false
+    end try
+end run
+EOF
+    
+    local result=$?
+    
+    if [ $result -eq 0 ]; then
+        # Notificación de éxito
+        osascript -e "display notification \"Saltado a $target_dir\" with title \"Claude Jump\""
+    else
+        echo "Error: No se pudo navegar a la pestaña. Posibles causas:"
+        echo "1. Permisos de accesibilidad no otorgados"
+        echo "2. La pestaña se cerró"
+        echo ""
+        echo "Alternativa: Crear nueva pestaña en el directorio"
+        read -p "¿Crear nueva pestaña? (s/n): " create_new
+        
+        if [[ "$create_new" =~ ^[sS]$ ]]; then
+            osascript -e "tell application \"Terminal\" to do script \"cd '$working_dir' && echo 'Sesión Claude restaurada'\""
+        fi
+    fi
+}
+
+# Función alternativa usando el título de la ventana
+jump_to_terminal_by_title() {
+    local target_dir="$1"
+    local working_dir="$2"
+    
+    osascript <<EOF 2>/dev/null
+tell application "Terminal"
+    activate
+    set found to false
+    
+    repeat with w from 1 to count of windows
+        try
+            if name of window w contains "$target_dir" then
+                set frontmost of window w to true
+                set found to true
+                exit repeat
+            end if
+        end try
+    end repeat
+    
+    if not found then
+        -- Crear nueva pestaña
+        do script "cd '$working_dir' && echo 'Nueva sesión Claude en $target_dir'"
+    end if
+end tell
+EOF
+}
+
+# Función para navegar a Ghostty (limitado)
+jump_to_ghostty() {
+    local target_dir="$1"
+    local working_dir="$2"
+    
+    # Activar Ghostty
+    osascript -e 'tell application "Ghostty" to activate' 2>/dev/null
+    
+    # Mostrar información
+    echo "Ghostty activado"
+    echo "Directorio: $target_dir"
+    echo "Ruta: $working_dir"
+    echo ""
+    echo "Usa Cmd+1, Cmd+2, etc. para navegar entre ventanas"
+    
+    # Ofrecer crear nueva ventana
+    read -p "¿Crear nueva ventana en Ghostty? (s/n): " create_new
+    
+    if [[ "$create_new" =~ ^[sS]$ ]]; then
+        # Intentar abrir nueva ventana en Ghostty (puede no funcionar)
+        osascript -e "tell application \"System Events\" to keystroke \"n\" using command down" 2>/dev/null
+        sleep 0.5
+        # Enviar comando cd
+        osascript -e "tell application \"System Events\" to keystroke \"cd '$working_dir'\"" 2>/dev/null
+        osascript -e "tell application \"System Events\" to key code 36" 2>/dev/null # Enter
+    fi
+}
+
+# Main
+main() {
+    # Limpiar sesiones muertas primero
+    cleanup_sessions
+    
+    # Obtener sesiones activas
+    local sessions=($(get_active_sessions))
+    
+    if [ ${#sessions[@]} -eq 0 ]; then
+        echo "No hay sesiones Claude activas"
+        echo ""
+        echo "Para usar este sistema:"
+        echo "1. Inicia claude con: claude-track"
+        echo "2. Luego usa: clj"
+        exit 1
+    fi
+    
+    # Si solo hay una sesión, ir directamente
+    if [ ${#sessions[@]} -eq 1 ]; then
+        IFS='|' read -r pid tty terminal dir_name working_dir <<< "${sessions[0]}"
+        
+        echo "Navegando a única sesión: $dir_name"
+        
+        if [ "$terminal" = "Apple_Terminal" ]; then
+            jump_to_terminal_app "$tty" "$dir_name"
+        else
+            jump_to_ghostty "$dir_name" "$working_dir"
+        fi
+        exit 0
+    fi
+    
+    # Si hay múltiples sesiones, mostrar menú
+    echo "Sesiones Claude activas:"
+    echo "========================"
+    
+    local i=1
+    for session in "${sessions[@]}"; do
+        IFS='|' read -r pid tty terminal dir_name working_dir <<< "$session"
+        printf "%d) %s (%s) - PID: %s\n" "$i" "$dir_name" "$terminal" "$pid"
+        ((i++))
+    done
+    
+    echo ""
+    read -p "Selecciona sesión (1-${#sessions[@]}): " choice
+    
+    if [[ "$choice" =~ ^[0-9]+$ ]] && [ "$choice" -ge 1 ] && [ "$choice" -le ${#sessions[@]} ]; then
+        local selected="${sessions[$((choice-1))]}"
+        IFS='|' read -r pid tty terminal dir_name working_dir <<< "$selected"
+        
+        if [ "$terminal" = "Apple_Terminal" ]; then
+            # Intentar primero por TTY, luego por título
+            jump_to_terminal_app "$tty" "$dir_name" || jump_to_terminal_by_title "$dir_name" "$working_dir"
+        else
+            jump_to_ghostty "$dir_name" "$working_dir"
+        fi
+    else
+        echo "Selección inválida"
+        exit 1
+    fi
+}
+
+# Ejecutar
+main

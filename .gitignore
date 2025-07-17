@@ -1,0 +1,39 @@
+# Claude Terminal Navigator - Git Ignore File
+
+# Session files
+.claude/
+*.session
+*.tmp
+
+# Backup files
+*.backup
+*.backup.*
+*.bak
+
+# Local configuration
+.env.local
+config.local
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editor directories and files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+logs/
+
+# Test coverage
+coverage/
+.coverage
+
+# Temporary files
+tmp/
+temp/

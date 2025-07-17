@@ -1,0 +1,46 @@
+#!/bin/bash
+# claude-cleanup-sessions.sh - Limpia sesiones muertas de Claude
+
+CLAUDE_SESSIONS_DIR="${CLAUDE_NAV_DIR:-$HOME/.claude}/sessions"
+
+# Crear directorio si no existe
+mkdir -p "$CLAUDE_SESSIONS_DIR"
+
+# Función para verificar si un proceso está vivo
+is_process_alive() {
+    local pid=$1
+    kill -0 "$pid" 2>/dev/null
+}
+
+# Limpiar sesiones muertas
+cleanup_dead_sessions() {
+    local cleaned=0
+    
+    for session_file in "$CLAUDE_SESSIONS_DIR"/*.json; do
+        # Saltar si no hay archivos
+        [ -e "$session_file" ] || continue
+        
+        # Extraer PID del nombre del archivo
+        local filename=$(basename "$session_file")
+        local pid="${filename%.json}"
+        
+        # Verificar si el proceso está vivo
+        if ! is_process_alive "$pid"; then
+            # Verificar también que sea un proceso claude real
+            if ! ps -p "$pid" -o command= 2>/dev/null | grep -q "claude"; then
+                rm -f "$session_file"
+                ((cleaned++))
+            fi
+        fi
+    done
+    
+    echo "$cleaned"
+}
+
+# Si se ejecuta directamente
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    cleaned=$(cleanup_dead_sessions)
+    if [ "$cleaned" -gt 0 ]; then
+        echo "Limpiadas $cleaned sesiones muertas"
+    fi
+fi

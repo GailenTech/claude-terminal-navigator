@@ -1,0 +1,93 @@
+#!/bin/bash
+# check-terminal-permissions.sh - Verificar y solicitar permisos de Terminal
+
+echo "🔍 Verificando permisos de Terminal.app..."
+echo "========================================"
+echo ""
+
+# Verificar si Terminal tiene permisos de accesibilidad
+check_accessibility() {
+    osascript <<EOF 2>&1
+tell application "System Events"
+    try
+        tell process "Terminal"
+            return "OK"
+        end tell
+    on error
+        return "NO_PERMISSION"
+    end try
+end tell
+EOF
+}
+
+# Verificar si podemos controlar Terminal
+check_terminal_control() {
+    osascript <<EOF 2>&1
+tell application "Terminal"
+    try
+        count of windows
+        return "OK"
+    on error errMsg
+        return "ERROR: " & errMsg
+    end try
+end tell
+EOF
+}
+
+# Test 1: Accesibilidad
+echo "1️⃣ Verificando permisos de accesibilidad..."
+access_result=$(check_accessibility)
+if [[ "$access_result" == *"OK"* ]]; then
+    echo "✅ Permisos de accesibilidad: OTORGADOS"
+else
+    echo "❌ Permisos de accesibilidad: NO OTORGADOS"
+    echo ""
+    echo "Para otorgar permisos:"
+    echo "1. Ve a: Configuración del Sistema > Privacidad y Seguridad > Accesibilidad"
+    echo "2. Desbloquea con tu contraseña (candado inferior)"
+    echo "3. Marca la casilla de Terminal"
+    echo ""
+fi
+
+# Test 2: Control de Terminal
+echo ""
+echo "2️⃣ Verificando control de Terminal.app..."
+terminal_result=$(check_terminal_control)
+if [[ "$terminal_result" == *"OK"* ]] || [[ "$terminal_result" =~ ^[0-9]+$ ]]; then
+    echo "✅ Control de Terminal: FUNCIONA"
+    echo "   Ventanas detectadas: $terminal_result"
+else
+    echo "❌ Control de Terminal: ERROR"
+    echo "   Mensaje: $terminal_result"
+fi
+
+# Test 3: Eventos del sistema
+echo ""
+echo "3️⃣ Verificando System Events..."
+sys_events=$(osascript -e 'tell application "System Events" to return "OK"' 2>&1)
+if [[ "$sys_events" == "OK" ]]; then
+    echo "✅ System Events: FUNCIONA"
+else
+    echo "❌ System Events: ERROR"
+fi
+
+# Abrir panel de permisos si es necesario
+if [[ "$access_result" != *"OK"* ]]; then
+    echo ""
+    echo "🔧 ¿Quieres abrir el panel de permisos? (s/n)"
+    read -n 1 -r reply
+    echo ""
+    
+    if [[ $reply =~ ^[Ss]$ ]]; then
+        open "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility"
+        echo ""
+        echo "📝 Pasos:"
+        echo "1. Desbloquea con el candado inferior"
+        echo "2. Busca y marca 'Terminal'"
+        echo "3. Si no aparece, arrástralo desde /System/Applications/Utilities/Terminal.app"
+        echo "4. Cierra y vuelve a abrir Terminal"
+    fi
+fi
+
+echo ""
+echo "✨ Verificación completada"
