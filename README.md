@@ -1,190 +1,174 @@
-# Claude Terminal Navigator 🚀
-
-Navegación automática e inteligente entre pestañas de terminal donde tienes sesiones activas de Claude.
-
-## ✨ Características
-
-- **Navegación automática**: Salta directamente a la pestaña correcta donde está tu sesión Claude
-- **Widget de barra de menú**: Monitorea sesiones desde la barra superior de macOS
-- **Monitoreo en tiempo real**: CPU, memoria y estado de cada sesión
-- **Detección inteligente**: Identifica sesiones por TTY en Terminal.app
-- **Multi-terminal**: Soporte para Terminal.app (completo) y Ghostty (parcial)
-- **Gestión de sesiones**: Rastrea y limpia automáticamente sesiones muertas
-- **Sin configuración**: Funciona inmediatamente después de la instalación
-
-## 🎯 ¿Cómo funciona?
-
-1. **Al iniciar Claude**: El wrapper registra la sesión (TTY, PID, directorio)
-2. **Al ejecutar jump**: Busca la sesión y navega automáticamente a la pestaña correcta
-3. **Al cerrar Claude**: La sesión se limpia automáticamente
-
-## 📦 Instalación
-
-### Instalación rápida
-
-```bash
-cd /Users/jorge/claude-terminal-navigator
-./install.sh
-```
-
-### Widget de barra de menú (Opcional)
-
-#### Opción 1: xbar (Simple)
-Para instalar el widget basado en xbar:
-
-```bash
-./install-widget.sh
-```
-
-#### Opción 2: App Nativa Swift (Recomendado)
-Para usar la aplicación nativa de macOS:
-
-```bash
-cd SwiftApp
-./build.sh
-open ClaudeNavigator.app
-```
-
-### Instalación manual
-
-1. **Añade los aliases a tu shell** (`~/.zshrc` o `~/.bashrc`):
-
-```bash
 # Claude Terminal Navigator
-export PATH="/Users/jorge/claude-terminal-navigator/bin:$PATH"
-alias claude='claude-nav'
-alias clj='claude-jump'
-```
 
-2. **Recarga tu configuración**:
+<div align="center">
+  <img src="https://img.shields.io/badge/macOS-11.0+-blue.svg" alt="macOS 11.0+">
+  <img src="https://img.shields.io/badge/Swift-5.9+-orange.svg" alt="Swift 5.9+">
+  <img src="https://img.shields.io/github/v/release/yourusername/claude-terminal-navigator" alt="Release">
+  <img src="https://img.shields.io/github/license/yourusername/claude-terminal-navigator" alt="License">
+</div>
 
-```bash
-source ~/.zshrc  # o ~/.bashrc
-```
+<div align="center">
+  <h3>A standalone macOS menu bar app that helps you navigate between active Claude CLI sessions</h3>
+  <p>🚀 Jump instantly to any Claude session • 📊 Real-time monitoring • 🎨 Beautiful native UI</p>
+</div>
 
-3. **Verifica permisos** (solo la primera vez):
+## ✨ Features
 
-```bash
-check-permissions
-```
+- **🔍 Auto-discovery**: Automatically detects all running Claude sessions without any setup
+- **🚀 Instant navigation**: Jump to any session with a double-click
+- **📊 Real-time monitoring**: CPU usage, memory consumption, and session duration
+- **🌿 Git integration**: Shows current branch and repository status
+- **🎨 Beautiful animations**: Smooth transitions and visual feedback
+- **🚫 Zero configuration**: Works out of the box, no scripts or dependencies needed
+- **🔄 Auto-refresh**: Updates every 5 seconds to keep information current
+- **⚡ Launch at startup**: Optional auto-launch when you start your Mac
 
-## 🚀 Uso
+## 📦 Installation
 
-### Uso básico
+### Download from Releases
 
-1. **Inicia Claude con tracking**:
-```bash
-claude  # Ahora registra la sesión automáticamente
-```
+1. Go to [Releases](https://github.com/yourusername/claude-terminal-navigator/releases/latest)
+2. Download `ClaudeNavigator-latest.zip`
+3. Unzip the file
+4. Drag `ClaudeNavigator.app` to your Applications folder
+5. Launch the app from Applications
+6. (Optional) Right-click the menu bar icon and enable "Launch at Startup"
 
-2. **Salta a cualquier sesión Claude**:
-```bash
-clj  # Navegación automática
-```
+### Build from Source
 
-### Comandos disponibles
-
-- `claude` - Ejecuta Claude con registro de sesión
-- `clj` - Salta automáticamente a pestañas Claude
-- `check-permissions` - Verifica permisos de Terminal
-- `claude-cleanup` - Limpia manualmente sesiones muertas
-
-### Widget de barra de menú
-
-El widget muestra:
-- 🟢 Sesiones activas (CPU > 5%)
-- 🟡 Sesiones en espera
-- 📊 Uso de CPU y memoria en tiempo real
-- ⏱️ Duración de cada sesión
-- Click para navegar instantáneamente
-
-## 🖥️ Soporte por Terminal
-
-### Terminal.app ✅ (Soporte completo)
-- Navegación automática por TTY
-- Identifica exactamente la pestaña correcta
-- Activa ventana y pestaña automáticamente
-
-### Ghostty ⚠️ (Soporte parcial)
-- Activa la aplicación
-- Muestra información de la sesión
-- Requiere navegación manual con `Cmd+1`, `Cmd+2`, etc.
-
-### iTerm2 🔜 (Próximamente)
-- En desarrollo
-
-## 🔧 Configuración avanzada
-
-### Cambiar directorio de sesiones
+Requirements:
+- macOS 11.0 or later
+- Swift 5.9+ or Xcode 13+
 
 ```bash
-export CLAUDE_NAV_DIR="$HOME/.config/claude-navigator"
+git clone https://github.com/yourusername/claude-terminal-navigator.git
+cd claude-terminal-navigator
+swift build -c release
+
+# Create app bundle
+./build.sh
+
+# Copy to Applications
+cp -r ClaudeNavigator.app /Applications/
 ```
 
-### Desactivar limpieza automática
+## 🎯 How to Use
 
-Edita `claude-nav` y comenta la línea de limpieza.
+1. **Launch the app**: The 🤖 icon will appear in your menu bar
+2. **View sessions**: Click the icon to see all active Claude sessions
+3. **Navigate**: Double-click any session to jump to that terminal tab
+4. **Detailed view**: Click without Option key to see detailed session information
+5. **Quick menu**: Option+click for a compact session list
 
-## 🐛 Solución de problemas
+### Session Information
 
-### Error "Terminal ha detectado un error (-10000)"
+Each session shows:
+- **Status indicator**: 🟢 Active (high CPU) or ⚪ Waiting (idle)
+- **CPU usage**: Real-time processor utilization
+- **Memory**: RAM consumption in MB
+- **Duration**: How long the session has been running
+- **Git branch**: Current repository and branch name
+- **Working directory**: Current folder path
 
-Este es un problema de permisos. Ejecuta:
+## 🛠️ Technical Details
+
+### How It Works
+
+The app uses native macOS APIs to:
+- Discover Claude processes using `ps` command
+- Monitor CPU and memory via system calls
+- Navigate between terminal tabs using AppleScript
+- Extract git information from working directories
+
+### Terminal Support
+
+- **Terminal.app**: Full support with direct tab navigation
+- **Ghostty**: Partial support (activates app, manual tab switching required)
+- **iTerm2**: Planned for future releases
+
+### Privacy & Security
+
+- **No network access**: All processing happens locally
+- **No data collection**: No analytics or telemetry
+- **Minimal permissions**: Only requires accessibility permissions for terminal navigation
+- **Open source**: Full source code available for inspection
+
+## 🚀 What's New
+
+### v1.0.1
+- 🏗️ Completely standalone - no shell script dependencies
+- 🎨 Improved animations with desynchronized timing
+- 🔧 Better CPU parsing for international locales
+- 🚫 Removed dangerous operations (kill button)
+- ⚡ Added "Launch at Startup" option
+- 🧹 Cleaned up menu items and UI
+
+See [CHANGELOG.md](CHANGELOG.md) for full release history.
+
+## 🆚 Why Choose This Over Shell Scripts?
+
+| Feature | Shell Scripts | Native App |
+|---------|---------------|------------|
+| **Setup complexity** | Complex installation, PATH modification | Drag & drop installation |
+| **Performance** | Process spawning overhead | Native Swift performance |
+| **UI experience** | Terminal-based menus | Native macOS interface |
+| **Error handling** | Manual troubleshooting | Built-in error recovery |
+| **Distribution** | Script dependencies | Single app bundle |
+| **Visual feedback** | Text-based status | Rich animations & icons |
+
+## 🔧 Development
+
+### Project Structure
+```
+├── ClaudeNavigator/           # Swift source code
+│   ├── ClaudeNavigatorApp.swift    # Main app & UI
+│   ├── ClaudeSessionMonitor.swift  # Session discovery & monitoring
+│   └── Info.plist                  # App configuration
+├── Package.swift              # Swift Package Manager
+├── build.sh                   # Build script
+└── old_shell_wrapper_version/ # Legacy shell scripts (archived)
+```
+
+### Building
 
 ```bash
-check-permissions
+# Debug build
+swift build
+
+# Release build
+swift build -c release
+
+# Create app bundle
+./build.sh
+
+# Run from source
+swift run
 ```
 
-Y sigue las instrucciones para otorgar permisos de accesibilidad a Terminal.
+### Debugging
 
-### No encuentra las pestañas
-
-1. Asegúrate de estar usando el wrapper (`claude`, no el comando original)
-2. Verifica que hay sesiones activas: `ls ~/.claude/sessions/`
-3. Ejecuta limpieza manual: `claude-cleanup`
-
-### Sesión no se registra
-
-Verifica que estás usando el alias correcto:
+Run from terminal to see console output:
 ```bash
-which claude  # Debe mostrar claude-nav
+./ClaudeNavigator.app/Contents/MacOS/ClaudeNavigator
 ```
 
-## 📂 Estructura del proyecto
+## 📄 License
 
-```
-claude-terminal-navigator/
-├── bin/
-│   ├── claude-nav          # Wrapper que registra sesiones
-│   ├── claude-jump         # Navegador automático
-│   ├── claude-cleanup      # Limpiador de sesiones
-│   └── check-permissions   # Verificador de permisos
-├── docs/
-│   ├── DIARY.md           # Diario de desarrollo
-│   └── TROUBLESHOOTING.md  # Guía detallada de problemas
-├── xbar-plugin/
-│   └── claude-monitor.5s.sh # Plugin para widget de barra de menú
-├── config/
-│   └── example.conf        # Configuración de ejemplo
-├── install.sh              # Instalador automático
-├── install-widget.sh       # Instalador del widget
-├── DOCS.md                # Índice de documentación
-├── CLAUDE.md              # Guía para Claude Code
-└── README.md              # Este archivo
-```
+MIT License - see [LICENSE](LICENSE) file for details.
 
-## 🤝 Contribuir
+## 🤝 Contributing
 
-¿Tienes ideas para mejorar? ¡Bienvenidas!
+Contributions welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
-1. Reporta bugs o sugiere mejoras
-2. Añade soporte para tu terminal favorito
-3. Mejora la documentación
+## 🆘 Support
 
-## 📜 Licencia
+- 📚 Check [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) for common issues
+- 🐛 [Report bugs](https://github.com/yourusername/claude-terminal-navigator/issues/new?template=bug_report.md)
+- 💡 [Request features](https://github.com/yourusername/claude-terminal-navigator/issues/new?template=feature_request.md)
+- 💬 [Start a discussion](https://github.com/yourusername/claude-terminal-navigator/discussions)
 
-MIT - Úsalo como quieras
+---
 
-## 🙏 Créditos
-
-Creado con Claude 🤖 para mejorar la experiencia de usar Claude
+<div align="center">
+  Made with ❤️ for the Claude CLI community
+</div>

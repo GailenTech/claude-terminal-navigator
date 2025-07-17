@@ -22,29 +22,21 @@ jobs:
       run: swift --version
       
     - name: Check Swift syntax
-      run: |
-        cd SwiftApp
-        swift package describe
+      run: swift package describe
     
     - name: Build Debug
-      run: |
-        cd SwiftApp
-        swift build -c debug
+      run: swift build -c debug
         
     - name: Build Release
-      run: |
-        cd SwiftApp
-        swift build -c release
+      run: swift build -c release
     
     - name: Verify build output
       run: |
-        cd SwiftApp
         test -f .build/release/ClaudeNavigator
         echo "✅ Release binary exists"
         
     - name: Check Info.plist
       run: |
-        cd SwiftApp
         test -f ClaudeNavigator/Info.plist
         /usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" ClaudeNavigator/Info.plist
         /usr/libexec/PlistBuddy -c "Print :CFBundleName" ClaudeNavigator/Info.plist
@@ -52,7 +44,6 @@ jobs:
     
     - name: Test App Bundle Creation
       run: |
-        cd SwiftApp
         mkdir -p "ClaudeNavigator.app/Contents/MacOS"
         cp .build/release/ClaudeNavigator "ClaudeNavigator.app/Contents/MacOS/"
         cp ClaudeNavigator/Info.plist "ClaudeNavigator.app/Contents/"
@@ -64,7 +55,6 @@ jobs:
         
     - name: Security scan
       run: |
-        cd SwiftApp
         # Check for hardcoded secrets
         if grep -r "password\|secret\|key\|token" ClaudeNavigator/*.swift | grep -v "// " | grep -i "="; then
           echo "❌ Potential hardcoded secrets found!"

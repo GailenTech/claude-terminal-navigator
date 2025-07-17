@@ -36,12 +36,10 @@ jobs:
     
     - name: Build App
       run: |
-        cd SwiftApp
         swift build -c release
         
     - name: Create App Bundle
       run: |
-        cd SwiftApp
         mkdir -p "ClaudeNavigator.app/Contents/MacOS"
         mkdir -p "ClaudeNavigator.app/Contents/Resources"
         cp .build/release/ClaudeNavigator "ClaudeNavigator.app/Contents/MacOS/"
@@ -62,14 +60,12 @@ jobs:
         
     - name: Create ZIP
       run: |
-        cd SwiftApp
         zip -r "ClaudeNavigator-${{ steps.version.outputs.VERSION }}.zip" ClaudeNavigator.app
         echo "Created ClaudeNavigator-${{ steps.version.outputs.VERSION }}.zip"
         
     - name: Calculate Checksum
       id: checksum
       run: |
-        cd SwiftApp
         CHECKSUM=$(shasum -a 256 "ClaudeNavigator-${{ steps.version.outputs.VERSION }}.zip" | awk '{print $1}')
         echo "SHA256=${CHECKSUM}" >> $GITHUB_OUTPUT
         echo "SHA256 checksum: ${CHECKSUM}"
@@ -78,7 +74,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: ClaudeNavigator-${{ steps.version.outputs.VERSION }}
-        path: SwiftApp/ClaudeNavigator-${{ steps.version.outputs.VERSION }}.zip
+        path: ClaudeNavigator-${{ steps.version.outputs.VERSION }}.zip
         retention-days: 30
 
   release:
@@ -102,12 +98,10 @@ jobs:
         
     - name: Build App for Release
       run: |
-        cd SwiftApp
         swift build -c release
         
     - name: Create App Bundle
       run: |
-        cd SwiftApp
         mkdir -p "ClaudeNavigator.app/Contents/MacOS"
         mkdir -p "ClaudeNavigator.app/Contents/Resources"
         cp .build/release/ClaudeNavigator "ClaudeNavigator.app/Contents/MacOS/"
@@ -119,13 +113,11 @@ jobs:
         
     - name: Create ZIP
       run: |
-        cd SwiftApp
         zip -r "ClaudeNavigator-${{ steps.version.outputs.VERSION }}.zip" ClaudeNavigator.app
         
     - name: Calculate Checksum
       id: checksum
       run: |
-        cd SwiftApp
         CHECKSUM=$(shasum -a 256 "ClaudeNavigator-${{ steps.version.outputs.VERSION }}.zip" | awk '{print $1}')
         echo "SHA256=${CHECKSUM}" >> $GITHUB_OUTPUT
     
@@ -174,7 +166,7 @@ jobs:
     - name: Create Release
       uses: softprops/action-gh-release@v2
       with:
-        files: SwiftApp/ClaudeNavigator-${{ steps.version.outputs.VERSION }}.zip
+        files: ClaudeNavigator-${{ steps.version.outputs.VERSION }}.zip
         body_path: release_notes.md
         draft: false
         prerelease: false
