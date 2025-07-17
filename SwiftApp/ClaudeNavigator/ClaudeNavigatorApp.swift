@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import QuartzCore
 
 @main
 struct ClaudeNavigatorApp: App {
@@ -24,6 +25,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var menu: NSMenu!
     var timer: Timer?
     var sessionMonitor: ClaudeSessionMonitor!
+    var detailWindow: NSWindow?
     
     // Cache for performance
     private var lastActiveCount = 0
@@ -46,12 +48,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Build initial menu
         buildMenu()
         
-        // Assign menu to status item
-        statusItem.menu = menu
-        
         if let button = statusItem.button {
             // Set initial icon
             button.title = "🤖"
+            button.action = #selector(statusItemClicked)
+            button.target = self
+            button.sendAction(on: [.leftMouseUp, .rightMouseUp])
             print("✅ Button configured with emoji title: \(button.title)")
         } else {
             print("❌ Failed to create status button!")
@@ -67,6 +69,284 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         refresh()
         
         print("✅ ClaudeNavigator fully initialized!")
+    }
+    
+    @objc func statusItemClicked() {
+        let event = NSApp.currentEvent
+        
+        // Check for Option key (NSEvent.ModifierFlags.option) - inverted behavior
+        if event?.modifierFlags.contains(.option) == true {
+            showMenu()
+        } else {
+            showDetailedView()
+        }
+    }
+    
+    func showMenu() {
+        if let button = statusItem.button {
+            statusItem.menu = menu
+            button.performClick(nil)
+            statusItem.menu = nil
+        }
+    }
+    
+    func showDetailedView() {
+        print("🔍 Showing detailed view...")
+        
+        Task {
+            do {
+                let sessions = try await sessionMonitor.getActiveSessions()
+                await MainActor.run {
+                    self.createDetailedWindow(with: sessions)
+                }
+            } catch {
+                print("Error getting sessions for detailed view: \(error)")
+            }
+        }
+    }
+    
+    func createDetailedWindow(with sessions: [ClaudeSession]) {
+        // Always create a fresh window to avoid stale state
+        detailWindow?.close()
+        detailWindow = nil
+        
+        // Create window
+        let windowRect = NSRect(x: 0, y: 0, width: 600, height: 400)
+        detailWindow = NSWindow(
+            contentRect: windowRect,
+            styleMask: [.titled, .closable, .resizable],
+            backing: .buffered,
+            defer: false
+        )
+        
+        detailWindow?.title = "Claude Sessions - Detailed View"
+        detailWindow?.center()
+        detailWindow?.isReleasedWhenClosed = false
+        
+        // Create content view
+        let contentView = createDetailedContentView(with: sessions)
+        detailWindow?.contentView = contentView
+        
+        // Show window
+        detailWindow?.makeKeyAndOrderFront(nil)
+        detailWindow?.orderFrontRegardless()
+    }
+    
+    func createDetailedContentView(with sessions: [ClaudeSession]) -> NSView {
+        let contentView = NSView()
+        
+        // Create scroll view for sessions
+        let scrollView = NSScrollView()
+        scrollView.hasVerticalScroller = true
+        scrollView.hasHorizontalScroller = false
+        scrollView.autohidesScrollers = true
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(scrollView)
+        
+        // Create document view
+        let documentView = NSView()
+        documentView.translatesAutoresizingMaskIntoConstraints = false
+        
+        var yPosition: CGFloat = 0
+        let sessionHeight: CGFloat = 100
+        let margin: CGFloat = 10
+        
+        // Sort sessions: active first (newest first), then waiting (newest first)
+        let sortedSessions = sessions.sorted { session1, session2 in
+            if session1.isActive != session2.isActive {
+                return session1.isActive && !session2.isActive
+            }
+            // Within same activity state, sort by start time (newest first)
+            return session1.startTime > session2.startTime
+        }
+        
+        for session in sortedSessions {
+            let sessionView = createSessionView(session: session)
+            sessionView.translatesAutoresizingMaskIntoConstraints = false
+            documentView.addSubview(sessionView)
+            
+            // Position session view
+            NSLayoutConstraint.activate([
+                sessionView.topAnchor.constraint(equalTo: documentView.topAnchor, constant: yPosition),
+                sessionView.leadingAnchor.constraint(equalTo: documentView.leadingAnchor, constant: margin),
+                sessionView.trailingAnchor.constraint(equalTo: documentView.trailingAnchor, constant: -margin),
+                sessionView.heightAnchor.constraint(equalToConstant: sessionHeight)
+            ])
+            
+            yPosition += sessionHeight + margin
+        }
+        
+        // Set document view size
+        documentView.widthAnchor.constraint(greaterThanOrEqualToConstant: 580).isActive = true
+        documentView.heightAnchor.constraint(equalToConstant: max(yPosition, 300)).isActive = true
+        
+        scrollView.documentView = documentView
+        
+        // Force scroll to top after layout is complete
+        DispatchQueue.main.async {
+            scrollView.documentView?.scroll(NSPoint(x: 0, y: 0))
+        }
+        
+        // Layout constraints
+        NSLayoutConstraint.activate([
+            scrollView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
+            scrollView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
+            scrollView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
+            scrollView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10)
+        ])
+        
+        return contentView
+    }
+    
+    func createSessionView(session: ClaudeSession) -> NSView {
+        let sessionView = NSView()
+        
+        // Background
+        sessionView.wantsLayer = true
+        sessionView.layer?.backgroundColor = NSColor.controlBackgroundColor.cgColor
+        sessionView.layer?.cornerRadius = 8
+        sessionView.layer?.borderWidth = 1
+        sessionView.layer?.borderColor = NSColor.separatorColor.cgColor
+        
+        // Status indicator with better icons
+        let statusIcon = NSTextField(labelWithString: session.isActive ? "🤖" : "💤")
+        statusIcon.font = NSFont.systemFont(ofSize: 14)
+        statusIcon.translatesAutoresizingMaskIntoConstraints = false
+        sessionView.addSubview(statusIcon)
+        
+        // Add color transition animation for active sessions
+        if session.isActive {
+            statusIcon.wantsLayer = true
+            
+            // Create a breathing/pulsing effect with background color
+            let colorAnimation = CABasicAnimation(keyPath: "backgroundColor")
+            colorAnimation.fromValue = NSColor.clear.cgColor
+            colorAnimation.toValue = NSColor.systemRed.withAlphaComponent(0.7).cgColor
+            colorAnimation.duration = 1.5
+            colorAnimation.repeatCount = .infinity
+            colorAnimation.autoreverses = true
+            colorAnimation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+            
+            // Add random delay to desynchronize animations
+            let randomDelay = Double.random(in: 0...1.0)
+            colorAnimation.beginTime = CACurrentMediaTime() + randomDelay
+            
+            statusIcon.layer?.add(colorAnimation, forKey: "colorPulse")
+        }
+        
+        // Session title
+        let titleLabel = NSTextField(labelWithString: session.dirName)
+        titleLabel.font = NSFont.boldSystemFont(ofSize: 14)
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        sessionView.addSubview(titleLabel)
+        
+        // PID and CPU info
+        let cpuText = String(format: "PID: %@ | CPU: %.1f%% | Memory: %.1f MB", 
+                           session.pid, 
+                           session.cachedCPU ?? 0.0, 
+                           session.cachedMemory ?? 0.0)
+        let cpuLabel = NSTextField(labelWithString: cpuText)
+        cpuLabel.font = NSFont.systemFont(ofSize: 11)
+        cpuLabel.textColor = NSColor.secondaryLabelColor
+        cpuLabel.translatesAutoresizingMaskIntoConstraints = false
+        sessionView.addSubview(cpuLabel)
+        
+        // Git information
+        let gitText = formatGitInfo(branch: session.gitBranch, status: session.gitStatus)
+        let gitLabel = NSTextField(labelWithString: gitText)
+        gitLabel.font = NSFont.systemFont(ofSize: 11)
+        gitLabel.textColor = NSColor.secondaryLabelColor
+        gitLabel.translatesAutoresizingMaskIntoConstraints = false
+        sessionView.addSubview(gitLabel)
+        
+        // Duration
+        let durationText = "Duration: \(session.formattedDuration)"
+        let durationLabel = NSTextField(labelWithString: durationText)
+        durationLabel.font = NSFont.systemFont(ofSize: 11)
+        durationLabel.textColor = NSColor.secondaryLabelColor
+        durationLabel.translatesAutoresizingMaskIntoConstraints = false
+        sessionView.addSubview(durationLabel)
+        
+        // Working directory
+        let pathLabel = NSTextField(labelWithString: session.workingDir)
+        pathLabel.font = NSFont.systemFont(ofSize: 10)
+        pathLabel.textColor = NSColor.tertiaryLabelColor
+        pathLabel.translatesAutoresizingMaskIntoConstraints = false
+        sessionView.addSubview(pathLabel)
+        
+        // Store session PID in view for gesture recognition
+        sessionView.identifier = NSUserInterfaceItemIdentifier(session.pid)
+        
+        // Add double-click gesture recognizer
+        let clickGesture = NSClickGestureRecognizer(target: self, action: #selector(sessionDoubleClicked(_:)))
+        clickGesture.numberOfClicksRequired = 2
+        sessionView.addGestureRecognizer(clickGesture)
+        
+        // Layout constraints for main content
+        NSLayoutConstraint.activate([
+            statusIcon.topAnchor.constraint(equalTo: sessionView.topAnchor, constant: 8),
+            statusIcon.leadingAnchor.constraint(equalTo: sessionView.leadingAnchor, constant: 8),
+            
+            titleLabel.topAnchor.constraint(equalTo: sessionView.topAnchor, constant: 8),
+            titleLabel.leadingAnchor.constraint(equalTo: statusIcon.trailingAnchor, constant: 8),
+            titleLabel.trailingAnchor.constraint(lessThanOrEqualTo: sessionView.trailingAnchor, constant: -8),
+            
+            cpuLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 4),
+            cpuLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
+            cpuLabel.trailingAnchor.constraint(lessThanOrEqualTo: sessionView.trailingAnchor, constant: -8),
+            
+            gitLabel.topAnchor.constraint(equalTo: cpuLabel.bottomAnchor, constant: 2),
+            gitLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
+            gitLabel.trailingAnchor.constraint(lessThanOrEqualTo: sessionView.trailingAnchor, constant: -8),
+            
+            durationLabel.topAnchor.constraint(equalTo: gitLabel.bottomAnchor, constant: 2),
+            durationLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
+            durationLabel.trailingAnchor.constraint(lessThanOrEqualTo: sessionView.trailingAnchor, constant: -8),
+            
+            pathLabel.topAnchor.constraint(equalTo: durationLabel.bottomAnchor, constant: 2),
+            pathLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
+            pathLabel.trailingAnchor.constraint(lessThanOrEqualTo: sessionView.trailingAnchor, constant: -8),
+            pathLabel.bottomAnchor.constraint(lessThanOrEqualTo: sessionView.bottomAnchor, constant: -8)
+        ])
+        
+        return sessionView
+    }
+    
+    func formatGitInfo(branch: String?, status: String?) -> String {
+        var parts: [String] = []
+        
+        if let branch = branch {
+            parts.append("🌿 \(branch)")
+        }
+        
+        if let status = status {
+            let statusIcon = status == "clean" ? "✅" : "📝"
+            parts.append("\(statusIcon) \(status)")
+        }
+        
+        return parts.isEmpty ? "📂 No Git repository" : parts.joined(separator: " | ")
+    }
+    
+    
+    @objc func sessionDoubleClicked(_ gesture: NSClickGestureRecognizer) {
+        guard let sessionView = gesture.view,
+              let pidString = sessionView.identifier?.rawValue else { return }
+        
+        // Close the detailed window
+        detailWindow?.close()
+        
+        Task {
+            do {
+                let sessions = try await sessionMonitor.getActiveSessions()
+                if let session = sessions.first(where: { $0.pid == pidString }) {
+                    try await TerminalNavigator.jumpToSession(session: session)
+                }
+            } catch {
+                print("Error jumping to session: \(error)")
+                // Fallback to script
+                try? await TerminalNavigator.jumpUsingScript(pid: pidString)
+            }
+        }
     }
     
     func updateIcon(activeCount: Int, waitingCount: Int) {

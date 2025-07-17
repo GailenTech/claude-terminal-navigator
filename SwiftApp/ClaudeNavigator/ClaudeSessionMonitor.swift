@@ -24,6 +24,8 @@ struct ClaudeSession: Codable {
     // Cached values (not from JSON)
     var cachedCPU: Double?
     var cachedMemory: Double?
+    var gitBranch: String?
+    var gitStatus: String?
     
     // Coding keys to match JSON format
     enum CodingKeys: String, CodingKey {
@@ -121,7 +123,7 @@ class ClaudeSessionMonitor {
             }
         }
         
-        // Update CPU and memory usage for all sessions
+        // Update CPU, memory and Git info for all sessions
         var updatedSessions: [ClaudeSession] = []
         for var session in sessions {
             // Get CPU usage
@@ -132,6 +134,13 @@ class ClaudeSessionMonitor {
             // Get memory usage
             if let memory = await getMemoryUsage(for: session.pid) {
                 session.cachedMemory = memory
+            }
+            // Get Git info
+            if let branch = await getGitBranch(for: session.workingDir) {
+                session.gitBranch = branch
+            }
+            if let status = await getGitStatus(for: session.workingDir) {
+                session.gitStatus = status
             }
             updatedSessions.append(session)
         }
@@ -161,6 +170,31 @@ class ClaudeSessionMonitor {
             return nil
         }
         return nil
+    }
+    
+    private func getGitBranch(for workingDir: String) async -> String? {
+        do {
+            let output = try await ShellExecutor.run("cd '\(workingDir)' && git branch --show-current 2>/dev/null")
+            let branch = output.trimmingCharacters(in: .whitespacesAndNewlines)
+            return branch.isEmpty ? nil : branch
+        } catch {
+            return nil
+        }
+    }
+    
+    private func getGitStatus(for workingDir: String) async -> String? {
+        do {
+            let output = try await ShellExecutor.run("cd '\(workingDir)' && git status --porcelain 2>/dev/null")
+            let statusLines = output.trimmingCharacters(in: .whitespacesAndNewlines)
+            if statusLines.isEmpty {
+                return "clean"
+            } else {
+                let lineCount = statusLines.components(separatedBy: .newlines).count
+                return "\(lineCount) changes"
+            }
+        } catch {
+            return nil
+        }
     }
     
     private func loadSession(from url: URL) async -> ClaudeSession? {
@@ -294,11 +328,7 @@ class TerminalNavigator {
                 throw ShellError.executionFailed(error.description)
             }
             
-            // Show notification on success
-            if result.booleanValue {
-                await showNotification(title: "Claude Navigator", 
-                                     message: "Jumped to \(session.dirName)")
-            }
+            // Silent success - no notification needed
         }
     }
     
