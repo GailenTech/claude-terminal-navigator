@@ -80,6 +80,7 @@ class SessionDatabase {
                                                withIntermediateDirectories: true)
         
         dbPath = appDir.appendingPathComponent("sessions.db").path
+        print("📊 Database path: \(dbPath)")
         openDatabase()
         createTables()
     }
@@ -169,7 +170,10 @@ class SessionDatabase {
         var statement: OpaquePointer?
         
         if sqlite3_prepare_v2(db, sql, -1, &statement, nil) == SQLITE_OK {
-            sqlite3_bind_text(statement, 1, session.id.uuidString, -1, nil)
+            // Use Swift string binding that properly handles memory
+            let idString = session.id.uuidString as NSString
+            sqlite3_bind_text(statement, 1, idString.utf8String, -1, nil)
+            
             sqlite3_bind_double(statement, 2, session.startTime.timeIntervalSince1970)
             
             if let endTime = session.endTime {
@@ -178,9 +182,22 @@ class SessionDatabase {
                 sqlite3_bind_null(statement, 3)
             }
             
-            sqlite3_bind_text(statement, 4, session.projectPath, -1, nil)
-            sqlite3_bind_text(statement, 5, session.gitBranch, -1, nil)
-            sqlite3_bind_text(statement, 6, session.gitRepo, -1, nil)
+            let projectPath = session.projectPath as NSString
+            sqlite3_bind_text(statement, 4, projectPath.utf8String, -1, nil)
+            
+            if let branch = session.gitBranch {
+                let branchString = branch as NSString
+                sqlite3_bind_text(statement, 5, branchString.utf8String, -1, nil)
+            } else {
+                sqlite3_bind_null(statement, 5)
+            }
+            
+            if let repo = session.gitRepo {
+                let repoString = repo as NSString
+                sqlite3_bind_text(statement, 6, repoString.utf8String, -1, nil)
+            } else {
+                sqlite3_bind_null(statement, 6)
+            }
             
             sqlite3_bind_double(statement, 7, session.peakCPU)
             sqlite3_bind_double(statement, 8, session.avgCPU)
@@ -212,8 +229,12 @@ class SessionDatabase {
             var statement: OpaquePointer?
             
             if sqlite3_prepare_v2(db, sql, -1, &statement, nil) == SQLITE_OK {
-                sqlite3_bind_text(statement, 1, sessionId.uuidString, -1, nil)
-                sqlite3_bind_text(statement, 2, tool, -1, nil)
+                let idString = sessionId.uuidString as NSString
+                sqlite3_bind_text(statement, 1, idString.utf8String, -1, nil)
+                
+                let toolString = tool as NSString
+                sqlite3_bind_text(statement, 2, toolString.utf8String, -1, nil)
+                
                 sqlite3_bind_int(statement, 3, Int32(count))
                 
                 sqlite3_step(statement)
@@ -239,17 +260,25 @@ class SessionDatabase {
             while sqlite3_step(statement) == SQLITE_ROW {
                 if let session = parseSessionRow(statement) {
                     sessions.append(session)
+                } else {
+                    print("⚠️ Failed to parse session row")
                 }
             }
+        } else {
+            print("❌ Failed to prepare statement: \(String(cString: sqlite3_errmsg(db)))")
         }
         
         sqlite3_finalize(statement)
+        print("📊 getRecentSessions found \(sessions.count) sessions")
         return sessions
     }
     
     private func parseSessionRow(_ statement: OpaquePointer?) -> SessionHistory? {
         guard let idString = sqlite3_column_text(statement, 0),
-              let id = UUID(uuidString: String(cString: idString)) else { return nil }
+              let id = UUID(uuidString: String(cString: idString)) else { 
+            print("❌ Failed to parse session ID")
+            return nil 
+        }
         
         let startTime = Date(timeIntervalSince1970: sqlite3_column_double(statement, 1))
         let endTimeInterval = sqlite3_column_double(statement, 2)
@@ -299,7 +328,8 @@ class SessionDatabase {
         var statement: OpaquePointer?
         
         if sqlite3_prepare_v2(db, sql, -1, &statement, nil) == SQLITE_OK {
-            sqlite3_bind_text(statement, 1, sessionId.uuidString, -1, nil)
+            let idString = sessionId.uuidString as NSString
+            sqlite3_bind_text(statement, 1, idString.utf8String, -1, nil)
             
             while sqlite3_step(statement) == SQLITE_ROW {
                 let toolName = String(cString: sqlite3_column_text(statement, 0))
@@ -314,22 +344,89 @@ class SessionDatabase {
     
     // MARK: - Analytics
     
-    func getSessionStats(for projectPath: String? = nil, days: Int = 30) -> SessionStats {
-        let cutoffDate = Date().addingTimeInterval(-Double(days * 24 * 60 * 60))
-        var sql = "SELECT COUNT(*), SUM(end_time - start_time), AVG(avg_cpu), AVG(peak_memory) FROM session_history WHERE start_time > ?"
+    func debugDatabaseContents() {
+        let sql = "SELECT COUNT(*) FROM session_history"
+        var statement: OpaquePointer?
+        
+        if sqlite3_prepare_v2(db, sql, -1, &statement, nil) == SQLITE_OK {
+            if sqlite3_step(statement) == SQLITE_ROW {
+                let count = Int(sqlite3_column_int(statement, 0))
+                print("🔍 DEBUG: Total rows in session_history: \(count)")
+            }
+        }
+        sqlite3_finalize(statement)
+        
+        // Check sessions with calculated duration
+        let sql2 = """
+            SELECT id, project_path,
+                   CASE 
+                       WHEN end_time IS NULL THEN strftime('%s', 'now') - start_time 
+                       ELSE end_time - start_time 
+                   END as duration,
+                   avg_cpu, avg_memory
+            FROM session_history 
+            ORDER BY start_time DESC 
+            LIMIT 3
+        """
+        if sqlite3_prepare_v2(db, sql2, -1, &statement, nil) == SQLITE_OK {
+            while sqlite3_step(statement) == SQLITE_ROW {
+                let id = String(cString: sqlite3_column_text(statement, 0))
+                let path = String(cString: sqlite3_column_text(statement, 1))
+                let duration = sqlite3_column_double(statement, 2)
+                let cpu = sqlite3_column_double(statement, 3)
+                let mem = sqlite3_column_double(statement, 4)
+                print("🔍 DEBUG: Session \(id.prefix(8))... in \(path.split(separator: "/").last ?? "?") - \(Int(duration))s, CPU:\(String(format: "%.1f", cpu))%, Mem:\(String(format: "%.0f", mem))MB")
+            }
+        }
+        sqlite3_finalize(statement)
+    }
+    
+    func getSessionStats(for projectPath: String? = nil, days: Int? = 30) -> SessionStats {
+        // For active sessions (end_time IS NULL), use current time - start_time
+        var sql = """
+            SELECT COUNT(*), 
+                   SUM(CASE 
+                       WHEN end_time IS NULL THEN strftime('%s', 'now') - start_time 
+                       ELSE end_time - start_time 
+                   END),
+                   AVG(avg_cpu), 
+                   AVG(avg_memory) 
+            FROM session_history
+        """
+        
+        var conditions: [String] = []
+        
+        // Add time filter if days is specified
+        if let days = days {
+            conditions.append("start_time > ?")
+        }
         
         if let projectPath = projectPath {
-            sql += " AND project_path = ?"
+            conditions.append("project_path = ?")
+        }
+        
+        // Add WHERE clause if there are conditions
+        if !conditions.isEmpty {
+            sql += " WHERE " + conditions.joined(separator: " AND ")
         }
         
         var stats = SessionStats()
         var statement: OpaquePointer?
         
         if sqlite3_prepare_v2(db, sql, -1, &statement, nil) == SQLITE_OK {
-            sqlite3_bind_double(statement, 1, cutoffDate.timeIntervalSince1970)
+            var bindIndex: Int32 = 1
             
+            // Bind time filter if specified
+            if let days = days {
+                let cutoffDate = Date().addingTimeInterval(-Double(days * 24 * 60 * 60))
+                sqlite3_bind_double(statement, bindIndex, cutoffDate.timeIntervalSince1970)
+                bindIndex += 1
+            }
+            
+            // Bind project path if specified
             if let projectPath = projectPath {
-                sqlite3_bind_text(statement, 2, projectPath, -1, nil)
+                let pathString = projectPath as NSString
+                sqlite3_bind_text(statement, bindIndex, pathString.utf8String, -1, nil)
             }
             
             if sqlite3_step(statement) == SQLITE_ROW {
@@ -337,6 +434,8 @@ class SessionDatabase {
                 stats.totalDuration = sqlite3_column_double(statement, 1)
                 stats.avgCPU = sqlite3_column_double(statement, 2)
                 stats.avgMemory = sqlite3_column_double(statement, 3)
+                
+                print("📊 Stats: sessions=\(stats.totalSessions), duration=\(stats.totalDuration)s, avgCPU=\(stats.avgCPU)%, avgMem=\(stats.avgMemory)MB")
             }
         }
         

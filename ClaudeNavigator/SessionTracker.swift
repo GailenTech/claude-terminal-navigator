@@ -35,6 +35,9 @@ class SessionTracker {
             
             self?.activeSessions[session.pid] = tracked
             print("📊 Started tracking session: \(session.pid) in \(session.dirName)")
+            
+            // Save initial snapshot immediately
+            self?.saveSnapshot(tracked)
         }
     }
     
@@ -60,7 +63,38 @@ class SessionTracker {
             tracked.gitRepo = self?.extractRepoName(from: session.workingDir)
             
             self?.activeSessions[session.pid] = tracked
+            
+            // Save snapshot every 10 samples (roughly every 50 seconds)
+            if tracked.metrics.cpuSamples.count % 10 == 0 {
+                self?.saveSnapshot(tracked)
+            }
         }
+    }
+    
+    private func saveSnapshot(_ tracked: TrackedSession) {
+        // Create a session history with current data (no end time)
+        let snapshot = SessionHistory(
+            id: tracked.sessionId,
+            startTime: tracked.startTime,
+            endTime: nil,  // Still active
+            projectPath: tracked.projectPath,
+            gitBranch: tracked.gitBranch,
+            gitRepo: tracked.gitRepo,
+            peakCPU: tracked.metrics.peakCPU,
+            avgCPU: tracked.metrics.avgCPU,
+            peakMemory: tracked.metrics.peakMemory,
+            avgMemory: tracked.metrics.avgMemory,
+            messageCount: tracked.metrics.messageCount,
+            filesModified: tracked.metrics.filesModified.count,
+            linesAdded: tracked.metrics.linesAdded,
+            linesRemoved: tracked.metrics.linesRemoved,
+            errorsCount: tracked.metrics.errorCount,
+            toolUsage: tracked.metrics.toolCounts
+        )
+        
+        // Save to database (will update existing record)
+        SessionDatabase.shared.saveSession(snapshot)
+        print("📊 Saved snapshot for session \(tracked.pid)")
     }
     
     func stopTracking(pid: String) {

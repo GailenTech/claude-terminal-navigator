@@ -21,6 +21,10 @@ struct ClaudeNavigatorApp: App {
     }
 }
 
+class FlippedView: NSView {
+    override var isFlipped: Bool { return true }
+}
+
 class AppDelegate: NSObject, NSApplicationDelegate {
     var statusItem: NSStatusItem!
     var menu: NSMenu!
@@ -92,6 +96,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func showDetailedView() {
+        // Toggle behavior: if window exists and is visible, close it
+        if let window = detailWindow, window.isVisible {
+            print("🔍 Closing detailed view...")
+            window.close()
+            detailWindow = nil
+            return
+        }
+        
         print("🔍 Showing detailed view...")
         
         Task {
@@ -107,9 +119,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func createDetailedWindow(with sessions: [ClaudeSession]) {
-        // Always create a fresh window to avoid stale state
-        detailWindow?.close()
-        detailWindow = nil
+        // Close existing window if any
+        if detailWindow != nil {
+            detailWindow?.close()
+            detailWindow = nil
+        }
         
         // Create window
         let windowRect = NSRect(x: 0, y: 0, width: 600, height: 400)
@@ -132,9 +146,19 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let contentView = createDetailedContentView(with: sessions)
         detailWindow?.contentView = contentView
         
-        // Show window
+        // Show window and ensure it gets focus
         detailWindow?.makeKeyAndOrderFront(nil)
         detailWindow?.orderFrontRegardless()
+        
+        // Force the app to become active and window to get focus
+        NSApp.activate(ignoringOtherApps: true)
+        detailWindow?.makeKey()
+        detailWindow?.makeMain()
+        
+        // Set first responder to content view for immediate interaction
+        DispatchQueue.main.async {
+            self.detailWindow?.makeFirstResponder(self.detailWindow?.contentView)
+        }
     }
     
     func createDetailedContentView(with sessions: [ClaudeSession]) -> NSView {
@@ -156,8 +180,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(scrollView)
         
-        // Create document view
-        let documentView = NSView()
+        // Create document view with flipped coordinate system
+        let documentView = FlippedView()
         documentView.translatesAutoresizingMaskIntoConstraints = false
         
         var yPosition: CGFloat = 0
@@ -193,12 +217,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         documentView.widthAnchor.constraint(greaterThanOrEqualToConstant: 580).isActive = true
         documentView.heightAnchor.constraint(equalToConstant: max(yPosition, 300)).isActive = true
         
+        // Set document view and configure scroll view
         scrollView.documentView = documentView
-        
-        // Force scroll to top after layout is complete
-        DispatchQueue.main.async {
-            scrollView.documentView?.scroll(NSPoint(x: 0, y: 0))
-        }
+        scrollView.verticalScrollElasticity = .automatic
+        scrollView.hasVerticalScroller = true
         
         // Layout constraints
         NSLayoutConstraint.activate([
@@ -570,6 +592,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         menu.addItem(NSMenuItem.separator())
         
+        // Analytics
+        let analyticsItem = NSMenuItem(title: "📊 Session Analytics", 
+                                     action: #selector(showAnalytics), 
+                                     keyEquivalent: "")
+        menu.addItem(analyticsItem)
+        
+        menu.addItem(NSMenuItem.separator())
+        
         // About & Quit
         let aboutItem = NSMenuItem(title: "About Claude Navigator", 
                                  action: #selector(showAbout), 
@@ -642,6 +672,186 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 NSWorkspace.shared.open(url)
             }
         }
+    }
+    
+    @objc func showAnalytics() {
+        // Show analytics with period selector
+        showAnalyticsWithPeriod(days: 7, periodName: "Last 7 Days")
+    }
+    
+    func showAnalyticsWithPeriod(days: Int?, periodName: String) {
+        // Debug database contents
+        SessionDatabase.shared.debugDatabaseContents()
+        
+        // Get recent sessions from database
+        let recentSessions = SessionDatabase.shared.getRecentSessions(limit: 50)
+        let stats = SessionDatabase.shared.getSessionStats(days: days)
+        
+        // Count active vs completed sessions
+        let activeSessions = recentSessions.filter { $0.endTime == nil }
+        let completedSessions = recentSessions.filter { $0.endTime != nil }
+        
+        let alert = NSAlert()
+        alert.messageText = "📊 Session Analytics"
+        alert.informativeText = """
+        Database Status: \(recentSessions.isEmpty ? "No data yet - wait ~1 minute" : "Active ✅")
+        Total DB Sessions: \(recentSessions.count)
+        
+        🟢 Active Sessions: \(activeSessions.count)
+        \(activeSessions.prefix(3).map { session in
+            let duration = Int(Date().timeIntervalSince(session.startTime) / 60)
+            return "  • \(session.projectPath.split(separator: "/").last ?? "Unknown") - \(duration)m"
+        }.joined(separator: "\n"))
+        
+        📈 \(periodName) Summary:
+        • Total Sessions: \(stats.totalSessions)
+        • Total Time: \(stats.formattedDuration)
+        • Average CPU: \(String(format: "%.1f", stats.avgCPU))%
+        • Average Memory: \(String(format: "%.1f", stats.avgMemory)) MB
+        
+        📋 Recent Completed: \(completedSessions.count)
+        \(completedSessions.prefix(3).map { session in
+            "  • \(session.projectPath.split(separator: "/").last ?? "Unknown") - \(Int(session.duration / 60))m"
+        }.joined(separator: "\n"))
+        
+        💡 Tip: Metrics update every ~50 seconds for active sessions.
+        """
+        alert.alertStyle = .informational
+        alert.addButton(withTitle: "OK")
+        alert.addButton(withTitle: "Change Period")
+        alert.addButton(withTitle: "Force Save Snapshot")
+        alert.addButton(withTitle: "Export Data")
+        
+        let response = alert.runModal()
+        if response == .alertSecondButtonReturn {
+            // Change Period button clicked
+            showPeriodSelector()
+        } else if response == .alertThirdButtonReturn {
+            // Force Save Snapshot button clicked
+            forceSaveCurrentSnapshots()
+        } else if response == NSApplication.ModalResponse(rawValue: 1003) {
+            // Export Data button clicked (4th button)
+            exportAnalyticsData()
+        }
+    }
+    
+    func forceSaveCurrentSnapshots() {
+        Task {
+            do {
+                // Get all active sessions
+                let sessions = try await sessionMonitor.getActiveSessions()
+                
+                // Force save each session
+                var savedCount = 0
+                for session in sessions {
+                    // Create a test session history record directly
+                    let testHistory = SessionHistory(
+                        id: UUID(),
+                        startTime: Date(),
+                        endTime: nil,  // Active session
+                        projectPath: session.workingDir,
+                        gitBranch: session.gitBranch,
+                        gitRepo: extractRepoName(from: session.workingDir),
+                        peakCPU: session.cachedCPU ?? 0,
+                        avgCPU: session.cachedCPU ?? 0,
+                        peakMemory: session.cachedMemory ?? 0,
+                        avgMemory: session.cachedMemory ?? 0,
+                        messageCount: 1,
+                        filesModified: 0,
+                        linesAdded: 0,
+                        linesRemoved: 0,
+                        errorsCount: 0,
+                        toolUsage: ["Manual Save": 1]
+                    )
+                    
+                    // Save directly to database
+                    SessionDatabase.shared.saveSession(testHistory)
+                    savedCount += 1
+                    print("📊 Force saved session for PID: \(session.pid)")
+                }
+                
+                await MainActor.run {
+                    // Show success message
+                    let successAlert = NSAlert()
+                    successAlert.messageText = "Force Save Complete"
+                    successAlert.informativeText = """
+                    Saved \(savedCount) active sessions to database.
+                    
+                    Database path: ~/Library/Application Support/ClaudeNavigator/sessions.db
+                    
+                    Try viewing analytics again to see if data appears.
+                    """
+                    successAlert.alertStyle = .informational
+                    successAlert.runModal()
+                    
+                    // Refresh analytics view
+                    self.showAnalytics()
+                }
+            } catch {
+                await MainActor.run {
+                    let errorAlert = NSAlert()
+                    errorAlert.messageText = "Force Save Failed"
+                    errorAlert.informativeText = "Error: \(error.localizedDescription)"
+                    errorAlert.alertStyle = .critical
+                    errorAlert.runModal()
+                }
+            }
+        }
+    }
+    
+    func extractRepoName(from path: String) -> String? {
+        // Extract repo name from path like /Users/x/Projects/my-repo
+        let components = path.split(separator: "/")
+        
+        // Look for .git directory to identify repo root
+        var currentPath = ""
+        for component in components {
+            currentPath += "/\(component)"
+            let gitPath = currentPath + "/.git"
+            if FileManager.default.fileExists(atPath: gitPath) {
+                return String(component)
+            }
+        }
+        
+        // Fallback to last component
+        return components.last.map(String.init)
+    }
+    
+    func showPeriodSelector() {
+        let alert = NSAlert()
+        alert.messageText = "Select Time Period"
+        alert.informativeText = "Choose the time period for analytics:"
+        alert.alertStyle = .informational
+        
+        alert.addButton(withTitle: "Last 24 Hours")
+        alert.addButton(withTitle: "Last 7 Days")
+        alert.addButton(withTitle: "Last 30 Days")
+        alert.addButton(withTitle: "All Time")
+        alert.addButton(withTitle: "Cancel")
+        
+        let response = alert.runModal()
+        
+        switch response {
+        case .alertFirstButtonReturn:
+            showAnalyticsWithPeriod(days: 1, periodName: "Last 24 Hours")
+        case .alertSecondButtonReturn:
+            showAnalyticsWithPeriod(days: 7, periodName: "Last 7 Days")
+        case .alertThirdButtonReturn:
+            showAnalyticsWithPeriod(days: 30, periodName: "Last 30 Days")
+        case NSApplication.ModalResponse(rawValue: 1003):
+            showAnalyticsWithPeriod(days: nil, periodName: "All Time")
+        default:
+            // Cancel - do nothing
+            break
+        }
+    }
+    
+    func exportAnalyticsData() {
+        // TODO: Export to CSV/JSON
+        let alert = NSAlert()
+        alert.messageText = "Export Coming Soon"
+        alert.informativeText = "This feature will export session data to CSV format."
+        alert.runModal()
     }
 }
 
