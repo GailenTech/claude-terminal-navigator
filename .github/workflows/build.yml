@@ -55,9 +55,11 @@ jobs:
         cp .build/release/ClaudeNavigator "ClaudeNavigator.app/Contents/MacOS/"
         cp ClaudeNavigator/Info.plist "ClaudeNavigator.app/Contents/"
         
-        # Copy icon if it exists
+        # Copy icon from existing app bundle if it's already there
         if [ -f "ClaudeNavigator.app/Contents/Resources/AppIcon.icns" ]; then
-          cp "ClaudeNavigator.app/Contents/Resources/AppIcon.icns" "ClaudeNavigator.app/Contents/Resources/"
+          echo "Icon already exists in app bundle"
+        elif [ -f "ClaudeNavigator/AppIcon.icns" ]; then
+          cp "ClaudeNavigator/AppIcon.icns" "ClaudeNavigator.app/Contents/Resources/"
         fi
         
         # Update version in Info.plist
@@ -124,9 +126,11 @@ jobs:
         cp .build/release/ClaudeNavigator "ClaudeNavigator.app/Contents/MacOS/"
         cp ClaudeNavigator/Info.plist "ClaudeNavigator.app/Contents/"
         
-        # Copy icon if it exists
+        # Copy icon from existing app bundle if it's already there
         if [ -f "ClaudeNavigator.app/Contents/Resources/AppIcon.icns" ]; then
-          cp "ClaudeNavigator.app/Contents/Resources/AppIcon.icns" "ClaudeNavigator.app/Contents/Resources/"
+          echo "Icon already exists in app bundle"
+        elif [ -f "ClaudeNavigator/AppIcon.icns" ]; then
+          cp "ClaudeNavigator/AppIcon.icns" "ClaudeNavigator.app/Contents/Resources/"
         fi
         
         # Update version in Info.plist
