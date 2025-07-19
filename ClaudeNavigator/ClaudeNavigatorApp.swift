@@ -655,10 +655,22 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @objc func showAbout() {
         let alert = NSAlert()
         alert.messageText = "Claude Terminal Navigator"
+        
+        // Get version from Info.plist
+        let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "Unknown"
+        let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "Unknown"
+        
         alert.informativeText = """
-        Version 1.0
+        Version \(version) (Build \(build))
         
         Monitor and navigate Claude CLI sessions from the menu bar.
+        
+        Features:
+        • Real-time session tracking
+        • CPU & memory monitoring
+        • Session analytics & history
+        • Git branch awareness
+        • One-click navigation
         
         Created with Claude 🤖
         """
