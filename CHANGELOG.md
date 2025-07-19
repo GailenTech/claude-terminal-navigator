@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.2.0] - 2025-01-19
+## [1.2.0] - 2025-07-19
 
 ### Added
 - Complete session analytics system with SQLite database
@@ -30,7 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhanced window positioning and sizing
 - Better error handling throughout the app
 
-## [1.0.2] - 2025-01-17
+## [1.0.2] - 2025-07-17
 
 ### Fixed
 - Fixed working directory detection bug where lsof usage message appeared as session name
@@ -40,7 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Toned down marketing language in README (removed "beautiful animations" hyperbole)
 - Cleaned up project structure by removing development artifacts
 
-## [1.0.1] - 2025-01-17
+## [1.0.1] - 2025-07-17
 
 ### Changed
 - Restructured project to focus solely on macOS widget
@@ -48,7 +48,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated GitHub Actions to build from root instead of SwiftApp subdirectory
 - Rewrote README for better presentation and standalone widget focus
 
-## [1.0.0] - 2025-01-17
+## [1.0.0] - 2025-07-17
 
 ### Added
 - Initial release of Claude Terminal Navigator as a standalone macOS app

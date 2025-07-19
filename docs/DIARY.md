@@ -1,6 +1,6 @@
 # 📔 Development Diary - Claude Terminal Navigator
 
-## 2025-01-19 - Major Release: Session Analytics & DMG Installer
+## 2025-07-19 - Major Release: Session Analytics & DMG Installer
 
 ### What was done
 - Implemented complete session analytics system with SQLite database
@@ -30,7 +30,7 @@
 - Implement session search/filter capabilities
 - Add keyboard shortcuts for power users
 
-## 2025-01-18 - Session Metrics Proposal
+## 2025-07-18 - Session Metrics Proposal
 
 ### What was done
 - Created comprehensive metrics proposal document
@@ -42,7 +42,7 @@
 - Use native Swift/AppKit for all UI components
 - Implement non-intrusive background tracking
 
-## 2025-01-17 - Initial Release v1.0.0
+## 2025-07-17 - Initial Release v1.0.0
 
 ### What was done
 - Transformed from shell script-based tool to native Swift application
