@@ -782,12 +782,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     print("📊 Force saved session for PID: \(session.pid)")
                 }
                 
+                let finalSavedCount = savedCount
                 await MainActor.run {
                     // Show success message
                     let successAlert = NSAlert()
                     successAlert.messageText = "Force Save Complete"
                     successAlert.informativeText = """
-                    Saved \(savedCount) active sessions to database.
+                    Saved \(finalSavedCount) active sessions to database.
                     
                     Database path: ~/Library/Application Support/ClaudeNavigator/sessions.db
                     
