@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2025-01-19
+
+### Added
+- Complete session analytics system with SQLite database
+- Session history tracking with metrics (CPU, memory, duration)
+- Analytics dashboard with time period selector (24h, 7d, 30d, all time)
+- Professional DMG installer with drag-and-drop interface
+- Automatic version display in About dialog
+- Window toggle behavior - click menu bar icon to close open window
+- Force Save Snapshot debug functionality
+- GitHub Actions workflows for automated releases
+
+### Fixed
+- Scroll position now shows first elements at top (FlippedView implementation)
+- Window focus issues - window properly gains focus when opened
+- Database corruption with empty session IDs
+- Total time calculation for active sessions
+
+### Changed
+- Improved session icons with visual status indicators
+- Enhanced window positioning and sizing
+- Better error handling throughout the app
+
 ## [1.0.2] - 2025-01-17
 
 ### Fixed

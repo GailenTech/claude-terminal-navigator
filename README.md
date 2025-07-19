@@ -11,10 +11,17 @@ A macOS menu bar app that helps you navigate between active Claude CLI sessions.
 
 ## Installation
 
+### Option 1: DMG Installer (Recommended)
 1. Go to [Releases](https://github.com/GailenTech/claude-terminal-navigator/releases/latest)
-2. Download `ClaudeNavigator-latest.zip`
-3. Unzip and drag `ClaudeNavigator.app` to Applications
-4. Launch the app - you'll see a 🤖 icon in your menu bar
+2. Download `Claude-Terminal-Navigator-Installer-*.dmg`
+3. Double-click the DMG file to mount it
+4. Drag `ClaudeNavigator.app` to your Applications folder
+5. Launch the app - you'll see a 🤖 icon in your menu bar
+
+### Option 2: ZIP Archive
+1. Download `ClaudeNavigator-latest.zip` from [Releases](https://github.com/GailenTech/claude-terminal-navigator/releases/latest)
+2. Unzip and drag `ClaudeNavigator.app` to Applications
+3. Launch the app
 
 ## Usage
 

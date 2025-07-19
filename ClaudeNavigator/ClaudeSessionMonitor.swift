@@ -84,6 +84,7 @@ class ClaudeSessionMonitor {
     // Store discovered sessions in memory
     private var knownSessions: [String: ClaudeSession] = [:] // PID -> Session
     private let sessionQueue = DispatchQueue(label: "com.claudenavigator.sessions")
+    private let tracker = SessionTracker()
     
     init() {
         print("🚀 Initializing standalone ClaudeSessionMonitor")
@@ -129,7 +130,21 @@ class ClaudeSessionMonitor {
             if let status = await getGitStatus(for: session.workingDir) {
                 session.gitStatus = status
             }
+            
+            // Update metrics tracking
+            tracker.updateMetrics(for: session)
+            
             updatedSessions.append(session)
+        }
+        
+        // Check for ended sessions
+        let activePIDs = sessions.map { $0.pid }
+        let trackedPIDs = Array(knownSessions.keys)
+        
+        for pid in trackedPIDs {
+            if !activePIDs.contains(pid) {
+                tracker.stopTracking(pid: pid)
+            }
         }
         
         return updatedSessions

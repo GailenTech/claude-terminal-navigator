@@ -23,6 +23,9 @@ let package = Package(
             exclude: ["Info.plist"],
             swiftSettings: [
                 .unsafeFlags(["-parse-as-library"])
+            ],
+            linkerSettings: [
+                .linkedLibrary("sqlite3")
             ]
         )
     ]
