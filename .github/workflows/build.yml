@@ -55,9 +55,16 @@ jobs:
         cp .build/release/ClaudeNavigator "ClaudeNavigator.app/Contents/MacOS/"
         cp ClaudeNavigator/Info.plist "ClaudeNavigator.app/Contents/"
         
+        # Copy icon if it exists
+        if [ -f "ClaudeNavigator.app/Contents/Resources/AppIcon.icns" ]; then
+          cp "ClaudeNavigator.app/Contents/Resources/AppIcon.icns" "ClaudeNavigator.app/Contents/Resources/"
+        fi
+        
         # Update version in Info.plist
         /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString ${{ steps.version.outputs.VERSION }}" "ClaudeNavigator.app/Contents/Info.plist"
-        /usr/libexec/PlistBuddy -c "Set :CFBundleVersion ${{ steps.version.outputs.VERSION }}" "ClaudeNavigator.app/Contents/Info.plist"
+        
+        # Set build number based on GitHub run number
+        /usr/libexec/PlistBuddy -c "Set :CFBundleVersion ${{ github.run_number }}" "ClaudeNavigator.app/Contents/Info.plist"
         
     - name: Sign App (if certificate available)
       if: env.MACOS_CERTIFICATE && env.MACOS_CERTIFICATE_PWD
@@ -117,19 +124,59 @@ jobs:
         cp .build/release/ClaudeNavigator "ClaudeNavigator.app/Contents/MacOS/"
         cp ClaudeNavigator/Info.plist "ClaudeNavigator.app/Contents/"
         
+        # Copy icon if it exists
+        if [ -f "ClaudeNavigator.app/Contents/Resources/AppIcon.icns" ]; then
+          cp "ClaudeNavigator.app/Contents/Resources/AppIcon.icns" "ClaudeNavigator.app/Contents/Resources/"
+        fi
+        
         # Update version in Info.plist
         /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString ${{ steps.version.outputs.VERSION }}" "ClaudeNavigator.app/Contents/Info.plist"
-        /usr/libexec/PlistBuddy -c "Set :CFBundleVersion ${{ steps.version.outputs.VERSION }}" "ClaudeNavigator.app/Contents/Info.plist"
+        
+        # Set build number based on GitHub run number
+        /usr/libexec/PlistBuddy -c "Set :CFBundleVersion ${{ github.run_number }}" "ClaudeNavigator.app/Contents/Info.plist"
         
     - name: Create ZIP
       run: |
         zip -r "ClaudeNavigator-${{ steps.version.outputs.VERSION }}.zip" ClaudeNavigator.app
         
-    - name: Calculate Checksum
+    - name: Install create-dmg
+      run: |
+        brew install create-dmg
+        
+    - name: Create DMG
+      run: |
+        # Update version in DMG script
+        sed -i '' "s/VERSION=\"[0-9.]*\"/VERSION=\"${{ steps.version.outputs.VERSION }}\"/" create-dmg-simple.sh || true
+        
+        # Create DMG if script exists
+        if [ -f "create-dmg-simple.sh" ]; then
+          chmod +x create-dmg-simple.sh
+          ./create-dmg-simple.sh || echo "DMG creation failed"
+        else
+          # Fallback DMG creation
+          create-dmg \
+            --volname "ClaudeNavigator ${{ steps.version.outputs.VERSION }}" \
+            --window-pos 200 120 \
+            --window-size 600 400 \
+            --icon-size 128 \
+            --icon "ClaudeNavigator.app" 150 170 \
+            --hide-extension "ClaudeNavigator.app" \
+            --app-drop-link 450 170 \
+            --no-internet-enable \
+            "Claude-Terminal-Navigator-Installer-${{ steps.version.outputs.VERSION }}.dmg" \
+            "ClaudeNavigator.app"
+        fi
+        
+    - name: Calculate Checksums
       id: checksum
       run: |
-        CHECKSUM=$(shasum -a 256 "ClaudeNavigator-${{ steps.version.outputs.VERSION }}.zip" | awk '{print $1}')
-        echo "SHA256=${CHECKSUM}" >> $GITHUB_OUTPUT
+        ZIP_CHECKSUM=$(shasum -a 256 "ClaudeNavigator-${{ steps.version.outputs.VERSION }}.zip" | awk '{print $1}')
+        echo "ZIP_SHA256=${ZIP_CHECKSUM}" >> $GITHUB_OUTPUT
+        
+        if [ -f "Claude-Terminal-Navigator-Installer-${{ steps.version.outputs.VERSION }}.dmg" ]; then
+          DMG_CHECKSUM=$(shasum -a 256 "Claude-Terminal-Navigator-Installer-${{ steps.version.outputs.VERSION }}.dmg" | awk '{print $1}')
+          echo "DMG_SHA256=${DMG_CHECKSUM}" >> $GITHUB_OUTPUT
+        fi
     
     - name: Generate Release Notes
       id: release_notes
@@ -141,10 +188,18 @@ jobs:
         
         ## 📦 Installation
         
+        ### Option 1: DMG Installer (Recommended)
+        1. Download \`Claude-Terminal-Navigator-Installer-${{ steps.version.outputs.VERSION }}.dmg\`
+        2. Double-click the DMG to mount it
+        3. Drag ClaudeNavigator to your Applications folder
+        4. Eject the DMG and launch the app
+        
+        ### Option 2: ZIP Archive
         1. Download \`ClaudeNavigator-${{ steps.version.outputs.VERSION }}.zip\`
         2. Unzip the file
         3. Drag \`ClaudeNavigator.app\` to your Applications folder
         4. Launch the app from Applications
+        
         5. (Optional) Enable "Launch at Startup" from the app menu
         
         ## ✨ Features
@@ -159,8 +214,10 @@ jobs:
         
         ## 🔒 Security
         
+        ### Checksums
         \`\`\`
-        SHA256: ${{ steps.checksum.outputs.SHA256 }}
+        ZIP SHA256: ${{ steps.checksum.outputs.ZIP_SHA256 }}
+        DMG SHA256: ${{ steps.checksum.outputs.DMG_SHA256 }}
         \`\`\`
         
         ## 📋 Requirements
@@ -176,7 +233,9 @@ jobs:
     - name: Create Release
       uses: softprops/action-gh-release@v2
       with:
-        files: ClaudeNavigator-${{ steps.version.outputs.VERSION }}.zip
+        files: |
+          ClaudeNavigator-${{ steps.version.outputs.VERSION }}.zip
+          Claude-Terminal-Navigator-Installer-${{ steps.version.outputs.VERSION }}.dmg
         body_path: release_notes.md
         draft: false
         prerelease: false
