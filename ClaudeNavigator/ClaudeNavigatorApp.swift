@@ -35,6 +35,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     // Cache for performance
     private var lastActiveCount = 0
     private var lastWaitingCount = 0
+    private var cachedSessions: [ClaudeSession] = []
+    private var lastCacheUpdate: Date = Date()
+    private var cacheUpdateTimer: Timer?
     
     func applicationDidFinishLaunching(_ notification: Notification) {
         print("🚀 ClaudeNavigator starting...")
@@ -69,7 +72,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             self.refresh()
         }
         
-        // Initial refresh
+        // Initial refresh to populate cache
         print("🔄 Starting initial refresh...")
         refresh()
         
@@ -106,15 +109,25 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         print("🔍 Showing detailed view...")
         
-        // Show window immediately with loading state
-        createDetailedWindow(with: [])
+        // Show window immediately with cached sessions if available
+        if !cachedSessions.isEmpty {
+            print("🔍 Using cached sessions (count: \(cachedSessions.count))")
+            createDetailedWindow(with: cachedSessions)
+        } else {
+            // Show loading state if no cache
+            createDetailedWindow(with: [])
+        }
         
-        // Then load sessions asynchronously and update
+        // Then load fresh sessions asynchronously and update if different
         Task {
             do {
                 let sessions = try await sessionMonitor.getActiveSessions()
                 await MainActor.run {
-                    self.updateDetailedWindow(with: sessions)
+                    // Only update if sessions have changed
+                    if !self.sessionsEqual(self.cachedSessions, sessions) {
+                        print("🔍 Updating window with fresh sessions")
+                        self.updateDetailedWindow(with: sessions)
+                    }
                 }
             } catch {
                 print("Error getting sessions for detailed view: \(error)")
@@ -125,9 +138,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func updateDetailedWindow(with sessions: [ClaudeSession]) {
         guard let window = detailWindow else { return }
         
-        // Update the window content with new sessions
-        let contentView = createDetailedContentView(with: sessions)
-        window.contentView = contentView
+        // Update the window content with new sessions using a fade transition
+        NSAnimationContext.runAnimationGroup({ context in
+            context.duration = 0.25
+            context.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+            window.contentView?.animator().alphaValue = 0.5
+        }, completionHandler: {
+            let contentView = self.createDetailedContentView(with: sessions)
+            window.contentView = contentView
+            
+            NSAnimationContext.runAnimationGroup({ context in
+                context.duration = 0.25
+                window.contentView?.animator().alphaValue = 1.0
+            })
+        })
     }
     
     func createDetailedWindow(with sessions: [ClaudeSession]) {
@@ -177,7 +201,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let contentView = NSView()
         
         // Create header label with instructions or loading state
-        let headerText = sessions.isEmpty ? "Loading sessions..." : "Click any session to jump to it"
+        let isFromCache = !cachedSessions.isEmpty && sessionsEqual(sessions, cachedSessions)
+        let headerText: String
+        if sessions.isEmpty {
+            headerText = "Loading sessions..."
+        } else if isFromCache {
+            let cacheAge = Int(Date().timeIntervalSince(lastCacheUpdate))
+            headerText = "Click any session to jump to it (cached \(cacheAge)s ago)"
+        } else {
+            headerText = "Click any session to jump to it"
+        }
+        
         let headerLabel = NSTextField(labelWithString: headerText)
         headerLabel.font = NSFont.systemFont(ofSize: 14)
         headerLabel.textColor = NSColor.secondaryLabelColor
@@ -475,12 +509,56 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         menu.autoenablesItems = false
     }
     
+    // Helper to compare sessions for changes
+    func sessionsEqual(_ sessions1: [ClaudeSession], _ sessions2: [ClaudeSession]) -> Bool {
+        if sessions1.count != sessions2.count {
+            return false
+        }
+        
+        // Create dictionaries for efficient comparison
+        let dict1 = Dictionary(uniqueKeysWithValues: sessions1.map { ($0.pid, $0) })
+        let dict2 = Dictionary(uniqueKeysWithValues: sessions2.map { ($0.pid, $0) })
+        
+        // Check if same PIDs
+        if Set(dict1.keys) != Set(dict2.keys) {
+            return false
+        }
+        
+        // Check if session properties changed
+        for pid in dict1.keys {
+            guard let s1 = dict1[pid], let s2 = dict2[pid] else { return false }
+            
+            // Compare relevant properties
+            if s1.isActive != s2.isActive ||
+               s1.workingDir != s2.workingDir ||
+               s1.cachedCPU != s2.cachedCPU ||
+               s1.cachedMemory != s2.cachedMemory ||
+               s1.gitBranch != s2.gitBranch ||
+               s1.gitStatus != s2.gitStatus {
+                return false
+            }
+        }
+        
+        return true
+    }
+    
     @objc func refresh() {
         Task {
             do {
                 let sessions = try await sessionMonitor.getActiveSessions()
                 await MainActor.run {
+                    // Update cache
+                    self.cachedSessions = sessions
+                    self.lastCacheUpdate = Date()
+                    
+                    // Update menu
                     self.updateMenu(with: sessions)
+                    
+                    // Update detailed window if open
+                    if self.detailWindow?.isVisible == true {
+                        print("🔄 Auto-refreshing detailed view with new data")
+                        self.updateDetailedWindow(with: sessions)
+                    }
                 }
             } catch {
                 print("Error refreshing sessions: \(error)")

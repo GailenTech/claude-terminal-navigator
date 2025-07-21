@@ -1,5 +1,32 @@
 # 📔 Development Diary - Claude Terminal Navigator
 
+## 2025-07-21 - Session Cache Implementation
+
+### What was done
+- Implemented complete session caching system for instant window display
+- Added cache update mechanism in the 5-second refresh cycle
+- Window now shows cached sessions immediately on open
+- Fresh data loads asynchronously and updates if different
+- Added cache age indicator in header (e.g., "cached 3s ago")
+- Implemented smooth fade transition when updating from cache to fresh data
+- Added auto-refresh for open detail window when cache updates
+
+### Decisions made
+- Cache updates every 5 seconds with the regular refresh cycle
+- Used sessionEqual() helper to detect meaningful changes in sessions
+- Show cache age to users for transparency
+- Fade animation (0.25s) provides visual feedback on data updates
+
+### Challenges/Learnings
+- Swift Array comparison requires Equatable conformance - used custom comparison function
+- Showing cached data first dramatically improves perceived performance
+- Auto-refresh keeps window data current without user interaction
+
+### Next steps
+- Consider persisting cache between app launches
+- Add visual indicator (spinner) when refreshing in background
+- Implement cache expiration policy if needed
+
 ## 2025-07-19 - UX Improvements: Single-Click Navigation & Performance
 
 ### What was done
