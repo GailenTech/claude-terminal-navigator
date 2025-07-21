@@ -106,16 +106,28 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         print("🔍 Showing detailed view...")
         
+        // Show window immediately with loading state
+        createDetailedWindow(with: [])
+        
+        // Then load sessions asynchronously and update
         Task {
             do {
                 let sessions = try await sessionMonitor.getActiveSessions()
                 await MainActor.run {
-                    self.createDetailedWindow(with: sessions)
+                    self.updateDetailedWindow(with: sessions)
                 }
             } catch {
                 print("Error getting sessions for detailed view: \(error)")
             }
         }
+    }
+    
+    func updateDetailedWindow(with sessions: [ClaudeSession]) {
+        guard let window = detailWindow else { return }
+        
+        // Update the window content with new sessions
+        let contentView = createDetailedContentView(with: sessions)
+        window.contentView = contentView
     }
     
     func createDetailedWindow(with sessions: [ClaudeSession]) {
@@ -164,8 +176,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func createDetailedContentView(with sessions: [ClaudeSession]) -> NSView {
         let contentView = NSView()
         
-        // Create header label with instructions
-        let headerLabel = NSTextField(labelWithString: "Double-click any session to jump to it")
+        // Create header label with instructions or loading state
+        let headerText = sessions.isEmpty ? "Loading sessions..." : "Click any session to jump to it"
+        let headerLabel = NSTextField(labelWithString: headerText)
         headerLabel.font = NSFont.systemFont(ofSize: 14)
         headerLabel.textColor = NSColor.secondaryLabelColor
         headerLabel.alignment = .center
@@ -188,29 +201,45 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let sessionHeight: CGFloat = 100
         let margin: CGFloat = 10
         
-        // Sort sessions: active first (newest first), then waiting (newest first)
-        let sortedSessions = sessions.sorted { session1, session2 in
-            if session1.isActive != session2.isActive {
-                return session1.isActive && !session2.isActive
-            }
-            // Within same activity state, sort by start time (newest first)
-            return session1.startTime > session2.startTime
-        }
-        
-        for session in sortedSessions {
-            let sessionView = createSessionView(session: session)
-            sessionView.translatesAutoresizingMaskIntoConstraints = false
-            documentView.addSubview(sessionView)
+        // If no sessions, show loading indicator
+        if sessions.isEmpty {
+            let progressIndicator = NSProgressIndicator()
+            progressIndicator.style = .spinning
+            progressIndicator.translatesAutoresizingMaskIntoConstraints = false
+            documentView.addSubview(progressIndicator)
+            progressIndicator.startAnimation(nil)
             
-            // Position session view
             NSLayoutConstraint.activate([
-                sessionView.topAnchor.constraint(equalTo: documentView.topAnchor, constant: yPosition),
-                sessionView.leadingAnchor.constraint(equalTo: documentView.leadingAnchor, constant: margin),
-                sessionView.trailingAnchor.constraint(equalTo: documentView.trailingAnchor, constant: -margin),
-                sessionView.heightAnchor.constraint(equalToConstant: sessionHeight)
+                progressIndicator.centerXAnchor.constraint(equalTo: documentView.centerXAnchor),
+                progressIndicator.topAnchor.constraint(equalTo: documentView.topAnchor, constant: 50)
             ])
             
-            yPosition += sessionHeight + margin
+            yPosition = 100 // Leave space for the indicator
+        } else {
+            // Sort sessions: active first (newest first), then waiting (newest first)
+            let sortedSessions = sessions.sorted { session1, session2 in
+                if session1.isActive != session2.isActive {
+                    return session1.isActive && !session2.isActive
+                }
+                // Within same activity state, sort by start time (newest first)
+                return session1.startTime > session2.startTime
+            }
+            
+            for session in sortedSessions {
+                let sessionView = createSessionView(session: session)
+                sessionView.translatesAutoresizingMaskIntoConstraints = false
+                documentView.addSubview(sessionView)
+                
+                // Position session view
+                NSLayoutConstraint.activate([
+                    sessionView.topAnchor.constraint(equalTo: documentView.topAnchor, constant: yPosition),
+                    sessionView.leadingAnchor.constraint(equalTo: documentView.leadingAnchor, constant: margin),
+                    sessionView.trailingAnchor.constraint(equalTo: documentView.trailingAnchor, constant: -margin),
+                    sessionView.heightAnchor.constraint(equalToConstant: sessionHeight)
+                ])
+                
+                yPosition += sessionHeight + margin
+            }
         }
         
         // Set document view size
@@ -323,9 +352,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Store session PID in view for gesture recognition
         sessionView.identifier = NSUserInterfaceItemIdentifier(session.pid)
         
-        // Add double-click gesture recognizer
-        let clickGesture = NSClickGestureRecognizer(target: self, action: #selector(sessionDoubleClicked(_:)))
-        clickGesture.numberOfClicksRequired = 2
+        // Add single-click gesture recognizer
+        let clickGesture = NSClickGestureRecognizer(target: self, action: #selector(sessionClicked(_:)))
+        clickGesture.numberOfClicksRequired = 1
         sessionView.addGestureRecognizer(clickGesture)
         
         // Layout constraints for main content
@@ -374,7 +403,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     
-    @objc func sessionDoubleClicked(_ gesture: NSClickGestureRecognizer) {
+    @objc func sessionClicked(_ gesture: NSClickGestureRecognizer) {
         guard let sessionView = gesture.view,
               let pidString = sessionView.identifier?.rawValue else { return }
         

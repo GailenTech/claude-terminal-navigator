@@ -1,5 +1,24 @@
 # 📔 Development Diary - Claude Terminal Navigator
 
+## 2025-07-19 - UX Improvements: Single-Click Navigation & Performance
+
+### What was done
+- Changed double-click to single-click for session navigation
+- Improved window opening performance by showing UI immediately
+- Added loading indicator while sessions are being fetched
+- Window now appears instantly with "Loading sessions..." message
+- Sessions are loaded asynchronously and UI updates when ready
+
+### Decisions made
+- Single-click is more intuitive and faster for users
+- Show UI immediately rather than waiting for data (perceived performance)
+- Use NSProgressIndicator for visual feedback during loading
+
+### Challenges/Learnings
+- Async loading pattern prevents UI blocking
+- Perceived performance is as important as actual performance
+- Simple UX changes can significantly improve user experience
+
 ## 2025-07-19 - Major Release: Session Analytics & DMG Installer
 
 ### What was done

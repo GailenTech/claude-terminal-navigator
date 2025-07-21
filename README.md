@@ -6,7 +6,7 @@ A macOS menu bar app that helps you navigate between active Claude CLI sessions.
 
 - **Automatically detects** all running Claude sessions
 - **Shows real-time info**: CPU usage, memory, Git branch, session duration
-- **Jump to any session** with a double-click
+- **Jump to any session** with a single click
 - **Works with Terminal.app** - click and it switches to the right tab
 
 ## Installation
