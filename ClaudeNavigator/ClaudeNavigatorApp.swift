@@ -31,6 +31,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var timer: Timer?
     var sessionMonitor: ClaudeSessionMonitor!
     var detailWindow: NSWindow?
+    var detailScrollView: NSScrollView?
     
     // Cache for performance
     private var lastActiveCount = 0
@@ -104,6 +105,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             print("🔍 Closing detailed view...")
             window.close()
             detailWindow = nil
+            detailScrollView = nil
             return
         }
         
@@ -136,35 +138,58 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func updateDetailedWindow(with sessions: [ClaudeSession]) {
-        guard let window = detailWindow else { return }
+        guard let window = detailWindow, let scrollView = detailScrollView else { return }
         
         // Save current scroll position
-        var savedScrollPosition: NSPoint?
-        if let scrollView = window.contentView?.subviews.first(where: { $0 is NSScrollView }) as? NSScrollView {
-            savedScrollPosition = scrollView.contentView.visibleRect.origin
-        }
+        let savedScrollPosition = scrollView.contentView.visibleRect.origin
         
-        // Update the window content with new sessions using a fade transition
-        NSAnimationContext.runAnimationGroup({ context in
-            context.duration = 0.25
-            context.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
-            window.contentView?.animator().alphaValue = 0.5
-        }, completionHandler: {
-            let contentView = self.createDetailedContentView(with: sessions)
-            window.contentView = contentView
+        // Update only the document view content without recreating the entire view hierarchy
+        if let documentView = scrollView.documentView as? FlippedView {
+            // Remove all existing session views
+            documentView.subviews.forEach { $0.removeFromSuperview() }
             
-            // Restore scroll position after content update
-            if let scrollPosition = savedScrollPosition,
-               let scrollView = window.contentView?.subviews.first(where: { $0 is NSScrollView }) as? NSScrollView {
-                scrollView.contentView.scroll(to: scrollPosition)
-                scrollView.reflectScrolledClipView(scrollView.contentView)
+            // Add updated session views
+            var yPosition: CGFloat = 0
+            let sessionHeight: CGFloat = 100
+            let margin: CGFloat = 10
+            
+            // Sort sessions: active first (newest first), then waiting (newest first)
+            let sortedSessions = sessions.sorted { session1, session2 in
+                if session1.isActive != session2.isActive {
+                    return session1.isActive && !session2.isActive
+                }
+                return session1.startTime > session2.startTime
             }
             
-            NSAnimationContext.runAnimationGroup({ context in
-                context.duration = 0.25
-                window.contentView?.animator().alphaValue = 1.0
-            })
-        })
+            for session in sortedSessions {
+                let sessionView = createSessionView(session: session)
+                sessionView.translatesAutoresizingMaskIntoConstraints = false
+                documentView.addSubview(sessionView)
+                
+                NSLayoutConstraint.activate([
+                    sessionView.topAnchor.constraint(equalTo: documentView.topAnchor, constant: yPosition),
+                    sessionView.leadingAnchor.constraint(equalTo: documentView.leadingAnchor, constant: margin),
+                    sessionView.trailingAnchor.constraint(equalTo: documentView.trailingAnchor, constant: -margin),
+                    sessionView.heightAnchor.constraint(equalToConstant: sessionHeight)
+                ])
+                
+                yPosition += sessionHeight + margin
+            }
+            
+            // Update document view height by removing old constraints and adding new one
+            documentView.constraints.forEach { constraint in
+                if constraint.firstAttribute == .height {
+                    documentView.removeConstraint(constraint)
+                }
+            }
+            documentView.heightAnchor.constraint(equalToConstant: max(yPosition, 300)).isActive = true
+            
+            // Restore scroll position
+            DispatchQueue.main.async {
+                scrollView.contentView.scroll(to: savedScrollPosition)
+                scrollView.reflectScrolledClipView(scrollView.contentView)
+            }
+        }
     }
     
     func createDetailedWindow(with sessions: [ClaudeSession]) {
@@ -240,6 +265,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         scrollView.autohidesScrollers = true
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(scrollView)
+        
+        // Store reference for scroll position preservation
+        detailScrollView = scrollView
         
         // Create document view with flipped coordinate system
         let documentView = FlippedView()
@@ -469,6 +497,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                             self.detailWindow?.animator().alphaValue = 0.0
                         }, completionHandler: {
                             self.detailWindow?.close()
+                            self.detailWindow = nil
+                            self.detailScrollView = nil
                         })
                     }
                 }
