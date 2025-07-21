@@ -138,6 +138,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func updateDetailedWindow(with sessions: [ClaudeSession]) {
         guard let window = detailWindow else { return }
         
+        // Save current scroll position
+        var savedScrollPosition: NSPoint?
+        if let scrollView = window.contentView?.subviews.first(where: { $0 is NSScrollView }) as? NSScrollView {
+            savedScrollPosition = scrollView.contentView.visibleRect.origin
+        }
+        
         // Update the window content with new sessions using a fade transition
         NSAnimationContext.runAnimationGroup({ context in
             context.duration = 0.25
@@ -146,6 +152,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }, completionHandler: {
             let contentView = self.createDetailedContentView(with: sessions)
             window.contentView = contentView
+            
+            // Restore scroll position after content update
+            if let scrollPosition = savedScrollPosition,
+               let scrollView = window.contentView?.subviews.first(where: { $0 is NSScrollView }) as? NSScrollView {
+                scrollView.contentView.scroll(to: scrollPosition)
+                scrollView.reflectScrolledClipView(scrollView.contentView)
+            }
             
             NSAnimationContext.runAnimationGroup({ context in
                 context.duration = 0.25
@@ -202,11 +215,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         // Create header label with instructions or loading state
         let isFromCache = !cachedSessions.isEmpty && sessionsEqual(sessions, cachedSessions)
+        let cacheAge = Int(Date().timeIntervalSince(lastCacheUpdate))
         let headerText: String
         if sessions.isEmpty {
             headerText = "Loading sessions..."
-        } else if isFromCache {
-            let cacheAge = Int(Date().timeIntervalSince(lastCacheUpdate))
+        } else if isFromCache && cacheAge > 2 {
+            // Only show cache age if it's meaningful (more than 2 seconds)
             headerText = "Click any session to jump to it (cached \(cacheAge)s ago)"
         } else {
             headerText = "Click any session to jump to it"
