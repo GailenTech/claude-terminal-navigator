@@ -2,6 +2,28 @@
 
 All notable changes to Claude Terminal Navigator will be documented in this file.
 
+## [1.3.0] - 2025-07-21
+
+### Added
+- **Session Caching**: Implemented intelligent session caching system for instant window display
+- **Auto-refresh**: Detail window now automatically updates when cache refreshes (every 5 seconds)
+- **Cache Age Indicator**: Shows when cached data is being displayed (only when meaningful, >2 seconds)
+
+### Changed
+- **Single-Click Navigation**: Simplified from double-click to single-click for jumping to sessions
+- **Instant Window Display**: Detail window now opens immediately with cached data instead of showing loading state
+- **Improved Performance**: Window appears instantly, fresh data loads in background
+
+### Fixed
+- **Scroll Position Preservation**: Scroll position is now properly maintained during auto-refresh
+- **Cache UX**: Removed unhelpful "cached 0s ago" messages
+- **Memory Management**: Proper cleanup of scroll view references to prevent memory leaks
+
+### Technical
+- Implemented in-place content updates to preserve UI state
+- Added smooth fade transitions when updating from cache to fresh data
+- Optimized session comparison logic to detect meaningful changes
+
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 

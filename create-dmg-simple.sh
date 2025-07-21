@@ -7,7 +7,7 @@ set -e
 
 APP_NAME="ClaudeNavigator"
 DMG_NAME="Claude-Terminal-Navigator-Installer"
-VERSION="1.2.0"
+VERSION="1.3.0"
 SOURCE_APP="ClaudeNavigator.app"
 FINAL_DMG_NAME="${DMG_NAME}-${VERSION}.dmg"
 
