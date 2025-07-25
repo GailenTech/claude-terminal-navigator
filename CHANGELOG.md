@@ -2,6 +2,46 @@
 
 All notable changes to Claude Terminal Navigator will be documented in this file.
 
+## [1.4.1] - 2025-07-25
+
+### Added
+- **🚨 Session Attention Alert System**: Revolutionary new feature that alerts when Claude sessions need user attention
+- **Smart Transition Detection**: Monitors CPU usage patterns to detect when sessions go from busy to idle
+- **Focus-Aware Alerts**: Only shows alerts for sessions that are NOT currently visible/focused
+- **Intelligent Badge System**: Compact 🚨 badge in menu bar for sessions requiring attention
+- **Priority Sorting**: Sessions needing attention always appear first in all lists and views
+- **AppleScript Focus Detection**: Deep Terminal.app integration to detect which session is currently active
+
+### Changed
+- **Consistent Iconography**: Unified 🚨 emergency icon across menu bar, detailed view, and dropdown menus
+- **Ultra-Compact Badge**: Optimized badge width to avoid camera notch issues on modern MacBooks
+- **Immediate Alert Clearing**: Attention flags clear instantly when user interacts with flagged sessions
+- **Reduced Protection Period**: Lowered manual attention clearing protection from 30s to 10s for better UX
+
+### Fixed
+- **Eliminated UI Race Conditions**: Fixed concurrent session updates that caused inconsistent sorting ("dancing" behavior)
+- **Consistent Session Ordering**: All views now maintain proper sorting: attention → active → idle
+- **CPU Reading Accumulation**: Fixed critical bug where CPU readings weren't properly accumulated for transition detection
+- **Focus Detection Reliability**: Improved AppleScript integration for accurate session focus detection
+
+### Technical
+- Implemented thread-safe session update queue to prevent concurrent modifications
+- Added comprehensive debugging logs for attention state tracking and transitions
+- Enhanced session state persistence across refresh cycles
+- Optimized attention logic with proper transition validation (requires 3+ readings with prior activity)
+- 5-second delay before triggering attention alerts to prevent false positives
+
+## [1.4.0] - 2025-07-25
+
+### Added
+- **Initial Attention Alert System**: First implementation of session attention detection
+- **Focus Detection Framework**: Basic AppleScript integration for Terminal.app focus detection
+- **Session State Tracking**: Enhanced ClaudeSession model with attention tracking properties
+
+### Fixed
+- **Session State Management**: Improved session data persistence and restoration
+- **Badge Width Optimization**: Initial fixes for camera notch compatibility
+
 ## [1.3.0] - 2025-07-21
 
 ### Added
