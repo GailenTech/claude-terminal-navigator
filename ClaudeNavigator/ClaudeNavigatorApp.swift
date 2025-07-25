@@ -292,12 +292,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             
             yPosition = 100 // Leave space for the indicator
         } else {
-            // Sort sessions: active first (newest first), then waiting (newest first)
+            // Sort sessions: attention first, then active first, then by time
             let sortedSessions = sessions.sorted { session1, session2 in
+                // First priority: sessions needing attention
+                if session1.needsAttention != session2.needsAttention {
+                    return session1.needsAttention && !session2.needsAttention
+                }
+                // Second priority: active vs waiting
                 if session1.isActive != session2.isActive {
                     return session1.isActive && !session2.isActive
                 }
-                // Within same activity state, sort by start time (newest first)
+                // Within same state, sort by start time (newest first)
                 return session1.startTime > session2.startTime
             }
             
@@ -360,15 +365,39 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         sessionView.layer?.shadowRadius = 4
         
         // Status indicator with better icons
-        let statusIcon = NSTextField(labelWithString: session.isActive ? "🤖" : "💤")
+        let iconText: String
+        if session.needsAttention {
+            iconText = "🙋‍♀️"  // Woman raising hand for attention
+        } else if session.isActive {
+            iconText = "🤖"    // Active robot
+        } else {
+            iconText = "💤"    // Sleeping
+        }
+        
+        let statusIcon = NSTextField(labelWithString: iconText)
         statusIcon.font = NSFont.systemFont(ofSize: 14)
         statusIcon.translatesAutoresizingMaskIntoConstraints = false
         sessionView.addSubview(statusIcon)
         
-        // Add color transition animation for active sessions
-        if session.isActive {
-            statusIcon.wantsLayer = true
+        // Add animations based on session state
+        statusIcon.wantsLayer = true
+        
+        if session.needsAttention {
+            // More urgent orange pulsing for attention needed
+            let colorAnimation = CABasicAnimation(keyPath: "backgroundColor")
+            colorAnimation.fromValue = NSColor.clear.cgColor
+            colorAnimation.toValue = NSColor.systemOrange.withAlphaComponent(0.8).cgColor
+            colorAnimation.duration = 1.0  // Faster pulse for attention
+            colorAnimation.repeatCount = .infinity
+            colorAnimation.autoreverses = true
+            colorAnimation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
             
+            // Add random delay to desynchronize animations
+            let randomDelay = Double.random(in: 0...0.5)
+            colorAnimation.beginTime = CACurrentMediaTime() + randomDelay
+            
+            statusIcon.layer?.add(colorAnimation, forKey: "attentionPulse")
+        } else if session.isActive {
             // Create a breathing/pulsing effect with background color
             let colorAnimation = CABasicAnimation(keyPath: "backgroundColor")
             colorAnimation.fromValue = NSColor.clear.cgColor
@@ -483,6 +512,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         guard let sessionView = gesture.view,
               let pidString = sessionView.identifier?.rawValue else { return }
         
+        // Clear attention flag when user interacts with session
+        sessionMonitor.clearAttentionFlag(for: pidString)
+        
+        // Force immediate UI refresh to clear attention badge
+        refresh()
+        
         Task {
             do {
                 let sessions = try await sessionMonitor.getActiveSessions()
@@ -520,7 +555,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
     
-    func updateIcon(activeCount: Int, waitingCount: Int) {
+    func updateIcon(activeCount: Int, waitingCount: Int, attentionCount: Int = 0) {
         guard let button = statusItem.button else { return }
         
         // Only update if counts changed
@@ -534,13 +569,23 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let totalCount = activeCount + waitingCount
         
         DispatchQueue.main.async {
-            // Very compact format to avoid notch issues
+            // Ultra-compact format to avoid camera notch issues
+            // Options for attention badge (most compact to least):
+            // 1. "🚨" (emergency) - single emoji, very compact
+            // 2. "🔴" (red circle) - single emoji, very compact  
+            // 3. "❗" (exclamation) - single emoji, very compact
+            // 4. "⚠️" (warning triangle) - current, takes more space
+            
+            let attentionEmoji = attentionCount > 0 ? "🚨" : ""
+            
             if activeCount > 0 {
-                button.title = "🤖\(activeCount)/\(totalCount)"
-                button.toolTip = "\(activeCount) active, \(waitingCount) waiting"
+                button.title = "\(attentionEmoji)🤖\(activeCount)/\(totalCount)"
+                let attentionInfo = attentionCount > 0 ? ", \(attentionCount) need attention" : ""
+                button.toolTip = "\(activeCount) active, \(waitingCount) waiting\(attentionInfo)"
             } else if waitingCount > 0 {
-                button.title = "🤖0/\(totalCount)"
-                button.toolTip = "All \(waitingCount) sessions waiting"
+                button.title = "\(attentionEmoji)🤖0/\(totalCount)"
+                let attentionInfo = attentionCount > 0 ? ", \(attentionCount) need attention" : ""
+                button.toolTip = "All \(waitingCount) sessions waiting\(attentionInfo)"
             } else {
                 button.title = "🤖"
                 button.toolTip = "No active Claude sessions"
@@ -615,9 +660,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         let activeSessions = sessions.filter { $0.isActive }
         let waitingSessions = sessions.filter { !$0.isActive }
+        let attentionSessions = sessions.filter { $0.needsAttention }
         
         // Update icon
-        updateIcon(activeCount: activeSessions.count, waitingCount: waitingSessions.count)
+        updateIcon(activeCount: activeSessions.count, waitingCount: waitingSessions.count, attentionCount: attentionSessions.count)
         
         // Header
         if activeSessions.count > 0 {
@@ -648,16 +694,30 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         // Sessions
         if !sessions.isEmpty {
-            // Sort sessions: active first, then by CPU usage
+            // Sort sessions: attention first, then active first, then by CPU usage
             let sortedSessions = sessions.sorted { s1, s2 in
+                // First priority: sessions needing attention
+                if s1.needsAttention != s2.needsAttention {
+                    return s1.needsAttention && !s2.needsAttention
+                }
+                // Second priority: active vs waiting
                 if s1.isActive != s2.isActive {
                     return s1.isActive
                 }
+                // Within same state, sort by CPU usage
                 return (s1.cachedCPU ?? 0) > (s2.cachedCPU ?? 0)
             }
             
             for session in sortedSessions {
-                let icon = session.isActive ? "🤖" : "💤"
+                let icon: String
+                if session.needsAttention {
+                    icon = "🙋‍♀️"  // Woman raising hand for attention
+                } else if session.isActive {
+                    icon = "🤖"    // Active robot
+                } else {
+                    icon = "💤"    // Sleeping
+                }
+                
                 let title = "\(icon) \(session.dirName)"
                 
                 let sessionItem = NSMenuItem(title: title, 
@@ -767,6 +827,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     @objc func jumpToSession(_ sender: NSMenuItem) {
         guard let session = sender.representedObject as? ClaudeSession else { return }
+        
+        // Clear attention flag when user interacts with session
+        sessionMonitor.clearAttentionFlag(for: session.pid)
+        
+        // Force immediate UI refresh to clear attention badge
+        refresh()
         
         Task {
             do {

@@ -1,5 +1,48 @@
 # 📔 Development Diary - Claude Terminal Navigator
 
+## 2025-07-25 - Attention Alert System Implementation
+
+### What was done
+- **Comprehensive attention detection system**: Sessions that transition from busy (CPU > 1%) to idle (CPU ≤ 1%) now trigger attention alerts after 5 seconds
+- **Smart focus detection**: Uses AppleScript to detect which Terminal tab is currently focused, preventing alerts for visible sessions
+- **Enhanced UI indicators**: 
+  - Badge (⚠️) appears in menu bar icon when sessions need attention
+  - Sessions needing attention show 🙋‍♀️ icon instead of 💤
+  - Orange pulsing animation for urgent attention (faster than normal activity pulse)
+- **Interactive attention clearing**: Clicking on a session automatically clears its attention flag
+- **CPU reading history**: Tracks last 5 CPU readings per session for accurate transition detection
+
+### Decisions made
+- **5-second delay**: Prevents false positives from brief CPU drops during normal operation
+- **Focus exclusion**: Critical feature - never alert for sessions that are currently visible to user
+- **AppleScript caching**: Cache focus detection results for 1 second to reduce AppleScript overhead
+- **Transition detection**: Requires 3 consecutive low CPU readings after detecting previous high activity
+- **Visual hierarchy**: Attention (🙋‍♀️) > Active (🤖) > Idle (💤) for clear status communication
+
+### Challenges/Learnings
+- **AppleScript frontmost detection**: Combined Terminal.app frontmost check with specific tab TTY matching for accuracy
+- **Session state persistence**: Extended ClaudeSession with non-persisted attention tracking properties
+- **CPU history management**: Implemented sliding window of readings to detect meaningful transitions
+- **Thread-safe updates**: Used DispatchQueue for safe session state modifications
+- **Boolean AppleScript results**: Fixed NSAppleScript boolean value handling in Swift
+
+### Architecture Changes
+- **New FocusDetector class**: Handles all Terminal.app focus detection with caching
+- **Extended ClaudeSession model**: Added `needsAttention`, `lastCPUReadings`, `lastStateChange` properties
+- **Enhanced ClaudeSessionMonitor**: Integrated attention logic into main session processing loop
+- **UI updates in AppDelegate**: Modified icon badges, session icons, and animations
+
+### Performance Impact
+- **Minimal overhead**: Focus detection cached for 1 second, only checks when sessions transition
+- **Efficient AppleScript**: Uses targeted scripts that return quickly
+- **Memory usage**: CPU reading history limited to 5 values per session
+
+### Next steps
+- Monitor real-world usage patterns to adjust timing thresholds if needed
+- Consider adding user preferences for attention alert sensitivity
+- Potential sound notifications for high-priority attention alerts
+- Analytics integration to track attention patterns
+
 ## 2025-07-21 - Session Cache Implementation
 
 ### What was done

@@ -27,6 +27,12 @@ struct ClaudeSession: Codable {
     var gitBranch: String?
     var gitStatus: String?
     
+    // Attention tracking (not persisted)
+    var needsAttention: Bool = false
+    var lastCPUReadings: [Double] = []
+    var lastStateChange: Date?
+    var attentionManuallyClearedAt: Date? // Track when user manually cleared attention
+    
     // Coding keys to match JSON format (kept for compatibility)
     enum CodingKeys: String, CodingKey {
         case pid
@@ -76,6 +82,48 @@ struct ClaudeSession: Codable {
             return "\(hours)h \(minutes)m"
         }
     }
+    
+    // MARK: - Attention Detection Methods
+    
+    mutating func updateCPUReading(_ cpu: Double) {
+        // Keep only last 5 readings for transition detection
+        lastCPUReadings.append(cpu)
+        if lastCPUReadings.count > 5 {
+            lastCPUReadings.removeFirst()
+        }
+    }
+    
+    var hasTransitionedToIdle: Bool {
+        // Need at least 3 readings to detect transition
+        guard lastCPUReadings.count >= 3 else { return false }
+        
+        let recent = Array(lastCPUReadings.suffix(3))
+        
+        // Check if recent readings show idle (≤ 1%)
+        let recentIsIdle = recent.allSatisfy { $0 <= 1.0 }
+        
+        // Look for any earlier high activity in the history
+        let hasEarlierActivity = lastCPUReadings.count > 3 && 
+                                lastCPUReadings.prefix(lastCPUReadings.count - 3).contains { $0 > 1.0 }
+        
+        // Debug logging
+        if lastCPUReadings.count >= 3 {
+            print("🔍 Transition check: readings=\(lastCPUReadings), recentIdle=\(recentIsIdle), hadActivity=\(hasEarlierActivity)")
+        }
+        
+        return recentIsIdle && hasEarlierActivity
+    }
+    
+    var shouldTriggerAttentionAlert: Bool {
+        guard hasTransitionedToIdle else { return false }
+        
+        // Check if enough time has passed since the transition
+        if let lastChange = lastStateChange {
+            return Date().timeIntervalSince(lastChange) >= 5.0
+        }
+        
+        return false
+    }
 }
 
 // MARK: - Session Monitor
@@ -85,6 +133,7 @@ class ClaudeSessionMonitor {
     private var knownSessions: [String: ClaudeSession] = [:] // PID -> Session
     private let sessionQueue = DispatchQueue(label: "com.claudenavigator.sessions")
     private let tracker = SessionTracker()
+    private let focusDetector = FocusDetector.shared
     
     init() {
         print("🚀 Initializing standalone ClaudeSessionMonitor")
@@ -101,10 +150,7 @@ class ClaudeSessionMonitor {
             if let session = await createSession(from: processInfo) {
                 sessions.append(session)
                 
-                // Store in known sessions
-                sessionQueue.sync {
-                    knownSessions[session.pid] = session
-                }
+                // Note: Don't store in knownSessions yet - we need to preserve existing data first
             }
         }
         
@@ -114,11 +160,22 @@ class ClaudeSessionMonitor {
         // Update CPU, memory and Git info for all sessions
         var updatedSessions: [ClaudeSession] = []
         for var session in sessions {
+            // Get existing session data for transition tracking
+            let existingSession = sessionQueue.sync { knownSessions[session.pid] }
+            if let existing = existingSession {
+                session.lastCPUReadings = existing.lastCPUReadings
+                session.lastStateChange = existing.lastStateChange
+                session.needsAttention = existing.needsAttention
+                session.attentionManuallyClearedAt = existing.attentionManuallyClearedAt
+            }
+            
             // Get CPU usage
             if let cpu = await getCPUUsage(for: session.pid) {
                 session.cachedCPU = cpu
-                print("📊 PID \(session.pid) CPU: \(cpu)%")
+                session.updateCPUReading(cpu)
+                print("📊 PID \(session.pid) CPU: \(cpu)% (readings: \(session.lastCPUReadings.count))")
             }
+            
             // Get memory usage
             if let memory = await getMemoryUsage(for: session.pid) {
                 session.cachedMemory = memory
@@ -131,10 +188,18 @@ class ClaudeSessionMonitor {
                 session.gitStatus = status
             }
             
+            // Check for attention needed transition
+            await processAttentionLogic(for: &session)
+            
             // Update metrics tracking
             tracker.updateMetrics(for: session)
             
             updatedSessions.append(session)
+            
+            // Store updated session back in knownSessions for next iteration
+            sessionQueue.sync {
+                knownSessions[session.pid] = session
+            }
         }
         
         // Check for ended sessions
@@ -413,6 +478,75 @@ class ClaudeSessionMonitor {
             return true
         } catch {
             return false
+        }
+    }
+    
+    // MARK: - Attention Logic
+    
+    private func processAttentionLogic(for session: inout ClaudeSession) async {
+        print("🔧 Processing attention logic for PID \(session.pid), CPU readings count: \(session.lastCPUReadings.count)")
+        
+        // Debug: Print CPU readings for debugging
+        if session.lastCPUReadings.count >= 3 {
+            print("🧪 Session \(session.pid) CPU history: \(session.lastCPUReadings)")
+        } else {
+            print("⏳ Session \(session.pid) needs more readings (has \(session.lastCPUReadings.count), needs 3+)")
+        }
+        
+        // Check if attention was manually cleared recently (within last 30 seconds)
+        let wasManuallyClearedRecently = session.attentionManuallyClearedAt?.timeIntervalSinceNow ?? -Double.infinity > -30
+        if wasManuallyClearedRecently {
+            print("🚫 Session \(session.pid) attention was manually cleared recently - skipping auto-attention logic")
+            return
+        }
+        
+        // Check if session has transitioned to idle
+        if session.hasTransitionedToIdle {
+            // Mark the transition time if not already set
+            if session.lastStateChange == nil {
+                session.lastStateChange = Date()
+                print("🔄 Session \(session.pid) (\(session.dirName)) transitioned to idle")
+            }
+            
+            // Check if enough time has passed and session is not focused
+            if session.shouldTriggerAttentionAlert {
+                print("⏰ Session \(session.pid) ready for attention check (5s passed)")
+                let isFocused = await focusDetector.isSessionCurrentlyFocused(session)
+                
+                if !isFocused && !session.needsAttention {
+                    session.needsAttention = true
+                    print("⚠️ Session \(session.pid) (\(session.dirName)) needs attention - not focused")
+                } else if isFocused {
+                    print("👀 Session \(session.pid) (\(session.dirName)) is focused - skipping attention alert")
+                } else if session.needsAttention {
+                    print("🔄 Session \(session.pid) already flagged for attention")
+                }
+            } else {
+                print("⏳ Session \(session.pid) transitioned but waiting for 5s delay")
+            }
+        } else {
+            // Reset attention state if session becomes active again
+            if session.needsAttention && session.isActive {
+                session.needsAttention = false
+                session.lastStateChange = nil
+                session.attentionManuallyClearedAt = nil // Clear manual flag when naturally resolved
+                print("✅ Session \(session.pid) (\(session.dirName)) became active - clearing attention flag")
+            }
+        }
+    }
+    
+    /// Clear attention flag for a specific session (called when user interacts with it)
+    func clearAttentionFlag(for pid: String) {
+        sessionQueue.sync {
+            if var session = knownSessions[pid] {
+                session.needsAttention = false
+                session.lastStateChange = nil
+                session.attentionManuallyClearedAt = Date() // Mark when user manually cleared
+                knownSessions[pid] = session
+                print("👆 User interacted with session \(pid) - clearing attention flag and marking as manually cleared")
+            } else {
+                print("⚠️ Attempted to clear attention flag for unknown session: \(pid)")
+            }
         }
     }
 }
