@@ -36,6 +36,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     // Cache for performance
     private var lastActiveCount = 0
     private var lastWaitingCount = 0
+    private var lastAttentionCount = 0
     private var cachedSessions: [ClaudeSession] = []
     private var lastCacheUpdate: Date = Date()
     private var cacheUpdateTimer: Timer?
@@ -153,11 +154,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             let sessionHeight: CGFloat = 100
             let margin: CGFloat = 10
             
-            // Sort sessions: active first (newest first), then waiting (newest first)
+            // Sort sessions: attention first, then active first, then by time
             let sortedSessions = sessions.sorted { session1, session2 in
+                // First priority: sessions needing attention
+                if session1.needsAttention != session2.needsAttention {
+                    return session1.needsAttention && !session2.needsAttention
+                }
+                // Second priority: active vs waiting
                 if session1.isActive != session2.isActive {
                     return session1.isActive && !session2.isActive
                 }
+                // Within same state, sort by start time (newest first)
                 return session1.startTime > session2.startTime
             }
             
@@ -364,10 +371,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         sessionView.layer?.shadowOffset = CGSize(width: 0, height: 2)
         sessionView.layer?.shadowRadius = 4
         
-        // Status indicator with better icons
+        // Status indicator with consistent icons
         let iconText: String
         if session.needsAttention {
-            iconText = "🙋‍♀️"  // Woman raising hand for attention
+            iconText = "🚨"   // Emergency - consistent with menu bar badge
         } else if session.isActive {
             iconText = "🤖"    // Active robot
         } else {
@@ -558,8 +565,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func updateIcon(activeCount: Int, waitingCount: Int, attentionCount: Int = 0) {
         guard let button = statusItem.button else { return }
         
+        // Track attention count changes too
+        let attentionCountChanged = attentionCount != lastAttentionCount
+        lastAttentionCount = attentionCount
+        
         // Only update if counts changed
-        if activeCount == lastActiveCount && waitingCount == lastWaitingCount {
+        if activeCount == lastActiveCount && waitingCount == lastWaitingCount && !attentionCountChanged {
             return
         }
         
@@ -568,14 +579,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         let totalCount = activeCount + waitingCount
         
+        // Debug attention count with session details
+        if attentionCount > 0 {
+            let attentionSessions = cachedSessions.filter { $0.needsAttention }
+            let pids = attentionSessions.map { $0.pid }.joined(separator: ", ")
+            print("🔔 Attention badge: \(attentionCount) sessions need attention (PIDs: \(pids))")
+        } else if attentionCountChanged {
+            print("✅ Attention badge cleared - no sessions need attention")
+        }
+        
         DispatchQueue.main.async {
             // Ultra-compact format to avoid camera notch issues
-            // Options for attention badge (most compact to least):
-            // 1. "🚨" (emergency) - single emoji, very compact
-            // 2. "🔴" (red circle) - single emoji, very compact  
-            // 3. "❗" (exclamation) - single emoji, very compact
-            // 4. "⚠️" (warning triangle) - current, takes more space
-            
             let attentionEmoji = attentionCount > 0 ? "🚨" : ""
             
             if activeCount > 0 {
@@ -711,7 +725,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             for session in sortedSessions {
                 let icon: String
                 if session.needsAttention {
-                    icon = "🙋‍♀️"  // Woman raising hand for attention
+                    icon = "🚨"   // Emergency - consistent with menu bar badge
                 } else if session.isActive {
                     icon = "🤖"    // Active robot
                 } else {

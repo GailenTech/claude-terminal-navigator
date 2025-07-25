@@ -135,19 +135,47 @@ class ClaudeSessionMonitor {
     private let tracker = SessionTracker()
     private let focusDetector = FocusDetector.shared
     
+    // Prevent concurrent session updates
+    private var isUpdating = false
+    private let updateQueue = DispatchQueue(label: "com.claudenavigator.update", qos: .userInitiated)
+    
     init() {
         print("🚀 Initializing standalone ClaudeSessionMonitor")
     }
     
     func getActiveSessions() async throws -> [ClaudeSession] {
+        return try await withCheckedThrowingContinuation { continuation in
+            updateQueue.async {
+                Task {
+                    do {
+                        let result = try await self.performSessionUpdate()
+                        continuation.resume(returning: result)
+                    } catch {
+                        continuation.resume(throwing: error)
+                    }
+                }
+            }
+        }
+    }
+    
+    private func performSessionUpdate() async throws -> [ClaudeSession] {
+        // Prevent concurrent updates
+        guard !self.isUpdating else {
+            print("⚠️ Update already in progress, skipping concurrent call")
+            return self.sessionQueue.sync { Array(self.knownSessions.values) }
+        }
+        
+        self.isUpdating = true
+        defer { self.isUpdating = false }
+        
         // Find all Claude processes
-        let claudeProcesses = try await findClaudeProcesses()
+        let claudeProcesses = try await self.findClaudeProcesses()
         
         // Convert processes to sessions
         var sessions: [ClaudeSession] = []
         
         for processInfo in claudeProcesses {
-            if let session = await createSession(from: processInfo) {
+            if let session = await self.createSession(from: processInfo) {
                 sessions.append(session)
                 
                 // Note: Don't store in knownSessions yet - we need to preserve existing data first
@@ -155,60 +183,60 @@ class ClaudeSessionMonitor {
         }
         
         // Clean up dead sessions from memory
-        await cleanupDeadSessionsFromMemory()
+        await self.cleanupDeadSessionsFromMemory()
         
         // Update CPU, memory and Git info for all sessions
         var updatedSessions: [ClaudeSession] = []
         for var session in sessions {
             // Get existing session data for transition tracking
-            let existingSession = sessionQueue.sync { knownSessions[session.pid] }
+            let existingSession = self.sessionQueue.sync { self.knownSessions[session.pid] }
             if let existing = existingSession {
                 session.lastCPUReadings = existing.lastCPUReadings
                 session.lastStateChange = existing.lastStateChange
                 session.needsAttention = existing.needsAttention
                 session.attentionManuallyClearedAt = existing.attentionManuallyClearedAt
             }
-            
+        
             // Get CPU usage
-            if let cpu = await getCPUUsage(for: session.pid) {
+            if let cpu = await self.getCPUUsage(for: session.pid) {
                 session.cachedCPU = cpu
                 session.updateCPUReading(cpu)
                 print("📊 PID \(session.pid) CPU: \(cpu)% (readings: \(session.lastCPUReadings.count))")
             }
             
             // Get memory usage
-            if let memory = await getMemoryUsage(for: session.pid) {
+            if let memory = await self.getMemoryUsage(for: session.pid) {
                 session.cachedMemory = memory
             }
             // Get Git info
-            if let branch = await getGitBranch(for: session.workingDir) {
+            if let branch = await self.getGitBranch(for: session.workingDir) {
                 session.gitBranch = branch
             }
-            if let status = await getGitStatus(for: session.workingDir) {
+            if let status = await self.getGitStatus(for: session.workingDir) {
                 session.gitStatus = status
             }
             
             // Check for attention needed transition
-            await processAttentionLogic(for: &session)
+            await self.processAttentionLogic(for: &session)
             
             // Update metrics tracking
-            tracker.updateMetrics(for: session)
+            self.tracker.updateMetrics(for: session)
             
             updatedSessions.append(session)
             
             // Store updated session back in knownSessions for next iteration
-            sessionQueue.sync {
-                knownSessions[session.pid] = session
+            self.sessionQueue.sync {
+                self.knownSessions[session.pid] = session
             }
         }
         
         // Check for ended sessions
         let activePIDs = sessions.map { $0.pid }
-        let trackedPIDs = Array(knownSessions.keys)
+        let trackedPIDs = self.sessionQueue.sync { Array(self.knownSessions.keys) }
         
         for pid in trackedPIDs {
             if !activePIDs.contains(pid) {
-                tracker.stopTracking(pid: pid)
+                self.tracker.stopTracking(pid: pid)
             }
         }
         
@@ -493,10 +521,11 @@ class ClaudeSessionMonitor {
             print("⏳ Session \(session.pid) needs more readings (has \(session.lastCPUReadings.count), needs 3+)")
         }
         
-        // Check if attention was manually cleared recently (within last 30 seconds)
-        let wasManuallyClearedRecently = session.attentionManuallyClearedAt?.timeIntervalSinceNow ?? -Double.infinity > -30
+        // Check if attention was manually cleared recently (within last 10 seconds)
+        let wasManuallyClearedRecently = session.attentionManuallyClearedAt?.timeIntervalSinceNow ?? -Double.infinity > -10
         if wasManuallyClearedRecently {
-            print("🚫 Session \(session.pid) attention was manually cleared recently - skipping auto-attention logic")
+            let secondsAgo = Int(abs(session.attentionManuallyClearedAt?.timeIntervalSinceNow ?? 0))
+            print("🚫 Session \(session.pid) attention was manually cleared \(secondsAgo)s ago - skipping auto-attention logic")
             return
         }
         
