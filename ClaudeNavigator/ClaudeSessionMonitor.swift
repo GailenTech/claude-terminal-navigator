@@ -26,6 +26,8 @@ struct ClaudeSession: Codable {
     var cachedMemory: Double?
     var gitBranch: String?
     var gitStatus: String?
+    var gitRepo: String?
+    var lastUpdateTime: Date?
     
     // Attention tracking (not persisted)
     var needsAttention: Bool = false
@@ -80,6 +82,24 @@ struct ClaudeSession: Codable {
             let hours = Int(duration / 3600)
             let minutes = Int((duration.truncatingRemainder(dividingBy: 3600)) / 60)
             return "\(hours)h \(minutes)m"
+        }
+    }
+    
+    // Format session age (time since last update)
+    var formattedAge: String {
+        guard let updateTime = lastUpdateTime else { return "" }
+        let duration = Date().timeIntervalSince(updateTime)
+        
+        if duration < 60 {
+            return "\(Int(duration))s ago"
+        } else if duration < 3600 {
+            return "\(Int(duration / 60))m ago"
+        } else if duration < 86400 {
+            let hours = Int(duration / 3600)
+            return "\(hours)h ago"
+        } else {
+            let days = Int(duration / 86400)
+            return "\(days)d ago"
         }
     }
     
@@ -138,6 +158,7 @@ class ClaudeSessionMonitor {
     // Prevent concurrent session updates
     private var isUpdating = false
     private let updateQueue = DispatchQueue(label: "com.claudenavigator.update", qos: .userInitiated)
+    private var updateCounter = 0
     
     init() {
         print("🚀 Initializing standalone ClaudeSessionMonitor")
@@ -158,7 +179,15 @@ class ClaudeSessionMonitor {
         }
     }
     
+    // Synchronous version for UI operations
+    func getActiveSessions() -> [ClaudeSession] {
+        return sessionQueue.sync { Array(knownSessions.values) }
+    }
+    
     private func performSessionUpdate() async throws -> [ClaudeSession] {
+        // Increment update counter
+        updateCounter += 1
+        
         // Prevent concurrent updates
         guard !self.isUpdating else {
             print("⚠️ Update already in progress, skipping concurrent call")
@@ -182,8 +211,35 @@ class ClaudeSessionMonitor {
             }
         }
         
-        // Clean up dead sessions from memory
-        await self.cleanupDeadSessionsFromMemory()
+        // NOTE: Don't cleanup dead sessions yet - we need them to detect session ends
+        // await self.cleanupDeadSessionsFromMemory()
+        
+        // Check for ended sessions BEFORE updating knownSessions
+        let activePIDs = sessions.map { $0.pid }
+        let trackedPIDs = self.sessionQueue.sync { Array(self.knownSessions.keys) }
+        
+        print("🔍 Checking for ended sessions. Active: \(activePIDs.count), Tracked: \(trackedPIDs.count)")
+        
+        for pid in trackedPIDs {
+            if !activePIDs.contains(pid) {
+                print("⚠️ Session with PID \(pid) is no longer active")
+                // Session has ended
+                if let endedSession = self.sessionQueue.sync(execute: { self.knownSessions[pid] }) {
+                    // Mark session as ended in history
+                    SessionRecoveryManager.shared.sessionEnded(endedSession.sessionId)
+                    print("📝 Session ended: \(endedSession.sessionId) (PID: \(pid))")
+                    
+                    // Remove from knownSessions
+                    self.sessionQueue.sync {
+                        self.knownSessions.removeValue(forKey: pid)
+                    }
+                } else {
+                    print("❓ Could not find session data for PID \(pid)")
+                }
+                
+                self.tracker.stopTracking(pid: pid)
+            }
+        }
         
         // Update CPU, memory and Git info for all sessions
         var updatedSessions: [ClaudeSession] = []
@@ -228,15 +284,20 @@ class ClaudeSessionMonitor {
             self.sessionQueue.sync {
                 self.knownSessions[session.pid] = session
             }
+            
+            // Update presence in database periodically (every 5 updates)
+            if self.updateCounter % 5 == 0 {
+                SessionDatabase.shared.updateSessionPresence(sessionId: session.sessionId)
+            }
         }
         
-        // Check for ended sessions
-        let activePIDs = sessions.map { $0.pid }
-        let trackedPIDs = self.sessionQueue.sync { Array(self.knownSessions.keys) }
-        
-        for pid in trackedPIDs {
-            if !activePIDs.contains(pid) {
-                self.tracker.stopTracking(pid: pid)
+        // Now cleanup any remaining dead sessions that weren't in current active list
+        self.sessionQueue.sync {
+            let currentActivePIDs = Set(activePIDs)
+            let staleEntries = self.knownSessions.keys.filter { !currentActivePIDs.contains($0) }
+            for stalePid in staleEntries {
+                print("🧹 Cleaning up stale session entry: \(stalePid)")
+                self.knownSessions.removeValue(forKey: stalePid)
             }
         }
         
@@ -244,26 +305,33 @@ class ClaudeSessionMonitor {
     }
     
     private func findClaudeProcesses() async throws -> [(pid: String, ppid: String, tty: String, startTime: String, command: String)] {
-        // Find all processes named "claude"
+        // Find all processes named "claude" - use separate ps and awk to get proper command
         let output = try await ShellExecutor.run(
-            "ps -eo pid,ppid,tty,lstart,command | grep -E '/claude\\s*$|claude\\s*$' | grep -v grep | grep -v claude-nav | grep -v ClaudeNavigator"
+            "ps aux | grep -E 'claude\\s' | grep -v grep | grep -v claude-nav | grep -v ClaudeNavigator | awk '{print $2}'"
         )
         
         var processes: [(pid: String, ppid: String, tty: String, startTime: String, command: String)] = []
         
-        let lines = output.split(separator: "\n")
-        for line in lines {
-            let components = line.split(separator: " ", maxSplits: 6, omittingEmptySubsequences: true)
-            if components.count >= 7 {
-                let pid = String(components[0])
-                let ppid = String(components[1])
-                let tty = String(components[2])
-                // lstart format: "Thu Jul 17 13:25:12 2025"
-                let startTime = components[3..<7].joined(separator: " ")
-                let command = String(components[6])
-                
-                processes.append((pid: pid, ppid: ppid, tty: tty, startTime: startTime, command: command))
-                print("🔍 Found Claude process: PID=\(pid), TTY=\(tty)")
+        let pids = output.split(separator: "\n").map { String($0).trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
+        
+        // For each PID, get detailed info
+        for pid in pids {
+            // Get process details including full command
+            if let detailOutput = try? await ShellExecutor.run(
+                "ps -o pid,ppid,tty,lstart,args -p \(pid) | tail -1"
+            ) {
+                let components = detailOutput.split(separator: " ", maxSplits: 7, omittingEmptySubsequences: true)
+                if components.count >= 8 {
+                    let ppid = String(components[1])
+                    let tty = String(components[2])
+                    // lstart format: "Thu Jul 17 13:25:12 2025"
+                    let startTime = components[3..<8].joined(separator: " ")
+                    // Rest is the command and arguments
+                    let command = components.count > 8 ? String(components[8...].joined(separator: " ")) : "claude"
+                    
+                    processes.append((pid: pid, ppid: ppid, tty: tty, startTime: startTime, command: command))
+                    print("🔍 Found Claude process: PID=\(pid), TTY=\(tty)")
+                }
             }
         }
         
@@ -301,7 +369,51 @@ class ClaudeSessionMonitor {
             parentPid: processInfo.ppid
         )
         
+        // Check if this is a new session (not in knownSessions)
+        let isNewSession = sessionQueue.sync { knownSessions[pid] == nil }
+        
+        if isNewSession {
+            // This is a new session - capture command and save to history
+            var command = "claude"
+            var arguments: [String] = []
+            
+            // First try to get command from session file if it exists
+            if let sessionData = await getSessionFileData(for: pid) {
+                command = sessionData.command
+                arguments = sessionData.arguments
+            } else {
+                // Fallback to parsing the process command
+                let commandParts = processInfo.command.components(separatedBy: " ")
+                command = commandParts.first ?? "claude"
+                arguments = Array(commandParts.dropFirst())
+            }
+            
+            // Save session to history with command
+            SessionRecoveryManager.shared.sessionStarted(session, command: command, arguments: arguments)
+            
+            // IMPORTANT: Add to knownSessions immediately so we can track when it ends
+            sessionQueue.sync {
+                knownSessions[pid] = session
+            }
+            
+            print("📝 New session detected and saved: \(sessionId) with command: \(command) \(arguments.joined(separator: " "))")
+        }
+        
         return session
+    }
+    
+    private func getSessionFileData(for pid: String) async -> (command: String, arguments: [String])? {
+        // Try to read the session file created by claude-nav wrapper
+        let sessionPath = "\(NSHomeDirectory())/.claude/sessions/\(pid).json"
+        
+        guard let data = try? Data(contentsOf: URL(fileURLWithPath: sessionPath)),
+              let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let command = json["command"] as? String else {
+            return nil
+        }
+        
+        let arguments = (json["arguments"] as? [String]) ?? []
+        return (command: command, arguments: arguments)
     }
     
     private func getWorkingDirectory(for pid: String) async -> String? {

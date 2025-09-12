@@ -157,24 +157,18 @@ class AppDelegate: NSObject, NSApplicationDelegate, ClickableSessionViewDelegate
             
         case .recent:
             // Load recent sessions from database, excluding active sessions
-            Task {
-                do {
-                    let activeSessions = try await sessionMonitor.getActiveSessions()
-                    let activeProjectPaths = Set(activeSessions.map { $0.workingDir })
-                    let allRecentSessions = SessionRecoveryManager.shared.getRecentSessionsAsClaudeSessions(limit: 20)
-                    
-                    // Filter out sessions for paths that currently have active sessions
-                    let recentSessions = allRecentSessions.filter { session in
-                        !activeProjectPaths.contains(session.workingDir)
-                    }
-                    
-                    createDetailedWindow(with: recentSessions, mode: mode)
-                } catch {
-                    print("Error getting recent sessions: \(error)")
-                    // Show empty recent sessions on error
-                    createDetailedWindow(with: [], mode: mode)
-                }
+            // Use synchronous approach to avoid threading issues
+            let activeSessions = sessionMonitor.getActiveSessions()
+            let activeProjectPaths = Set(activeSessions.map { $0.workingDir })
+            let allRecentSessions = SessionRecoveryManager.shared.getRecentSessionsAsClaudeSessions(limit: 20)
+            
+            // Filter out sessions for paths that currently have active sessions
+            let recentSessions = allRecentSessions.filter { session in
+                !activeProjectPaths.contains(session.workingDir)
             }
+            
+            // Create window directly on main thread
+            createDetailedWindow(with: recentSessions, mode: mode)
         }
     }
     

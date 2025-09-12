@@ -80,6 +80,16 @@ class SessionTracker {
             projectPath: tracked.projectPath,
             gitBranch: tracked.gitBranch,
             gitRepo: tracked.gitRepo,
+            sessionId: tracked.pid, // Use PID as session ID for now
+            pid: tracked.pid,
+            command: "claude", // Default command
+            arguments: [], // Default empty arguments
+            terminal: "Terminal", // Default terminal
+            tty: "", // Default empty TTY
+            windowTitle: "Claude Session", // Default window title
+            lastSeen: Date(), // Current time
+            exitCode: nil, // Still running
+            exitReason: nil, // Still running
             peakCPU: tracked.metrics.peakCPU,
             avgCPU: tracked.metrics.avgCPU,
             peakMemory: tracked.metrics.peakMemory,
@@ -109,6 +119,16 @@ class SessionTracker {
                 projectPath: tracked.projectPath,
                 gitBranch: tracked.gitBranch,
                 gitRepo: tracked.gitRepo,
+                sessionId: tracked.pid, // Use PID as session ID for now
+                pid: tracked.pid,
+                command: "claude", // Default command
+                arguments: [], // Default empty arguments
+                terminal: "Terminal", // Default terminal
+                tty: "", // Default empty TTY
+                windowTitle: "Claude Session", // Default window title
+                lastSeen: Date(), // Current time
+                exitCode: 0, // Successful exit
+                exitReason: "normal", // Normal exit
                 peakCPU: tracked.metrics.peakCPU,
                 avgCPU: tracked.metrics.avgCPU,
                 peakMemory: tracked.metrics.peakMemory,

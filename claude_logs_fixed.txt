@@ -1,0 +1,157 @@
+🚀 ClaudeNavigator starting...
+✅ Activation policy set to accessory
+✅ Status item created
+🚀 Initializing standalone ClaudeSessionMonitor
+✅ Button configured with emoji title: 🤖
+🔄 Starting initial refresh...
+✅ ClaudeNavigator fully initialized!
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=10974, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=28728, TTY=ttys012
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 16.5% (readings: 1)
+🔧 Processing attention logic for PID 5142, CPU readings count: 1
+⏳ Session 5142 needs more readings (has 1, needs 3+)
+📊 Started tracking session: 5142 in facturas_email_Abra3
+📊 Database path: /Users/jorge/Library/Application Support/ClaudeNavigator/sessions.db
+✅ Database opened successfully at /Users/jorge/Library/Application Support/ClaudeNavigator/sessions.db
+✅ SQL executed successfully
+✅ SQL executed successfully
+✅ SQL executed successfully
+✅ Session saved: 99AD60DF-2F39-4ECC-A14C-839573B31549
+📊 Saved snapshot for session 5142
+📊 PID 10974 CPU: 0.0% (readings: 1)
+🔧 Processing attention logic for PID 10974, CPU readings count: 1
+⏳ Session 10974 needs more readings (has 1, needs 3+)
+📊 Started tracking session: 10974 in temporal-workflow
+✅ Session saved: 0EECB6B3-68B2-42EA-AFE4-34504B2EB483
+📊 Saved snapshot for session 10974
+📊 PID 76003 CPU: 33.9% (readings: 1)
+🔧 Processing attention logic for PID 76003, CPU readings count: 1
+⏳ Session 76003 needs more readings (has 1, needs 3+)
+📊 Started tracking session: 76003 in claude-terminal-navigator
+✅ Session saved: 923061D4-B9F4-441C-860E-FD882AE7696F
+📊 Saved snapshot for session 76003
+📊 PID 28728 CPU: 0.0% (readings: 1)
+🔧 Processing attention logic for PID 28728, CPU readings count: 1
+⏳ Session 28728 needs more readings (has 1, needs 3+)
+📊 Started tracking session: 28728 in claude_sys
+✅ Session saved: 24F060E4-277D-4C4A-8694-BBD6DEC40B7A
+📊 Saved snapshot for session 28728
+📊 PID 8432 CPU: 0.0% (readings: 1)
+🔧 Processing attention logic for PID 8432, CPU readings count: 1
+⏳ Session 8432 needs more readings (has 1, needs 3+)
+📊 Started tracking session: 8432 in GAILErpN
+✅ Session saved: 66C0FAB2-D24E-4228-BE2F-2E92BE739ED1
+📊 Saved snapshot for session 8432
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=10974, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=28728, TTY=ttys012
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 4.2% (readings: 1)
+🔧 Processing attention logic for PID 5142, CPU readings count: 1
+⏳ Session 5142 needs more readings (has 1, needs 3+)
+📊 PID 10974 CPU: 0.0% (readings: 1)
+🔧 Processing attention logic for PID 10974, CPU readings count: 1
+⏳ Session 10974 needs more readings (has 1, needs 3+)
+📊 PID 76003 CPU: 6.4% (readings: 1)
+🔧 Processing attention logic for PID 76003, CPU readings count: 1
+⏳ Session 76003 needs more readings (has 1, needs 3+)
+📊 PID 28728 CPU: 0.0% (readings: 1)
+🔧 Processing attention logic for PID 28728, CPU readings count: 1
+⏳ Session 28728 needs more readings (has 1, needs 3+)
+📊 PID 8432 CPU: 0.0% (readings: 1)
+🔧 Processing attention logic for PID 8432, CPU readings count: 1
+⏳ Session 8432 needs more readings (has 1, needs 3+)
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=10974, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=28728, TTY=ttys012
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 2.8% (readings: 1)
+🔧 Processing attention logic for PID 5142, CPU readings count: 1
+⏳ Session 5142 needs more readings (has 1, needs 3+)
+📊 PID 10974 CPU: 25.6% (readings: 1)
+🔧 Processing attention logic for PID 10974, CPU readings count: 1
+⏳ Session 10974 needs more readings (has 1, needs 3+)
+📊 PID 76003 CPU: 2.3% (readings: 1)
+🔧 Processing attention logic for PID 76003, CPU readings count: 1
+⏳ Session 76003 needs more readings (has 1, needs 3+)
+📊 PID 28728 CPU: 0.0% (readings: 1)
+🔧 Processing attention logic for PID 28728, CPU readings count: 1
+⏳ Session 28728 needs more readings (has 1, needs 3+)
+📊 PID 8432 CPU: 0.0% (readings: 1)
+🔧 Processing attention logic for PID 8432, CPU readings count: 1
+⏳ Session 8432 needs more readings (has 1, needs 3+)
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=10974, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=28728, TTY=ttys012
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 11.0% (readings: 1)
+🔧 Processing attention logic for PID 5142, CPU readings count: 1
+⏳ Session 5142 needs more readings (has 1, needs 3+)
+📊 PID 10974 CPU: 77.5% (readings: 1)
+🔧 Processing attention logic for PID 10974, CPU readings count: 1
+⏳ Session 10974 needs more readings (has 1, needs 3+)
+📊 PID 76003 CPU: 4.1% (readings: 1)
+🔧 Processing attention logic for PID 76003, CPU readings count: 1
+⏳ Session 76003 needs more readings (has 1, needs 3+)
+📊 PID 28728 CPU: 0.0% (readings: 1)
+🔧 Processing attention logic for PID 28728, CPU readings count: 1
+⏳ Session 28728 needs more readings (has 1, needs 3+)
+📊 PID 8432 CPU: 0.0% (readings: 1)
+🔧 Processing attention logic for PID 8432, CPU readings count: 1
+⏳ Session 8432 needs more readings (has 1, needs 3+)
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=10974, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=28728, TTY=ttys012
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 1.4% (readings: 1)
+🔧 Processing attention logic for PID 5142, CPU readings count: 1
+⏳ Session 5142 needs more readings (has 1, needs 3+)
+📊 PID 10974 CPU: 101.4% (readings: 1)
+🔧 Processing attention logic for PID 10974, CPU readings count: 1
+⏳ Session 10974 needs more readings (has 1, needs 3+)
+📊 PID 76003 CPU: 1.8% (readings: 1)
+🔧 Processing attention logic for PID 76003, CPU readings count: 1
+⏳ Session 76003 needs more readings (has 1, needs 3+)
+📊 PID 28728 CPU: 0.0% (readings: 1)
+🔧 Processing attention logic for PID 28728, CPU readings count: 1
+⏳ Session 28728 needs more readings (has 1, needs 3+)
+📊 PID 8432 CPU: 0.0% (readings: 1)
+🔧 Processing attention logic for PID 8432, CPU readings count: 1
+⏳ Session 8432 needs more readings (has 1, needs 3+)
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=10974, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=28728, TTY=ttys012
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 11.2% (readings: 1)
+🔧 Processing attention logic for PID 5142, CPU readings count: 1
+⏳ Session 5142 needs more readings (has 1, needs 3+)
+📊 PID 10974 CPU: 31.2% (readings: 1)
+🔧 Processing attention logic for PID 10974, CPU readings count: 1
+⏳ Session 10974 needs more readings (has 1, needs 3+)
+📊 PID 76003 CPU: 4.3% (readings: 1)
+🔧 Processing attention logic for PID 76003, CPU readings count: 1
+⏳ Session 76003 needs more readings (has 1, needs 3+)
+📊 PID 28728 CPU: 0.0% (readings: 1)
+🔧 Processing attention logic for PID 28728, CPU readings count: 1
+⏳ Session 28728 needs more readings (has 1, needs 3+)
+📊 PID 8432 CPU: 0.0% (readings: 1)
+🔧 Processing attention logic for PID 8432, CPU readings count: 1
+⏳ Session 8432 needs more readings (has 1, needs 3+)
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=10974, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=28728, TTY=ttys012
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 74.3% (readings: 1)
+🔧 Processing attention logic for PID 5142, CPU readings count: 1
+⏳ Session 5142 needs more readings (has 1, needs 3+)
+📊 PID 10974 CPU: 25.0% (readings: 1)
+🔧 Processing attention logic for PID 10974, CPU readings cou

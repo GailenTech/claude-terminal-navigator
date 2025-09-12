@@ -1,0 +1,2489 @@
+🚀 ClaudeNavigator starting...
+✅ Activation policy set to accessory
+✅ Status item created
+🚀 Initializing standalone ClaudeSessionMonitor
+✅ Button configured with emoji title: 🤖
+🔄 Starting initial refresh...
+✅ ClaudeNavigator fully initialized!
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 1)
+🔧 Processing attention logic for PID 5142, CPU readings count: 1
+⏳ Session 5142 needs more readings (has 1, needs 3+)
+📊 Started tracking session: 5142 in facturas_email_Abra3
+📊 Database path: /Users/jorge/Library/Application Support/ClaudeNavigator/sessions.db
+✅ Database opened successfully at /Users/jorge/Library/Application Support/ClaudeNavigator/sessions.db
+✅ SQL executed successfully
+✅ SQL executed successfully
+✅ SQL executed successfully
+📊 PID 17892 CPU: 0.0% (readings: 1)
+✅ Session saved: 0E344709-CA9C-45BF-8C1D-AB16B2B33734
+📊 Saved snapshot for session 5142
+🔧 Processing attention logic for PID 17892, CPU readings count: 1
+⏳ Session 17892 needs more readings (has 1, needs 3+)
+📊 Started tracking session: 17892 in temporal-workflow
+✅ Session saved: 3AD5B576-2051-4809-BDF4-DC29FAFAAD9A
+📊 Saved snapshot for session 17892
+📊 PID 76003 CPU: 6.1% (readings: 1)
+🔧 Processing attention logic for PID 76003, CPU readings count: 1
+⏳ Session 76003 needs more readings (has 1, needs 3+)
+📊 Started tracking session: 76003 in claude-terminal-navigator
+✅ Session saved: EA90B3D3-4A45-4113-8F9D-C23A594504EF
+📊 Saved snapshot for session 76003
+📊 PID 35584 CPU: 0.0% (readings: 1)
+🔧 Processing attention logic for PID 35584, CPU readings count: 1
+⏳ Session 35584 needs more readings (has 1, needs 3+)
+📊 Started tracking session: 35584 in GAILErpN
+✅ Session saved: 4BE16793-FA5A-4E1C-BBD3-02F2EBED29BF
+📊 Saved snapshot for session 35584
+📊 PID 8432 CPU: 0.0% (readings: 1)
+🔧 Processing attention logic for PID 8432, CPU readings count: 1
+⏳ Session 8432 needs more readings (has 1, needs 3+)
+📊 Started tracking session: 8432 in GAILErpN
+✅ Session saved: 68CC71C3-4E28-4AC7-9098-1A819F110840
+📊 Saved snapshot for session 8432
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 2)
+🔧 Processing attention logic for PID 5142, CPU readings count: 2
+⏳ Session 5142 needs more readings (has 2, needs 3+)
+📊 PID 17892 CPU: 0.0% (readings: 2)
+🔧 Processing attention logic for PID 17892, CPU readings count: 2
+⏳ Session 17892 needs more readings (has 2, needs 3+)
+📊 PID 76003 CPU: 3.7% (readings: 2)
+🔧 Processing attention logic for PID 76003, CPU readings count: 2
+⏳ Session 76003 needs more readings (has 2, needs 3+)
+📊 PID 35584 CPU: 0.0% (readings: 2)
+🔧 Processing attention logic for PID 35584, CPU readings count: 2
+⏳ Session 35584 needs more readings (has 2, needs 3+)
+📊 PID 8432 CPU: 0.0% (readings: 2)
+🔧 Processing attention logic for PID 8432, CPU readings count: 2
+⏳ Session 8432 needs more readings (has 2, needs 3+)
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 3)
+🔧 Processing attention logic for PID 5142, CPU readings count: 3
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 3)
+🔧 Processing attention logic for PID 17892, CPU readings count: 3
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 3.3% (readings: 3)
+🔧 Processing attention logic for PID 76003, CPU readings count: 3
+🧪 Session 76003 CPU history: [6.1, 3.7, 3.3]
+🔍 Transition check: readings=[6.1, 3.7, 3.3], recentIdle=false, hadActivity=false
+📊 PID 35584 CPU: 0.0% (readings: 3)
+🔧 Processing attention logic for PID 35584, CPU readings count: 3
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 3)
+🔧 Processing attention logic for PID 8432, CPU readings count: 3
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 4)
+🔧 Processing attention logic for PID 5142, CPU readings count: 4
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.3% (readings: 4)
+🔧 Processing attention logic for PID 17892, CPU readings count: 4
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.3]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.3], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 2.2% (readings: 4)
+🔧 Processing attention logic for PID 76003, CPU readings count: 4
+🧪 Session 76003 CPU history: [6.1, 3.7, 3.3, 2.2]
+🔍 Transition check: readings=[6.1, 3.7, 3.3, 2.2], recentIdle=false, hadActivity=true
+📊 PID 35584 CPU: 0.0% (readings: 4)
+🔧 Processing attention logic for PID 35584, CPU readings count: 4
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 4)
+🔧 Processing attention logic for PID 8432, CPU readings count: 4
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.3, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.3, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 11.4% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [6.1, 3.7, 3.3, 2.2, 11.4]
+🔍 Transition check: readings=[6.1, 3.7, 3.3, 2.2, 11.4], recentIdle=false, hadActivity=true
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.3, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.3, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 9.4% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [3.7, 3.3, 2.2, 11.4, 9.4]
+🔍 Transition check: readings=[3.7, 3.3, 2.2, 11.4, 9.4], recentIdle=false, hadActivity=true
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.3, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.3, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [3.3, 2.2, 11.4, 9.4, 0.0]
+🔍 Transition check: readings=[3.3, 2.2, 11.4, 9.4, 0.0], recentIdle=false, hadActivity=true
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.3, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.3, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.6% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [2.2, 11.4, 9.4, 0.0, 0.6]
+🔍 Transition check: readings=[2.2, 11.4, 9.4, 0.0, 0.6], recentIdle=false, hadActivity=true
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [11.4, 9.4, 0.0, 0.6, 0.0]
+🔍 Transition check: readings=[11.4, 9.4, 0.0, 0.6, 0.0], recentIdle=true, hadActivity=true
+🔄 Session 76003 (claude-terminal-navigator) transitioned to idle
+🔍 Transition check: readings=[11.4, 9.4, 0.0, 0.6, 0.0], recentIdle=true, hadActivity=true
+⏳ Session 76003 transitioned but waiting for 5s delay
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [9.4, 0.0, 0.6, 0.0, 0.0]
+🔍 Transition check: readings=[9.4, 0.0, 0.6, 0.0, 0.0], recentIdle=true, hadActivity=true
+🔍 Transition check: readings=[9.4, 0.0, 0.6, 0.0, 0.0], recentIdle=true, hadActivity=true
+⏳ Session 76003 transitioned but waiting for 5s delay
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+✅ Session saved: 0E344709-CA9C-45BF-8C1D-AB16B2B33734
+📊 Saved snapshot for session 5142
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+✅ Session saved: 3AD5B576-2051-4809-BDF4-DC29FAFAAD9A
+📊 Saved snapshot for session 17892
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.6, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.6, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+✅ Session saved: EA90B3D3-4A45-4113-8F9D-C23A594504EF
+📊 Saved snapshot for session 76003
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+✅ Session saved: 4BE16793-FA5A-4E1C-BBD3-02F2EBED29BF
+📊 Saved snapshot for session 35584
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+✅ Session saved: 68CC71C3-4E28-4AC7-9098-1A819F110840
+📊 Saved snapshot for session 8432
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.6, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.6, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+✅ Session saved: 0E344709-CA9C-45BF-8C1D-AB16B2B33734
+📊 Saved snapshot for session 5142
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+✅ Session saved: 3AD5B576-2051-4809-BDF4-DC29FAFAAD9A
+📊 Saved snapshot for session 17892
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+✅ Session saved: EA90B3D3-4A45-4113-8F9D-C23A594504EF
+📊 Saved snapshot for session 76003
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+✅ Session saved: 4BE16793-FA5A-4E1C-BBD3-02F2EBED29BF
+📊 Saved snapshot for session 35584
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+✅ Session saved: 68CC71C3-4E28-4AC7-9098-1A819F110840
+📊 Saved snapshot for session 8432
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.1% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.1]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.1], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.1, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.1, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.1, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.1, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.1, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.1, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+✅ Session saved: 0E344709-CA9C-45BF-8C1D-AB16B2B33734
+📊 Saved snapshot for session 5142
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.1, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.1, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+✅ Session saved: 3AD5B576-2051-4809-BDF4-DC29FAFAAD9A
+📊 Saved snapshot for session 17892
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+✅ Session saved: EA90B3D3-4A45-4113-8F9D-C23A594504EF
+📊 Saved snapshot for session 76003
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+✅ Session saved: 4BE16793-FA5A-4E1C-BBD3-02F2EBED29BF
+📊 Saved snapshot for session 35584
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+✅ Session saved: 68CC71C3-4E28-4AC7-9098-1A819F110840
+📊 Saved snapshot for session 8432
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+✅ Session saved: 0E344709-CA9C-45BF-8C1D-AB16B2B33734
+📊 Saved snapshot for session 5142
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+✅ Session saved: 3AD5B576-2051-4809-BDF4-DC29FAFAAD9A
+📊 Saved snapshot for session 17892
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+✅ Session saved: EA90B3D3-4A45-4113-8F9D-C23A594504EF
+📊 Saved snapshot for session 76003
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+✅ Session saved: 4BE16793-FA5A-4E1C-BBD3-02F2EBED29BF
+📊 Saved snapshot for session 35584
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+✅ Session saved: 68CC71C3-4E28-4AC7-9098-1A819F110840
+📊 Saved snapshot for session 8432
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 27.7% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.0, 0.0, 0.0, 27.7]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 27.7], recentIdle=false, hadActivity=false
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.5% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.0, 0.0, 27.7, 0.5]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 27.7, 0.5], recentIdle=false, hadActivity=false
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+✅ Session saved: 0E344709-CA9C-45BF-8C1D-AB16B2B33734
+📊 Saved snapshot for session 5142
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+✅ Session saved: 3AD5B576-2051-4809-BDF4-DC29FAFAAD9A
+📊 Saved snapshot for session 17892
+📊 PID 76003 CPU: 8.5% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.0, 27.7, 0.5, 8.5]
+🔍 Transition check: readings=[0.0, 0.0, 27.7, 0.5, 8.5], recentIdle=false, hadActivity=false
+✅ Session saved: EA90B3D3-4A45-4113-8F9D-C23A594504EF
+📊 Saved snapshot for session 76003
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+✅ Session saved: 4BE16793-FA5A-4E1C-BBD3-02F2EBED29BF
+📊 Saved snapshot for session 35584
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+✅ Session saved: 68CC71C3-4E28-4AC7-9098-1A819F110840
+📊 Saved snapshot for session 8432
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 38.3% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 27.7, 0.5, 8.5, 38.3]
+🔍 Transition check: readings=[0.0, 27.7, 0.5, 8.5, 38.3], recentIdle=false, hadActivity=true
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 11.2% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [27.7, 0.5, 8.5, 38.3, 11.2]
+🔍 Transition check: readings=[27.7, 0.5, 8.5, 38.3, 11.2], recentIdle=false, hadActivity=true
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.5, 8.5, 38.3, 11.2, 0.0]
+🔍 Transition check: readings=[0.5, 8.5, 38.3, 11.2, 0.0], recentIdle=false, hadActivity=true
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [8.5, 38.3, 11.2, 0.0, 0.0]
+🔍 Transition check: readings=[8.5, 38.3, 11.2, 0.0, 0.0], recentIdle=false, hadActivity=true
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [38.3, 11.2, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[38.3, 11.2, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=true
+🔍 Transition check: readings=[38.3, 11.2, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=true
+⏰ Session 76003 ready for attention check (5s passed)
+⚠️ Session 76003 (claude-terminal-navigator) needs attention - not focused
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔔 Attention badge: 1 sessions need attention (PIDs: 76003)
+🔍 Showing detailed view...
+🔍 Using cached sessions (count: 5)
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [11.2, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[11.2, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=true
+🔍 Transition check: readings=[11.2, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=true
+⏰ Session 76003 ready for attention check (5s passed)
+🔄 Session 76003 already flagged for attention
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Updating window with fresh sessions
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 12.8% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.0, 0.0, 0.0, 12.8]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 12.8], recentIdle=false, hadActivity=false
+✅ Session 76003 (claude-terminal-navigator) became active - clearing attention flag
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+✅ Attention badge cleared - no sessions need attention
+🔄 Auto-refreshing detailed view with new data
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.0, 0.0, 12.8, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 12.8, 0.0], recentIdle=false, hadActivity=false
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔄 Auto-refreshing detailed view with new data
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.0, 12.8, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 12.8, 0.0, 0.0], recentIdle=false, hadActivity=false
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔄 Auto-refreshing detailed view with new data
+👆 User interacted with session 76003 - clearing attention flag and marking as manually cleared
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+✅ Session saved: 0E344709-CA9C-45BF-8C1D-AB16B2B33734
+📊 Saved snapshot for session 5142
+📊 PID 17892 CPU: 0.0% (readings: 5)
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+✅ Session saved: 3AD5B576-2051-4809-BDF4-DC29FAFAAD9A
+📊 Saved snapshot for session 17892
+📊 PID 76003 CPU: 0.0% (readings: 5)
+📊 PID 76003 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 12.8, 0.0, 0.0, 0.0]
+🚫 Session 76003 attention was manually cleared 0s ago - skipping auto-attention logic
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 12.8, 0.0, 0.0, 0.0]
+🚫 Session 76003 attention was manually cleared 0s ago - skipping auto-attention logic
+✅ Session saved: EA90B3D3-4A45-4113-8F9D-C23A594504EF
+📊 Saved snapshot for session 76003
+📊 PID 35584 CPU: 0.0% (readings: 5)
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+✅ Session saved: 4BE16793-FA5A-4E1C-BBD3-02F2EBED29BF
+📊 Saved snapshot for session 35584
+📊 PID 8432 CPU: 0.0% (readings: 5)
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+✅ Session saved: 68CC71C3-4E28-4AC7-9098-1A819F110840
+📊 Saved snapshot for session 8432
+🔄 Auto-refreshing detailed view with new data
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 4.4% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [12.8, 0.0, 0.0, 0.0, 4.4]
+🚫 Session 76003 attention was manually cleared 4s ago - skipping auto-attention logic
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 7.3% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.0, 0.0, 4.4, 7.3]
+🚫 Session 76003 attention was manually cleared 9s ago - skipping auto-attention logic
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 5.3% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 0.0, 4.4, 7.3, 5.3]
+🔍 Transition check: readings=[0.0, 0.0, 4.4, 7.3, 5.3], recentIdle=false, hadActivity=false
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 5.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [0.0, 4.4, 7.3, 5.3, 5.0]
+🔍 Transition check: readings=[0.0, 4.4, 7.3, 5.3, 5.0], recentIdle=false, hadActivity=true
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 2.2% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [4.4, 7.3, 5.3, 5.0, 2.2]
+🔍 Transition check: readings=[4.4, 7.3, 5.3, 5.0, 2.2], recentIdle=false, hadActivity=true
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 6.9% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [7.3, 5.3, 5.0, 2.2, 6.9]
+🔍 Transition check: readings=[7.3, 5.3, 5.0, 2.2, 6.9], recentIdle=false, hadActivity=true
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 6.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [5.3, 5.0, 2.2, 6.9, 6.0]
+🔍 Transition check: readings=[5.3, 5.0, 2.2, 6.9, 6.0], recentIdle=false, hadActivity=true
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 6.9% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [5.0, 2.2, 6.9, 6.0, 6.9]
+🔍 Transition check: readings=[5.0, 2.2, 6.9, 6.0, 6.9], recentIdle=false, hadActivity=true
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+✅ Session saved: 0E344709-CA9C-45BF-8C1D-AB16B2B33734
+📊 Saved snapshot for session 5142
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+✅ Session saved: 3AD5B576-2051-4809-BDF4-DC29FAFAAD9A
+📊 Saved snapshot for session 17892
+📊 PID 76003 CPU: 9.6% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [2.2, 6.9, 6.0, 6.9, 9.6]
+🔍 Transition check: readings=[2.2, 6.9, 6.0, 6.9, 9.6], recentIdle=false, hadActivity=true
+✅ Session saved: EA90B3D3-4A45-4113-8F9D-C23A594504EF
+📊 Saved snapshot for session 76003
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+✅ Session saved: 4BE16793-FA5A-4E1C-BBD3-02F2EBED29BF
+📊 Saved snapshot for session 35584
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+✅ Session saved: 68CC71C3-4E28-4AC7-9098-1A819F110840
+📊 Saved snapshot for session 8432
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 2.9% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [6.9, 6.0, 6.9, 9.6, 2.9]
+🔍 Transition check: readings=[6.9, 6.0, 6.9, 9.6, 2.9], recentIdle=false, hadActivity=true
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Showing detailed view...
+🔍 Using cached sessions (count: 5)
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 9.4% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [6.0, 6.9, 9.6, 2.9, 9.4]
+🔍 Transition check: readings=[6.0, 6.9, 9.6, 2.9, 9.4], recentIdle=false, hadActivity=true
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Updating window with fresh sessions
+👆 User interacted with session 5142 - clearing attention flag and marking as manually cleared
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🚫 Session 5142 attention was manually cleared 0s ago - skipping auto-attention logic
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🚫 Session 5142 attention was manually cleared 0s ago - skipping auto-attention logic
+📊 PID 17892 CPU: 0.0% (readings: 5)
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 9.5% (readings: 5)
+📊 PID 76003 CPU: 9.5% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [6.9, 9.6, 2.9, 9.4, 9.5]
+🔍 Transition check: readings=[6.9, 9.6, 2.9, 9.4, 9.5], recentIdle=false, hadActivity=true
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [6.9, 9.6, 2.9, 9.4, 9.5]
+🔍 Transition check: readings=[6.9, 9.6, 2.9, 9.4, 9.5], recentIdle=false, hadActivity=true
+📊 PID 35584 CPU: 0.0% (readings: 5)
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔄 Auto-refreshing detailed view with new data
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🚫 Session 5142 attention was manually cleared 1s ago - skipping auto-attention logic
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 30.2% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [9.6, 2.9, 9.4, 9.5, 30.2]
+🔍 Transition check: readings=[9.6, 2.9, 9.4, 9.5, 30.2], recentIdle=false, hadActivity=true
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🚫 Session 5142 attention was manually cleared 6s ago - skipping auto-attention logic
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 11.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [2.9, 9.4, 9.5, 30.2, 11.0]
+🔍 Transition check: readings=[2.9, 9.4, 9.5, 30.2, 11.0], recentIdle=false, hadActivity=true
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 73.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 0.0, 73.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 73.0], recentIdle=false, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 22.4% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [9.4, 9.5, 30.2, 11.0, 22.4]
+🔍 Transition check: readings=[9.4, 9.5, 30.2, 11.0, 22.4], recentIdle=false, hadActivity=true
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Showing detailed view...
+🔍 Using cached sessions (count: 5)
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 52.2% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 0.0, 73.0, 52.2]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 73.0, 52.2], recentIdle=false, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 16.6% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [9.5, 30.2, 11.0, 22.4, 16.6]
+🔍 Transition check: readings=[9.5, 30.2, 11.0, 22.4, 16.6], recentIdle=false, hadActivity=true
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Updating window with fresh sessions
+👆 User interacted with session 17892 - clearing attention flag and marking as manually cleared
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 60.6% (readings: 5)
+📊 PID 5142 CPU: 60.6% (readings: 5)
+📊 PID 5142 CPU: 60.6% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 73.0, 52.2, 60.6]
+🔍 Transition check: readings=[0.0, 0.0, 73.0, 52.2, 60.6], recentIdle=false, hadActivity=false
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 73.0, 52.2, 60.6]
+🔍 Transition check: readings=[0.0, 0.0, 73.0, 52.2, 60.6], recentIdle=false, hadActivity=false
+✅ Session saved: 0E344709-CA9C-45BF-8C1D-AB16B2B33734
+📊 Saved snapshot for session 5142
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 0.0, 73.0, 52.2, 60.6]
+🔍 Transition check: readings=[0.0, 0.0, 73.0, 52.2, 60.6], recentIdle=false, hadActivity=false
+📊 PID 17892 CPU: 0.0% (readings: 5)
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🚫 Session 17892 attention was manually cleared 0s ago - skipping auto-attention logic
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🚫 Session 17892 attention was manually cleared 0s ago - skipping auto-attention logic
+✅ Session saved: 3AD5B576-2051-4809-BDF4-DC29FAFAAD9A
+📊 Saved snapshot for session 17892
+📊 PID 76003 CPU: 18.0% (readings: 5)
+📊 PID 76003 CPU: 18.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🚫 Session 17892 attention was manually cleared 0s ago - skipping auto-attention logic
+📊 PID 76003 CPU: 18.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [30.2, 11.0, 22.4, 16.6, 18.0]
+🔍 Transition check: readings=[30.2, 11.0, 22.4, 16.6, 18.0], recentIdle=false, hadActivity=true
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [30.2, 11.0, 22.4, 16.6, 18.0]
+🔍 Transition check: readings=[30.2, 11.0, 22.4, 16.6, 18.0], recentIdle=false, hadActivity=true
+✅ Session saved: EA90B3D3-4A45-4113-8F9D-C23A594504EF
+📊 Saved snapshot for session 76003
+📊 PID 35584 CPU: 0.0% (readings: 5)
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [30.2, 11.0, 22.4, 16.6, 18.0]
+🔍 Transition check: readings=[30.2, 11.0, 22.4, 16.6, 18.0], recentIdle=false, hadActivity=true
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+✅ Session saved: 4BE16793-FA5A-4E1C-BBD3-02F2EBED29BF
+📊 Saved snapshot for session 35584
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+✅ Session saved: 68CC71C3-4E28-4AC7-9098-1A819F110840
+📊 Saved snapshot for session 8432
+🔄 Auto-refreshing detailed view with new data
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔄 Auto-refreshing detailed view with new data
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 113.5% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [0.0, 73.0, 52.2, 60.6, 113.5]
+🔍 Transition check: readings=[0.0, 73.0, 52.2, 60.6, 113.5], recentIdle=false, hadActivity=true
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🚫 Session 17892 attention was manually cleared 5s ago - skipping auto-attention logic
+📊 PID 76003 CPU: 9.1% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [11.0, 22.4, 16.6, 18.0, 9.1]
+🔍 Transition check: readings=[11.0, 22.4, 16.6, 18.0, 9.1], recentIdle=false, hadActivity=true
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 129.4% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [73.0, 52.2, 60.6, 113.5, 129.4]
+🔍 Transition check: readings=[73.0, 52.2, 60.6, 113.5, 129.4], recentIdle=false, hadActivity=true
+📊 PID 17892 CPU: 0.7% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.0, 0.7]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.7], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 8.2% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [22.4, 16.6, 18.0, 9.1, 8.2]
+🔍 Transition check: readings=[22.4, 16.6, 18.0, 9.1, 8.2], recentIdle=false, hadActivity=true
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 82.4% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [52.2, 60.6, 113.5, 129.4, 82.4]
+🔍 Transition check: readings=[52.2, 60.6, 113.5, 129.4, 82.4], recentIdle=false, hadActivity=true
+📊 PID 17892 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.0, 0.7, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.7, 0.0], recentIdle=true, hadActivity=false
+📊 PID 76003 CPU: 5.8% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [16.6, 18.0, 9.1, 8.2, 5.8]
+🔍 Transition check: readings=[16.6, 18.0, 9.1, 8.2, 5.8], recentIdle=false, hadActivity=true
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 92.8% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [60.6, 113.5, 129.4, 82.4, 92.8]
+🔍 Transition check: readings=[60.6, 113.5, 129.4, 82.4, 92.8], recentIdle=false, hadActivity=true
+📊 PID 17892 CPU: 5.1% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.0, 0.7, 0.0, 5.1]
+🔍 Transition check: readings=[0.0, 0.0, 0.7, 0.0, 5.1], recentIdle=false, hadActivity=false
+📊 PID 76003 CPU: 1.8% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [18.0, 9.1, 8.2, 5.8, 1.8]
+🔍 Transition check: readings=[18.0, 9.1, 8.2, 5.8, 1.8], recentIdle=false, hadActivity=true
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 111.8% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [113.5, 129.4, 82.4, 92.8, 111.8]
+🔍 Transition check: readings=[113.5, 129.4, 82.4, 92.8, 111.8], recentIdle=false, hadActivity=true
+📊 PID 17892 CPU: 11.0% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 0.7, 0.0, 5.1, 11.0]
+🔍 Transition check: readings=[0.0, 0.7, 0.0, 5.1, 11.0], recentIdle=false, hadActivity=false
+📊 PID 76003 CPU: 16.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [9.1, 8.2, 5.8, 1.8, 16.0]
+🔍 Transition check: readings=[9.1, 8.2, 5.8, 1.8, 16.0], recentIdle=false, hadActivity=true
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 148.4% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [129.4, 82.4, 92.8, 111.8, 148.4]
+🔍 Transition check: readings=[129.4, 82.4, 92.8, 111.8, 148.4], recentIdle=false, hadActivity=true
+📊 PID 17892 CPU: 48.8% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.7, 0.0, 5.1, 11.0, 48.8]
+🔍 Transition check: readings=[0.7, 0.0, 5.1, 11.0, 48.8], recentIdle=false, hadActivity=false
+📊 PID 76003 CPU: 2.5% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [8.2, 5.8, 1.8, 16.0, 2.5]
+🔍 Transition check: readings=[8.2, 5.8, 1.8, 16.0, 2.5], recentIdle=false, hadActivity=true
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 113.6% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [82.4, 92.8, 111.8, 148.4, 113.6]
+🔍 Transition check: readings=[82.4, 92.8, 111.8, 148.4, 113.6], recentIdle=false, hadActivity=true
+📊 PID 17892 CPU: 1.5% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [0.0, 5.1, 11.0, 48.8, 1.5]
+🔍 Transition check: readings=[0.0, 5.1, 11.0, 48.8, 1.5], recentIdle=false, hadActivity=true
+📊 PID 76003 CPU: 2.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [5.8, 1.8, 16.0, 2.5, 2.0]
+🔍 Transition check: readings=[5.8, 1.8, 16.0, 2.5, 2.0], recentIdle=false, hadActivity=true
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 75.8% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [92.8, 111.8, 148.4, 113.6, 75.8]
+🔍 Transition check: readings=[92.8, 111.8, 148.4, 113.6, 75.8], recentIdle=false, hadActivity=true
+📊 PID 17892 CPU: 18.2% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [5.1, 11.0, 48.8, 1.5, 18.2]
+🔍 Transition check: readings=[5.1, 11.0, 48.8, 1.5, 18.2], recentIdle=false, hadActivity=true
+📊 PID 76003 CPU: 1.9% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [1.8, 16.0, 2.5, 2.0, 1.9]
+🔍 Transition check: readings=[1.8, 16.0, 2.5, 2.0, 1.9], recentIdle=false, hadActivity=true
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 119.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [111.8, 148.4, 113.6, 75.8, 119.0]
+🔍 Transition check: readings=[111.8, 148.4, 113.6, 75.8, 119.0], recentIdle=false, hadActivity=true
+✅ Session saved: 0E344709-CA9C-45BF-8C1D-AB16B2B33734
+📊 Saved snapshot for session 5142
+📊 PID 17892 CPU: 13.3% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [11.0, 48.8, 1.5, 18.2, 13.3]
+🔍 Transition check: readings=[11.0, 48.8, 1.5, 18.2, 13.3], recentIdle=false, hadActivity=true
+✅ Session saved: 3AD5B576-2051-4809-BDF4-DC29FAFAAD9A
+📊 Saved snapshot for session 17892
+📊 PID 76003 CPU: 12.7% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [16.0, 2.5, 2.0, 1.9, 12.7]
+🔍 Transition check: readings=[16.0, 2.5, 2.0, 1.9, 12.7], recentIdle=false, hadActivity=true
+✅ Session saved: EA90B3D3-4A45-4113-8F9D-C23A594504EF
+📊 Saved snapshot for session 76003
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+✅ Session saved: 4BE16793-FA5A-4E1C-BBD3-02F2EBED29BF
+📊 Saved snapshot for session 35584
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+✅ Session saved: 68CC71C3-4E28-4AC7-9098-1A819F110840
+📊 Saved snapshot for session 8432
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 93.0% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [148.4, 113.6, 75.8, 119.0, 93.0]
+🔍 Transition check: readings=[148.4, 113.6, 75.8, 119.0, 93.0], recentIdle=false, hadActivity=true
+📊 PID 17892 CPU: 19.1% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [48.8, 1.5, 18.2, 13.3, 19.1]
+🔍 Transition check: readings=[48.8, 1.5, 18.2, 13.3, 19.1], recentIdle=false, hadActivity=true
+📊 PID 76003 CPU: 14.1% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [2.5, 2.0, 1.9, 12.7, 14.1]
+🔍 Transition check: readings=[2.5, 2.0, 1.9, 12.7, 14.1], recentIdle=false, hadActivity=true
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 93.2% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [113.6, 75.8, 119.0, 93.0, 93.2]
+🔍 Transition check: readings=[113.6, 75.8, 119.0, 93.0, 93.2], recentIdle=false, hadActivity=true
+📊 PID 17892 CPU: 17.3% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [1.5, 18.2, 13.3, 19.1, 17.3]
+🔍 Transition check: readings=[1.5, 18.2, 13.3, 19.1, 17.3], recentIdle=false, hadActivity=true
+📊 PID 76003 CPU: 53.0% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [2.0, 1.9, 12.7, 14.1, 53.0]
+🔍 Transition check: readings=[2.0, 1.9, 12.7, 14.1, 53.0], recentIdle=false, hadActivity=true
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+🧪 Session 8432 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+🔍 Found Claude process: PID=5142, TTY=ttys000
+🔍 Found Claude process: PID=17892, TTY=ttys006
+🔍 Found Claude process: PID=76003, TTY=ttys007
+🔍 Found Claude process: PID=35584, TTY=ttys010
+🔍 Found Claude process: PID=8432, TTY=ttys035
+📊 PID 5142 CPU: 97.8% (readings: 5)
+🔧 Processing attention logic for PID 5142, CPU readings count: 5
+🧪 Session 5142 CPU history: [75.8, 119.0, 93.0, 93.2, 97.8]
+🔍 Transition check: readings=[75.8, 119.0, 93.0, 93.2, 97.8], recentIdle=false, hadActivity=true
+📊 PID 17892 CPU: 77.7% (readings: 5)
+🔧 Processing attention logic for PID 17892, CPU readings count: 5
+🧪 Session 17892 CPU history: [18.2, 13.3, 19.1, 17.3, 77.7]
+🔍 Transition check: readings=[18.2, 13.3, 19.1, 17.3, 77.7], recentIdle=false, hadActivity=true
+📊 PID 76003 CPU: 3.6% (readings: 5)
+🔧 Processing attention logic for PID 76003, CPU readings count: 5
+🧪 Session 76003 CPU history: [1.9, 12.7, 14.1, 53.0, 3.6]
+🔍 Transition check: readings=[1.9, 12.7, 14.1, 53.0, 3.6], recentIdle=false, hadActivity=true
+📊 PID 35584 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 35584, CPU readings count: 5
+🧪 Session 35584 CPU history: [0.0, 0.0, 0.0, 0.0, 0.0]
+🔍 Transition check: readings=[0.0, 0.0, 0.0, 0.0, 0.0], recentIdle=true, hadActivity=false
+📊 PID 8432 CPU: 0.0% (readings: 5)
+🔧 Processing attention logic for PID 8432, CPU readings count: 5
+�
