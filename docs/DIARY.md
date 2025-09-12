@@ -1,5 +1,39 @@
 # 📔 Development Diary - Claude Terminal Navigator
 
+## 2025-09-11 - Session History and Recovery Implementation
+
+### What was done
+- **Session History Model**: Created `SessionHistoryEntry.swift` to store complete session history with command recovery data
+- **Database Extension**: Added `SessionDatabase+History.swift` with methods for storing and retrieving session history
+- **Recovery Manager**: Implemented `SessionRecoveryManager.swift` to handle session recovery by reopening Terminal with original commands
+- **Recent Sessions UI**: Added "Recent Sessions" menu item that reuses existing detailed view with recovery actions
+- **Command Capture**: Updated `ClaudeSessionMonitor` to capture and store initial Claude commands when sessions start
+- **Session Lifecycle**: Integrated session start/end tracking with history database
+
+### Decisions made
+- **Reuse existing UI**: Instead of creating new views, reused the existing detailed view with a mode parameter
+- **Simple recovery approach**: Open Terminal.app with the original command using AppleScript
+- **Command storage**: Store full command line with arguments for accurate recovery
+- **Database schema**: Extended existing SQLite database with new history tables
+
+### Challenges/Learnings
+- **Access levels**: Had to make some private methods internal for extension access
+- **Ambiguous methods**: Renamed `getRecentSessions` to `getRecentHistoryEntries` to avoid conflicts
+- **Mode passing**: Needed to track current detail view mode for proper UI updates
+- **SQLite3 imports**: Required explicit import in files using database operations
+
+### Architecture Changes
+- **New files**: SessionHistoryEntry.swift, SessionDatabase+History.swift, SessionRecoveryManager.swift
+- **Modified AppDelegate**: Added DetailViewMode enum and delegate pattern for session clicks
+- **Extended SessionDatabase**: Added internal helper methods for extensions
+- **Enhanced ClaudeSessionMonitor**: Captures commands and tracks session lifecycle
+
+### Next steps
+- Test recovery functionality with real Claude sessions
+- Consider adding user preferences for history retention period
+- Potential for session statistics and analytics based on history
+- Could add export functionality for session history
+
 ## 2025-07-25 - Attention Alert System Implementation
 
 ### What was done

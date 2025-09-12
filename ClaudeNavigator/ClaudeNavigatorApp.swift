@@ -25,13 +25,14 @@ class FlippedView: NSView {
     override var isFlipped: Bool { return true }
 }
 
-class AppDelegate: NSObject, NSApplicationDelegate {
+class AppDelegate: NSObject, NSApplicationDelegate, ClickableSessionViewDelegate {
     var statusItem: NSStatusItem!
     var menu: NSMenu!
     var timer: Timer?
     var sessionMonitor: ClaudeSessionMonitor!
     var detailWindow: NSWindow?
     var detailScrollView: NSScrollView?
+    var currentDetailMode: DetailViewMode = .active
     
     // Cache for performance
     private var lastActiveCount = 0
@@ -43,6 +44,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func applicationDidFinishLaunching(_ notification: Notification) {
         print("🚀 ClaudeNavigator starting...")
+        
+        // Check for existing instance using distributed notifications
+        if isAnotherInstanceRunning() {
+            print("❌ Another instance of ClaudeNavigator is already running. Exiting...")
+            NSApp.terminate(nil)
+            return
+        }
+        
+        // Register this instance
+        registerInstance()
         
         // Hide dock icon for menu bar only app
         NSApp.setActivationPolicy(.accessory)
@@ -100,42 +111,76 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
     
-    func showDetailedView() {
-        // Toggle behavior: if window exists and is visible, close it
+    func showDetailedView(mode: DetailViewMode = .active) {
+        // Toggle behavior: if window exists and is visible with same mode, close it
         if let window = detailWindow, window.isVisible {
-            print("🔍 Closing detailed view...")
-            window.close()
-            detailWindow = nil
-            detailScrollView = nil
-            return
-        }
-        
-        print("🔍 Showing detailed view...")
-        
-        // Show window immediately with cached sessions if available
-        if !cachedSessions.isEmpty {
-            print("🔍 Using cached sessions (count: \(cachedSessions.count))")
-            createDetailedWindow(with: cachedSessions)
-        } else {
-            // Show loading state if no cache
-            createDetailedWindow(with: [])
-        }
-        
-        // Then load fresh sessions asynchronously and update if different
-        Task {
-            do {
-                let sessions = try await sessionMonitor.getActiveSessions()
-                await MainActor.run {
-                    // Only update if sessions have changed
-                    if !self.sessionsEqual(self.cachedSessions, sessions) {
-                        print("🔍 Updating window with fresh sessions")
-                        self.updateDetailedWindow(with: sessions)
-                    }
-                }
-            } catch {
-                print("Error getting sessions for detailed view: \(error)")
+            // Check if we're switching modes
+            let currentMode = window.title.contains("Recent") ? DetailViewMode.recent : DetailViewMode.active
+            if currentMode == mode {
+                print("🔍 Closing detailed view...")
+                window.close()
+                detailWindow = nil
+                detailScrollView = nil
+                return
             }
         }
+        
+        print("🔍 Showing detailed view (mode: \(mode))...")
+        currentDetailMode = mode
+        
+        switch mode {
+        case .active:
+            // Show window immediately with cached sessions if available
+            if !cachedSessions.isEmpty {
+                print("🔍 Using cached sessions (count: \(cachedSessions.count))")
+                createDetailedWindow(with: cachedSessions, mode: mode)
+            } else {
+                // Show loading state if no cache
+                createDetailedWindow(with: [], mode: mode)
+            }
+            
+            // Then load fresh sessions asynchronously and update if different
+            Task {
+                do {
+                    let sessions = try await sessionMonitor.getActiveSessions()
+                    await MainActor.run {
+                        // Only update if sessions have changed
+                        if !self.sessionsEqual(self.cachedSessions, sessions) {
+                            print("🔍 Updating window with fresh sessions")
+                            self.updateDetailedWindow(with: sessions)
+                        }
+                    }
+                } catch {
+                    print("Error getting sessions for detailed view: \(error)")
+                }
+            }
+            
+        case .recent:
+            // Load recent sessions from database, excluding active sessions
+            Task {
+                do {
+                    let activeSessions = try await sessionMonitor.getActiveSessions()
+                    let activeProjectPaths = Set(activeSessions.map { $0.workingDir })
+                    let allRecentSessions = SessionRecoveryManager.shared.getRecentSessionsAsClaudeSessions(limit: 20)
+                    
+                    // Filter out sessions for paths that currently have active sessions
+                    let recentSessions = allRecentSessions.filter { session in
+                        !activeProjectPaths.contains(session.workingDir)
+                    }
+                    
+                    createDetailedWindow(with: recentSessions, mode: mode)
+                } catch {
+                    print("Error getting recent sessions: \(error)")
+                    // Show empty recent sessions on error
+                    createDetailedWindow(with: [], mode: mode)
+                }
+            }
+        }
+    }
+    
+    enum DetailViewMode {
+        case active
+        case recent
     }
     
     func updateDetailedWindow(with sessions: [ClaudeSession]) {
@@ -169,7 +214,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             }
             
             for session in sortedSessions {
-                let sessionView = createSessionView(session: session)
+                let sessionView = createSessionView(session: session, mode: currentDetailMode)
                 sessionView.translatesAutoresizingMaskIntoConstraints = false
                 documentView.addSubview(sessionView)
                 
@@ -199,7 +244,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
     
-    func createDetailedWindow(with sessions: [ClaudeSession]) {
+    func createDetailedWindow(with sessions: [ClaudeSession], mode: DetailViewMode = .active) {
         // Close existing window if any
         if detailWindow != nil {
             detailWindow?.close()
@@ -215,7 +260,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             defer: false
         )
         
-        detailWindow?.title = "Claude Sessions - Detailed View"
+        // Set title based on mode
+        detailWindow?.title = mode == .recent ? "Recent Claude Sessions" : "Active Claude Sessions"
         detailWindow?.center()
         detailWindow?.isReleasedWhenClosed = false
         
@@ -224,7 +270,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         detailWindow?.collectionBehavior = [.canJoinAllSpaces, .stationary]
         
         // Create content view
-        let contentView = createDetailedContentView(with: sessions)
+        let contentView = createDetailedContentView(with: sessions, mode: mode)
         detailWindow?.contentView = contentView
         
         // Show window and ensure it gets focus
@@ -242,14 +288,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
     
-    func createDetailedContentView(with sessions: [ClaudeSession]) -> NSView {
+    func createDetailedContentView(with sessions: [ClaudeSession], mode: DetailViewMode = .active) -> NSView {
         let contentView = NSView()
         
         // Create header label with instructions or loading state
         let isFromCache = !cachedSessions.isEmpty && sessionsEqual(sessions, cachedSessions)
         let cacheAge = Int(Date().timeIntervalSince(lastCacheUpdate))
         let headerText: String
-        if sessions.isEmpty {
+        
+        if mode == .recent {
+            headerText = sessions.isEmpty ? "No recent sessions" : "Click any session to recover it"
+        } else if sessions.isEmpty {
             headerText = "Loading sessions..."
         } else if isFromCache && cacheAge > 2 {
             // Only show cache age if it's meaningful (more than 2 seconds)
@@ -284,20 +333,36 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let sessionHeight: CGFloat = 100
         let margin: CGFloat = 10
         
-        // If no sessions, show loading indicator
+        // If no sessions, show appropriate message
         if sessions.isEmpty {
-            let progressIndicator = NSProgressIndicator()
-            progressIndicator.style = .spinning
-            progressIndicator.translatesAutoresizingMaskIntoConstraints = false
-            documentView.addSubview(progressIndicator)
-            progressIndicator.startAnimation(nil)
+            // For Recent Sessions mode, show "No recent sessions" message instead of spinner
+            if mode == .recent {
+                let emptyLabel = NSTextField(labelWithString: "No recent sessions")
+                emptyLabel.font = NSFont.systemFont(ofSize: 14)
+                emptyLabel.textColor = NSColor.secondaryLabelColor
+                emptyLabel.alignment = .center
+                emptyLabel.translatesAutoresizingMaskIntoConstraints = false
+                documentView.addSubview(emptyLabel)
+                
+                NSLayoutConstraint.activate([
+                    emptyLabel.centerXAnchor.constraint(equalTo: documentView.centerXAnchor),
+                    emptyLabel.topAnchor.constraint(equalTo: documentView.topAnchor, constant: 50)
+                ])
+            } else {
+                // For active sessions, show loading indicator
+                let progressIndicator = NSProgressIndicator()
+                progressIndicator.style = .spinning
+                progressIndicator.translatesAutoresizingMaskIntoConstraints = false
+                documentView.addSubview(progressIndicator)
+                progressIndicator.startAnimation(nil)
+                
+                NSLayoutConstraint.activate([
+                    progressIndicator.centerXAnchor.constraint(equalTo: documentView.centerXAnchor),
+                    progressIndicator.topAnchor.constraint(equalTo: documentView.topAnchor, constant: 50)
+                ])
+            }
             
-            NSLayoutConstraint.activate([
-                progressIndicator.centerXAnchor.constraint(equalTo: documentView.centerXAnchor),
-                progressIndicator.topAnchor.constraint(equalTo: documentView.topAnchor, constant: 50)
-            ])
-            
-            yPosition = 100 // Leave space for the indicator
+            yPosition = 100 // Leave space for the indicator or message
         } else {
             // Sort sessions: attention first, then active first, then by time
             let sortedSessions = sessions.sorted { session1, session2 in
@@ -314,7 +379,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             }
             
             for session in sortedSessions {
-                let sessionView = createSessionView(session: session)
+                let sessionView = createSessionView(session: session, mode: mode)
                 sessionView.translatesAutoresizingMaskIntoConstraints = false
                 documentView.addSubview(sessionView)
                 
@@ -354,8 +419,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return contentView
     }
     
-    func createSessionView(session: ClaudeSession) -> NSView {
+    func createSessionView(session: ClaudeSession, mode: DetailViewMode = .active) -> NSView {
         let sessionView = ClickableSessionView()
+        
+        // Store session and mode for click handling
+        sessionView.session = session
+        sessionView.viewMode = mode
+        sessionView.delegate = self
         
         // Background
         sessionView.wantsLayer = true
@@ -438,13 +508,32 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         cpuLabel.translatesAutoresizingMaskIntoConstraints = false
         sessionView.addSubview(cpuLabel)
         
-        // Git information
-        let gitText = formatGitInfo(branch: session.gitBranch, status: session.gitStatus)
+        // Git information with repository
+        var gitText = formatGitInfo(branch: session.gitBranch, status: session.gitStatus)
+        if let repo = session.gitRepo, !repo.isEmpty {
+            gitText = "📁 \(repo) | \(gitText)"
+        }
         let gitLabel = NSTextField(labelWithString: gitText)
         gitLabel.font = NSFont.systemFont(ofSize: 11)
         gitLabel.textColor = NSColor.secondaryLabelColor
         gitLabel.translatesAutoresizingMaskIntoConstraints = false
         sessionView.addSubview(gitLabel)
+        
+        // Session age (for Recent Sessions mode)
+        if mode == .recent && !session.formattedAge.isEmpty {
+            let ageLabel = NSTextField(labelWithString: session.formattedAge)
+            ageLabel.font = NSFont.systemFont(ofSize: 10)
+            ageLabel.textColor = NSColor.tertiaryLabelColor
+            ageLabel.alignment = .right
+            ageLabel.translatesAutoresizingMaskIntoConstraints = false
+            sessionView.addSubview(ageLabel)
+            
+            // Position age label in top right corner
+            NSLayoutConstraint.activate([
+                ageLabel.topAnchor.constraint(equalTo: sessionView.topAnchor, constant: 8),
+                ageLabel.trailingAnchor.constraint(equalTo: sessionView.trailingAnchor, constant: -8)
+            ])
+        }
         
         // Duration
         let durationText = "Duration: \(session.formattedDuration)"
@@ -461,13 +550,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         pathLabel.translatesAutoresizingMaskIntoConstraints = false
         sessionView.addSubview(pathLabel)
         
-        // Store session PID in view for gesture recognition
+        // Store session PID in view for identification
         sessionView.identifier = NSUserInterfaceItemIdentifier(session.pid)
-        
-        // Add single-click gesture recognizer
-        let clickGesture = NSClickGestureRecognizer(target: self, action: #selector(sessionClicked(_:)))
-        clickGesture.numberOfClicksRequired = 1
-        sessionView.addGestureRecognizer(clickGesture)
         
         // Layout constraints for main content
         NSLayoutConstraint.activate([
@@ -476,7 +560,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             
             titleLabel.topAnchor.constraint(equalTo: sessionView.topAnchor, constant: 8),
             titleLabel.leadingAnchor.constraint(equalTo: statusIcon.trailingAnchor, constant: 8),
-            titleLabel.trailingAnchor.constraint(lessThanOrEqualTo: sessionView.trailingAnchor, constant: -8),
+            titleLabel.trailingAnchor.constraint(lessThanOrEqualTo: sessionView.trailingAnchor, constant: mode == .recent ? -80 : -8),
             
             cpuLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 4),
             cpuLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
@@ -515,52 +599,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     
-    @objc func sessionClicked(_ gesture: NSClickGestureRecognizer) {
-        guard let sessionView = gesture.view,
-              let pidString = sessionView.identifier?.rawValue else { return }
-        
-        // Clear attention flag when user interacts with session
-        sessionMonitor.clearAttentionFlag(for: pidString)
-        
-        // Force immediate UI refresh to clear attention badge
-        refresh()
-        
-        Task {
-            do {
-                let sessions = try await sessionMonitor.getActiveSessions()
-                if let session = sessions.first(where: { $0.pid == pidString }) {
-                    try await TerminalNavigator.jumpToSession(session: session)
-                    
-                    // Fade out window after successful jump
-                    await MainActor.run {
-                        NSAnimationContext.runAnimationGroup({ context in
-                            context.duration = 0.5
-                            context.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
-                            self.detailWindow?.animator().alphaValue = 0.0
-                        }, completionHandler: {
-                            self.detailWindow?.close()
-                            self.detailWindow = nil
-                            self.detailScrollView = nil
-                        })
-                    }
-                }
-            } catch {
-                print("Error jumping to session: \(error)")
-                // Fallback to script
-                try? await TerminalNavigator.jumpUsingScript(pid: pidString)
-                
-                // Still fade out on fallback
-                await MainActor.run {
-                    NSAnimationContext.runAnimationGroup({ context in
-                        context.duration = 0.5
-                        self.detailWindow?.animator().alphaValue = 0.0
-                    }, completionHandler: {
-                        self.detailWindow?.close()
-                    })
-                }
-            }
-        }
-    }
     
     func updateIcon(activeCount: Int, waitingCount: Int, attentionCount: Int = 0) {
         guard let button = statusItem.button else { return }
@@ -657,8 +695,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     // Update menu
                     self.updateMenu(with: sessions)
                     
-                    // Update detailed window if open
-                    if self.detailWindow?.isVisible == true {
+                    // Update detailed window if open and showing active sessions
+                    if self.detailWindow?.isVisible == true && self.currentDetailMode == .active {
                         print("🔄 Auto-refreshing detailed view with new data")
                         self.updateDetailedWindow(with: sessions)
                     }
@@ -822,6 +860,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                                      action: #selector(showAnalytics), 
                                      keyEquivalent: "")
         menu.addItem(analyticsItem)
+        
+        // Recent Sessions
+        let recentItem = NSMenuItem(title: "📜 Recent Sessions", 
+                                  action: #selector(showRecentSessions), 
+                                  keyEquivalent: "r")
+        menu.addItem(recentItem)
         
         menu.addItem(NSMenuItem.separator())
         
@@ -987,14 +1031,27 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 // Force save each session
                 var savedCount = 0
                 for session in sessions {
-                    // Create a test session history record directly
-                    let testHistory = SessionHistory(
-                        id: UUID(),
-                        startTime: Date(),
+                    // Check if session already exists in database to avoid duplicates
+                    let existingId = SessionDatabase.shared.findExistingSessionId(forPid: session.pid)
+                    
+                    // Create session record using existing ID if available, or new UUID
+                    let sessionHistory = SessionHistory(
+                        id: existingId ?? UUID(),
+                        startTime: existingId != nil ? Date().addingTimeInterval(-3600) : Date(), // Use earlier start time if updating existing
                         endTime: nil,  // Active session
                         projectPath: session.workingDir,
                         gitBranch: session.gitBranch,
                         gitRepo: extractRepoName(from: session.workingDir),
+                        sessionId: session.sessionId,
+                        pid: session.pid,
+                        command: "claude",
+                        arguments: [],
+                        terminal: session.terminal,
+                        tty: session.tty,
+                        windowTitle: session.windowTitle,
+                        lastSeen: Date(),
+                        exitCode: nil,
+                        exitReason: nil,
                         peakCPU: session.cachedCPU ?? 0,
                         avgCPU: session.cachedCPU ?? 0,
                         peakMemory: session.cachedMemory ?? 0,
@@ -1008,9 +1065,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     )
                     
                     // Save directly to database
-                    SessionDatabase.shared.saveSession(testHistory)
+                    SessionDatabase.shared.saveSession(sessionHistory)
                     savedCount += 1
-                    print("📊 Force saved session for PID: \(session.pid)")
+                    let action = existingId != nil ? "Updated existing" : "Created new"
+                    print("📊 Force saved session for PID: \(session.pid) (\(action))")
                 }
                 
                 let finalSavedCount = savedCount
@@ -1097,13 +1155,86 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         alert.informativeText = "This feature will export session data to CSV format."
         alert.runModal()
     }
+    
+    // MARK: - Recent Sessions
+    
+    @objc func showRecentSessions() {
+        showDetailedView(mode: .recent)
+    }
+    
+    // MARK: - ClickableSessionViewDelegate
+    
+    func sessionViewClicked(_ session: ClaudeSession, mode: DetailViewMode) {
+        switch mode {
+        case .active:
+            // Jump to active session
+            Task {
+                // Clear attention flag when user interacts with session
+                sessionMonitor.clearAttentionFlag(for: session.pid)
+                
+                // Force immediate UI refresh to clear attention badge
+                refresh()
+                
+                do {
+                    let pidString = session.pid
+                    try await TerminalNavigator.jumpToSession(session: session)
+                    
+                    // Fade out window on success
+                    await MainActor.run {
+                        NSAnimationContext.runAnimationGroup({ context in
+                            context.duration = 0.5
+                            self.detailWindow?.animator().alphaValue = 0.0
+                        }, completionHandler: {
+                            self.detailWindow?.close()
+                        })
+                    }
+                } catch {
+                    print("Error jumping to session: \(error)")
+                    // Fallback to script
+                    try? await TerminalNavigator.jumpUsingScript(pid: session.pid)
+                    
+                    // Still fade out on fallback
+                    await MainActor.run {
+                        NSAnimationContext.runAnimationGroup({ context in
+                            context.duration = 0.5
+                            self.detailWindow?.animator().alphaValue = 0.0
+                        }, completionHandler: {
+                            self.detailWindow?.close()
+                        })
+                    }
+                }
+            }
+            
+        case .recent:
+            // Recover recent session
+            if let historyEntry = SessionRecoveryManager.shared.getRecentSessions().first(where: { $0.sessionId == session.sessionId }) {
+                SessionRecoveryManager.shared.recoverSession(historyEntry)
+                
+                // Close the detail window after recovery
+                NSAnimationContext.runAnimationGroup({ context in
+                    context.duration = 0.5
+                    self.detailWindow?.animator().alphaValue = 0.0
+                }, completionHandler: {
+                    self.detailWindow?.close()
+                })
+            }
+        }
+    }
 }
 
 // MARK: - Custom Clickable Session View
 
+protocol ClickableSessionViewDelegate: AnyObject {
+    func sessionViewClicked(_ session: ClaudeSession, mode: AppDelegate.DetailViewMode)
+}
+
 class ClickableSessionView: NSView {
     private var isPressed = false
     private var trackingArea: NSTrackingArea?
+    
+    var session: ClaudeSession?
+    var viewMode: AppDelegate.DetailViewMode = .active
+    weak var delegate: ClickableSessionViewDelegate?
     
     override func updateTrackingAreas() {
         super.updateTrackingAreas()
@@ -1140,6 +1271,11 @@ class ClickableSessionView: NSView {
         if isPressed {
             isPressed = false
             animatePress(isPressed: false)
+            
+            // Trigger the delegate callback
+            if let session = session {
+                delegate?.sessionViewClicked(session, mode: viewMode)
+            }
         }
     }
     
@@ -1240,5 +1376,65 @@ class LaunchAtStartup {
             delete login item "ClaudeNavigator"
         end tell
         """
+    }
+}
+
+// MARK: - Singleton Instance Management Extension
+
+extension AppDelegate {
+    private var instanceCheckNotificationName: String { "ClaudeNavigator.InstanceCheck" }
+    private var instanceResponseNotificationName: String { "ClaudeNavigator.InstanceResponse" }
+    
+    private func isAnotherInstanceRunning() -> Bool {
+        // Create a semaphore to wait for response
+        let semaphore = DispatchSemaphore(value: 0)
+        var foundInstance = false
+        
+        // Listen for responses
+        let observer = NotificationCenter.default.addObserver(
+            forName: Notification.Name(instanceResponseNotificationName),
+            object: nil,
+            queue: .main
+        ) { _ in
+            foundInstance = true
+            semaphore.signal()
+        }
+        
+        // Send check notification
+        DistributedNotificationCenter.default().post(
+            name: Notification.Name(instanceCheckNotificationName),
+            object: Bundle.main.bundleIdentifier
+        )
+        
+        // Wait for response with timeout
+        let timeout = DispatchTime.now() + .milliseconds(500)
+        let result = semaphore.wait(timeout: timeout)
+        
+        // Clean up observer
+        NotificationCenter.default.removeObserver(observer)
+        
+        return result == .success && foundInstance
+    }
+    
+    private func registerInstance() {
+        // Listen for instance checks from other instances
+        DistributedNotificationCenter.default().addObserver(
+            self,
+            selector: #selector(respondToInstanceCheck(_:)),
+            name: Notification.Name(instanceCheckNotificationName),
+            object: Bundle.main.bundleIdentifier
+        )
+        
+        print("✅ Registered as singleton instance")
+    }
+    
+    @objc private func respondToInstanceCheck(_ notification: Notification) {
+        // Respond that this instance exists
+        DistributedNotificationCenter.default().post(
+            name: Notification.Name(instanceResponseNotificationName),
+            object: Bundle.main.bundleIdentifier
+        )
+        
+        print("📡 Responded to instance check - preventing duplicate launch")
     }
 }
