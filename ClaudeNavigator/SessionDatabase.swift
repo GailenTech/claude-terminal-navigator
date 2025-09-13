@@ -111,7 +111,9 @@ class SessionDatabase {
     }
     
     deinit {
-        sqlite3_close(db)
+        // Ensure WAL checkpoint before closing
+        executeSQL("PRAGMA wal_checkpoint(TRUNCATE);")
+        sqlite3_close_v2(db)
     }
     
     // Helper method for extensions to get database connection
@@ -133,10 +135,12 @@ class SessionDatabase {
     
     private func enableWALMode() {
         executeSQL("PRAGMA journal_mode=WAL;")
-        executeSQL("PRAGMA synchronous=NORMAL;")
+        executeSQL("PRAGMA synchronous=FULL;")  // Changed from NORMAL to FULL for better durability
         executeSQL("PRAGMA cache_size=10000;")
         executeSQL("PRAGMA temp_store=memory;")
-        print("✅ Database configured with WAL mode and optimized settings")
+        executeSQL("PRAGMA wal_autocheckpoint=100;")  // Auto-checkpoint after 100 pages
+        executeSQL("PRAGMA busy_timeout=5000;")  // Wait up to 5 seconds for locks
+        print("✅ Database configured with WAL mode and corruption protection")
     }
     
     private func checkDatabaseIntegrity() {
@@ -317,6 +321,9 @@ class SessionDatabase {
     // MARK: - CRUD Operations
     
     func saveSession(_ session: SessionHistory) {
+        // Use transaction for atomicity
+        executeSQL("BEGIN IMMEDIATE TRANSACTION;")
+
         let sql = """
             INSERT OR REPLACE INTO session_history 
             (id, start_time, end_time, project_path, git_branch, git_repo,
@@ -427,8 +434,18 @@ class SessionDatabase {
         }
         
         sqlite3_finalize(statement)
+
+        saveToolUsage(sessionId: session.id, toolUsage: session.toolUsage)
+
+        // Commit transaction
+        executeSQL("COMMIT;")
+
+        // Periodic checkpoint to prevent WAL from growing too large
+        if Int.random(in: 0..<10) == 0 {
+            executeSQL("PRAGMA wal_checkpoint(TRUNCATE);")
+        }
     }
-    
+
     private func saveToolUsage(sessionId: UUID, toolUsage: [String: Int]) {
         let sql = "INSERT INTO tool_usage (session_id, tool_name, usage_count) VALUES (?, ?, ?)"
         
