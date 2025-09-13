@@ -37,6 +37,60 @@ ps aux | grep -E 'claude\s+$' | grep -v grep
 tty
 ```
 
+## Release Process
+
+### Creating a New Release
+
+1. **Build the release binary**:
+```bash
+swift build -c release
+cp .build/release/ClaudeNavigator ClaudeNavigator.app/Contents/MacOS/ClaudeNavigator
+```
+
+2. **Update version in Info.plist**:
+   - Edit `ClaudeNavigator.app/Contents/Info.plist`
+   - Update `CFBundleShortVersionString` (e.g., "1.4.2")
+   - The build number auto-increments via GitHub Actions
+
+3. **Commit changes**:
+```bash
+git add .
+git commit -m "Release v1.4.2: Description of changes"
+```
+
+4. **Create and push tag**:
+```bash
+git tag v1.4.2
+git push origin main
+git push origin v1.4.2
+```
+
+5. **Create GitHub release**:
+```bash
+# The GitHub Actions workflow will automatically create ZIP and DMG artifacts
+# But you can also create the release manually:
+gh release create v1.4.2 \
+  --title "Claude Terminal Navigator v1.4.2" \
+  --notes "Release notes here" \
+  --draft
+```
+
+6. **Wait for GitHub Actions**:
+   - The workflow automatically builds both ZIP and DMG installers
+   - Downloads will be attached to the release automatically
+
+### Release Artifacts
+
+The release includes:
+- **ClaudeNavigator-vX.Y.Z.zip**: Direct app bundle
+- **ClaudeNavigator-vX.Y.Z.dmg**: Drag-and-drop installer with custom background
+
+### Version Management
+
+- Version format: `vMAJOR.MINOR.PATCH` (e.g., v1.4.2)
+- Tags must match the pattern `v*` to trigger release workflow
+- Build numbers are automatically set to GitHub Actions run number
+
 ## Architecture Overview
 
 ### Project Purpose

@@ -1,5 +1,44 @@
 # 📔 Development Diary - Claude Terminal Navigator
 
+## 2025-09-12 - Recent Sessions Threading Fix & Active Session Filtering
+
+### What was done
+- **Fixed Recent Sessions filtering**: Added logic to exclude directories with active Claude sessions from Recent Sessions menu
+- **Fixed app crash**: Recent Sessions menu was crashing when accessed due to NSWindow creation on background thread
+- **Added synchronous method**: Created synchronous `getActiveSessions()` method in ClaudeSessionMonitor for UI operations
+- **Removed async Task**: Eliminated Task/async pattern from Recent Sessions menu handler to prevent threading issues
+- **Ensured main thread execution**: All UI operations now happen directly on main thread
+- **Released v1.4.2**: Created release with both bug fixes
+
+### Decisions made
+- **Filter active paths**: Recent Sessions should never show directories that have active sessions running
+- **Synchronous for UI**: UI operations should use synchronous methods when possible to avoid threading complexity
+- **Avoid Task for menu handlers**: Menu click handlers should avoid async/await patterns when creating windows
+- **Dual method approach**: Keep both async and sync versions of getActiveSessions() for different use cases
+
+### Challenges/Learnings
+- **NSWindow threading requirement**: NSWindow must be created on main thread - macOS strictly enforces this
+- **DispatchQueue.main.async limitations**: Even wrapping in main queue async wasn't sufficient when called from Task context
+- **Swift concurrency gotchas**: Task context can cause subtle threading issues with AppKit
+- **Multiple crash attempts**: First fix with DispatchQueue.main.async wasn't sufficient, required complete removal of async pattern
+
+### Architecture Changes
+- **ClaudeSessionMonitor**: Added synchronous getActiveSessions() method alongside async version
+- **ClaudeNavigatorApp**: 
+  - Simplified Recent Sessions handler to use synchronous approach
+  - Added filtering logic to exclude active session paths from Recent Sessions
+- **Thread safety**: Improved overall thread safety by avoiding unnecessary async operations in UI code
+
+### Bug Reports Resolved
+- User reported: "Recent Sessions del directorio ClaudeCloud, pero resulta que también tengo una sesion activa de ese mismo directorio"
+- User reported: "se ha cerrado al acceder a esa opción de menu" (app crashed when accessing Recent Sessions)
+- User reported: "volvió a romperse" (crash persisted after first fix attempt)
+
+### Next steps
+- Monitor for any other threading issues with UI operations
+- Consider audit of all Task usage in UI-related code
+- May need to establish pattern for when to use async vs sync methods
+
 ## 2025-09-11 - Session History and Recovery Implementation
 
 ### What was done
