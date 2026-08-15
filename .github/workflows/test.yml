@@ -3,72 +3,46 @@ name: Test
 on:
   push:
     branches: [ main ]
-    paths:
-      - 'ClaudeNavigator/**'
-      - 'Package.swift'
-      - 'build.sh'
-      - '.github/workflows/test.yml'
   pull_request:
     branches: [ main ]
-    paths:
-      - 'ClaudeNavigator/**'
-      - 'Package.swift'
-      - 'build.sh'
-      - '.github/workflows/test.yml'
 
 jobs:
-  test:
-    runs-on: macos-latest
-    
+  shell-syntax:
+    runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Set up Swift
-      uses: swift-actions/setup-swift@v2
-      with:
-        swift-version: "5.9"
-    
-    - name: Check Swift version
-      run: swift --version
-      
-    - name: Check Swift syntax
-      run: swift package describe
-    
-    - name: Build Debug
-      run: swift build -c debug
-        
-    - name: Build Release
-      run: swift build -c release
-    
-    - name: Verify build output
-      run: |
-        test -f .build/release/ClaudeNavigator
-        echo "✅ Release binary exists"
-        
-    - name: Check Info.plist
-      run: |
-        test -f ClaudeNavigator/Info.plist
-        /usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" ClaudeNavigator/Info.plist
-        /usr/libexec/PlistBuddy -c "Print :CFBundleName" ClaudeNavigator/Info.plist
-        echo "✅ Info.plist is valid"
-    
-    - name: Test App Bundle Creation
-      run: |
-        mkdir -p "ClaudeNavigator.app/Contents/MacOS"
-        cp .build/release/ClaudeNavigator "ClaudeNavigator.app/Contents/MacOS/"
-        cp ClaudeNavigator/Info.plist "ClaudeNavigator.app/Contents/"
-        
-        # Verify bundle structure
-        test -f "ClaudeNavigator.app/Contents/MacOS/ClaudeNavigator"
-        test -f "ClaudeNavigator.app/Contents/Info.plist"
-        echo "✅ App bundle created successfully"
-        
-    - name: Security scan
-      run: |
-        # Check for hardcoded secrets
-        if grep -r "password\|secret\|key\|token" ClaudeNavigator/*.swift | grep -v "// " | grep -i "="; then
-          echo "❌ Potential hardcoded secrets found!"
-          exit 1
-        else
-          echo "✅ No hardcoded secrets detected"
-        fi
+      - uses: actions/checkout@v4
+
+      - name: bash -n on every shell script
+        run: |
+          set -e
+          fail=0
+          for f in bin/nav hooks/*.sh lib/*.sh setup.sh; do
+            [ -f "$f" ] || continue
+            echo "Checking $f"
+            bash -n "$f" || fail=1
+          done
+          exit $fail
+
+      - name: Validate plugin JSON files
+        run: |
+          set -e
+          fail=0
+          for f in .claude-plugin/plugin.json .claude-plugin/marketplace.json; do
+            [ -f "$f" ] || continue
+            echo "Validating $f"
+            jq . "$f" > /dev/null || fail=1
+          done
+          exit $fail
+
+      - name: Validate SKILL.md frontmatter
+        run: |
+          set -e
+          fail=0
+          for f in skills/*/SKILL.md; do
+            [ -f "$f" ] || continue
+            echo "Checking $f"
+            head -1 "$f" | grep -q '^---$' || { echo "::error file=$f::missing frontmatter opening ---"; fail=1; }
+            grep -q '^name:' "$f" || { echo "::error file=$f::missing 'name:' field"; fail=1; }
+            grep -q '^description:' "$f" || { echo "::error file=$f::missing 'description:' field"; fail=1; }
+          done
+          exit $fail
