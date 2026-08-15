@@ -30,10 +30,15 @@ cmd_list() {
   while IFS= read -r entry; do
     local project branch status worktree updated_at
     project=$(echo "$entry" | jq -r '.project // "(sin git)"')
-    branch=$(echo "$entry" | jq -r '.branch // ""')
     status=$(echo "$entry" | jq -r '.status // "unknown"')
     worktree=$(echo "$entry" | jq -r '.worktree // .cwd')
     updated_at=$(echo "$entry" | jq -r '.updated_at // ""')
+    # La rama se resuelve EN VIVO, no se confía en la guardada en el
+    # registro: si Claude ha hecho "git checkout -b" dentro del mismo
+    # worktree (sin crear uno nuevo), el cwd no cambia pero la rama sí,
+    # y la del registro se quedó congelada en la del arranque de la sesión.
+    branch=$(git -C "$worktree" branch --show-current 2>/dev/null) || true
+    [ -z "$branch" ] && branch=$(echo "$entry" | jq -r '.branch // ""')
     if [ "$project" != "$prev_project" ]; then
       echo ""
       echo "📁 $project"
@@ -110,21 +115,23 @@ cmd_jump() {
   worktree=$(echo "$matches" | jq -r '.worktree // .cwd')
   dir_name=$(basename "$worktree")
 
-  found=$(jump_to_tty "$tty" "$dir_name")
+  found=$(jump_to_tty "$tty" "$dir_name") || true
   if [ "$found" != "true" ]; then
     echo "No se encontró la pestaña (tty=$tty) en Terminal.app. ¿Sigue abierta?" >&2
     exit 1
   fi
 }
 
-# Crea (o reutiliza si ya existe) un worktree hermano del repo y devuelve
-# su ruta por stdout. El resto de mensajes van a stderr para no ensuciar
-# el valor devuelto.
+# Crea (o reutiliza si ya existe) un worktree hermano del repo. Imprime
+# DOS líneas por stdout: la ruta, y "new"/"existing" según si la rama se
+# acaba de crear ahora mismo o ya existía — cmd_spawn usa esa segunda
+# línea para decidir si hace falta avisar a Claude de que no cree otra
+# rama encima. El resto de mensajes van a stderr para no ensuciar eso.
 spawn_create_worktree() {
   local from_path="$1" branch="$2" base="$3"
-  local project_root project_name safe_suffix new_path
+  local project_root project_name safe_suffix new_path branch_existed
 
-  project_root=$(git -C "$from_path" worktree list 2>/dev/null | head -1 | awk '{print $1}')
+  project_root=$(git -C "$from_path" worktree list 2>/dev/null | head -1 | awk '{print $1}') || true
   if [ -z "$project_root" ]; then
     echo "'$from_path' no es un repositorio git." >&2
     exit 1
@@ -135,21 +142,25 @@ spawn_create_worktree() {
 
   if [ -e "$new_path" ]; then
     echo "$new_path"
+    echo "existing"
     return
   fi
 
   if [ -z "$base" ]; then
-    base=$(git -C "$from_path" branch --show-current)
+    base=$(git -C "$from_path" branch --show-current) || true
     [ -z "$base" ] && base="HEAD"
   fi
 
   if git -C "$project_root" show-ref --verify --quiet "refs/heads/$branch"; then
+    branch_existed="existing"
     git -C "$project_root" worktree add "$new_path" "$branch" >&2
   else
+    branch_existed="new"
     git -C "$project_root" worktree add "$new_path" -b "$branch" "$base" >&2
   fi
 
   echo "$new_path"
+  echo "$branch_existed"
 }
 
 # Prepara un lanzador de usar-y-tirar en ~/.claude-nav/tmp/ que hace
@@ -208,7 +219,19 @@ cmd_spawn() {
   target_path=$(cd "$target_path" && pwd)
 
   if [ -n "$new_branch" ]; then
-    target_path=$(spawn_create_worktree "$target_path" "$new_branch" "$base_branch")
+    local worktree_result branch_status
+    worktree_result=$(spawn_create_worktree "$target_path" "$new_branch" "$base_branch")
+    target_path=$(echo "$worktree_result" | head -1)
+    branch_status=$(echo "$worktree_result" | tail -1)
+
+    if [ "$branch_status" = "new" ]; then
+      local note="Este worktree se ha creado específicamente para la rama '$new_branch', que ya tienes activa aquí. No crees otra rama encima salvo que se te pida explícitamente."
+      if [ -n "$prompt" ]; then
+        prompt="$note"$'\n\n'"$prompt"
+      else
+        prompt="$note"
+      fi
+    fi
   fi
 
   local launcher
@@ -256,6 +279,11 @@ cmd_worktrees() {
   local live_by_path
   live_by_path=$(registry_list_live | jq -s 'map({(.worktree // .cwd): .status}) | add // {}')
 
+  if ! git -C "$project_path" rev-parse --show-toplevel > /dev/null 2>&1; then
+    echo "'$project_path' no es un repositorio git." >&2
+    exit 1
+  fi
+
   git -C "$project_path" worktree list --porcelain 2>/dev/null | awk '
     /^worktree / { path=substr($0,10) }
     /^branch /   { branch=substr($0,8); sub(/^refs\/heads\//, "", branch); print path"\t"branch; path=""; branch="" }
@@ -264,7 +292,53 @@ cmd_worktrees() {
     local status
     status=$(echo "$live_by_path" | jq -r --arg p "$path" '.[$p] // "sin sesión"')
     printf "   %s  %-25s %s\n" "$(status_icon "$status")" "$branch" "$path"
-  done
+  done || true
+}
+
+# Da de alta sesiones de Claude Code que ya estaban corriendo antes de
+# instalar los hooks (o que por lo que sea aún no han pasado por ninguno):
+# busca procesos "claude" en primer plano de un tty real, resuelve su cwd
+# con lsof, y las registra si no lo estaban ya (o si la entrada existente
+# tenía un pid muerto). El bootstrap de hook-handler.sh cubre el "se
+# autorregistra la próxima vez que la toques"; esto es el "quiero verlas
+# YA, sin tocar cada una".
+cmd_scan() {
+  local found=0
+  local line pid tty comm cwd existing_pid git_info now patch
+  while IFS= read -r line; do
+    pid=$(echo "$line" | awk '{print $1}')
+    tty=$(echo "$line" | awk '{print $3}')
+    comm=$(echo "$line" | awk '{print $4}')
+    [ "$comm" != "claude" ] && continue
+    [ "$tty" = "??" ] && continue
+
+    cwd=$(lsof -a -p "$pid" -d cwd -Fn 2>/dev/null | awk '/^n/{sub(/^n/,""); print; exit}') || true
+    [ -z "$cwd" ] && continue
+
+    existing_pid=$(registry_get "$cwd" | jq -r '.pid // empty' 2>/dev/null) || true
+    if [ -n "$existing_pid" ] && registry_pid_alive "$existing_pid"; then
+      continue
+    fi
+
+    git_info=$(registry_git_info "$cwd")
+    now=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+    patch=$(jq -n \
+      --arg cwd "$cwd" --arg pid "$pid" --arg tty "$tty" \
+      --arg status "unknown" --arg updated_at "$now" \
+      --argjson git "$git_info" \
+      '{cwd:$cwd, pid:($pid|tonumber), tty:$tty, status:$status, updated_at:$updated_at} * $git')
+    registry_merge "$cwd" "$patch"
+    found=$((found + 1))
+    echo "  + $cwd"
+  done < <(ps -eo pid=,ppid=,tty=,comm=)
+
+  echo ""
+  if [ "$found" -eq 0 ]; then
+    echo "Nada nuevo que registrar (todas las sesiones activas ya estaban en el registro)."
+  else
+    echo "$found sesión(es) registrada(s). Su estado real (working/blocked/idle) se"
+    echo "actualizará en cuanto interactúes con cada una; hasta entonces aparecen como ❔."
+  fi
 }
 
 case "${1:-list}" in
@@ -272,8 +346,9 @@ case "${1:-list}" in
   jump) shift; cmd_jump "$@" ;;
   spawn) shift; cmd_spawn "$@" ;;
   worktrees) shift; cmd_worktrees "$@" ;;
+  scan) cmd_scan ;;
   *)
-    echo "Uso: nav [list|jump <patrón>|spawn <ruta>|worktrees <ruta>]" >&2
+    echo "Uso: nav [list|jump <patrón>|spawn <ruta>|worktrees <ruta>|scan]" >&2
     exit 1
     ;;
 esac

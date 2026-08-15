@@ -31,21 +31,33 @@ fi
 
 NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
+# Bootstrap: si no hay entrada para este cwd, o la que hay tiene un pid
+# que ya no está vivo (sesión anterior distinta reusando el mismo cwd),
+# la rellenamos aquí con lo que tengamos disponible AHORA. Esto hace que
+# cualquier hook pueda dar de alta una sesión, no solo SessionStart —
+# importante para sesiones que ya estaban corriendo antes de instalar
+# los hooks: su primer evento nunca será SessionStart, pero sí llegará
+# un UserPromptSubmit/PreToolUse/Stop tarde o temprano.
+EXISTING_PID=$(registry_get "$CWD" | jq -r '.pid // empty' 2>/dev/null || true)
+if [ -z "$EXISTING_PID" ] || ! kill -0 "$EXISTING_PID" 2>/dev/null; then
+  BOOTSTRAP_SESSION_ID=$(echo "$PAYLOAD" | jq -r '.session_id // empty')
+  BOOTSTRAP_PID="$PPID"
+  BOOTSTRAP_TTY=$(ps -o tty= -p "$BOOTSTRAP_PID" 2>/dev/null | tr -d ' ') || true
+  BOOTSTRAP_GIT=$(registry_git_info "$CWD")
+  BOOTSTRAP_PATCH=$(jq -n \
+    --arg cwd "$CWD" --arg session_id "$BOOTSTRAP_SESSION_ID" \
+    --arg pid "$BOOTSTRAP_PID" --arg tty "$BOOTSTRAP_TTY" --arg started_at "$NOW" \
+    --argjson git "$BOOTSTRAP_GIT" \
+    '{cwd:$cwd, session_id:$session_id, pid:($pid|tonumber), tty:$tty,
+      started_at:$started_at} * $git')
+  registry_merge "$CWD" "$BOOTSTRAP_PATCH"
+fi
+
 case "$EVENT" in
   SessionStart)
-    SESSION_ID=$(echo "$PAYLOAD" | jq -r '.session_id // empty')
-    CLAUDE_PID="$PPID"
-    TTY=$(ps -o tty= -p "$CLAUDE_PID" 2>/dev/null | tr -d ' ')
-    GIT_INFO=$(registry_git_info "$CWD")
     MODEL=$(echo "$PAYLOAD" | jq -r '.model // empty')
-    PATCH=$(jq -n \
-      --arg cwd "$CWD" --arg session_id "$SESSION_ID" \
-      --arg pid "$CLAUDE_PID" --arg tty "$TTY" \
-      --arg status "idle" --arg started_at "$NOW" --arg updated_at "$NOW" \
-      --arg model "$MODEL" --argjson git "$GIT_INFO" \
-      '{cwd:$cwd, session_id:$session_id, pid:($pid|tonumber), tty:$tty,
-        status:$status, started_at:$started_at, updated_at:$updated_at,
-        model:$model} * $git')
+    PATCH=$(jq -n --arg status "idle" --arg updated_at "$NOW" --arg model "$MODEL" \
+      '{status:$status, updated_at:$updated_at, model:$model}')
     registry_merge "$CWD" "$PATCH"
     ;;
 

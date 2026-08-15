@@ -32,16 +32,20 @@ registry_git_info() {
   local cwd="$1"
   local project_root project worktree branch
 
-  worktree=$(git -C "$cwd" rev-parse --show-toplevel 2>/dev/null)
+  # Ojo: esta función se usa "source"ada dentro de scripts con `set -e`
+  # (hook-handler.sh, nav). Sin el `|| true`, un cwd que NO es repo git
+  # haría que `git rev-parse` fallase y matase el script entero aquí
+  # mismo, ANTES de llegar al `if` que se supone que maneja ese caso.
+  worktree=$(git -C "$cwd" rev-parse --show-toplevel 2>/dev/null) || true
   if [ -z "$worktree" ]; then
     echo '{}'
     return
   fi
 
-  project_root=$(git -C "$cwd" worktree list 2>/dev/null | head -1 | awk '{print $1}')
+  project_root=$(git -C "$cwd" worktree list 2>/dev/null | head -1 | awk '{print $1}') || true
   [ -z "$project_root" ] && project_root="$worktree"
   project=$(basename "$project_root")
-  branch=$(git -C "$cwd" branch --show-current 2>/dev/null)
+  branch=$(git -C "$cwd" branch --show-current 2>/dev/null) || true
 
   jq -n \
     --arg project "$project" \
