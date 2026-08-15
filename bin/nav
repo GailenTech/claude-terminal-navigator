@@ -1,0 +1,199 @@
+#!/bin/bash
+# nav - CLI del skill de navegación de sesiones Claude Code.
+# Subcomandos: list | jump <patrón> | spawn <ruta> | worktrees <ruta-de-proyecto>
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=../lib/registry.sh
+source "$SCRIPT_DIR/../lib/registry.sh"
+
+status_icon() {
+  case "$1" in
+    working) echo "🤖" ;;
+    blocked) echo "🙋" ;;
+    idle) echo "💤" ;;
+    "sin sesión") echo "  " ;;
+    *) echo "❔" ;;
+  esac
+}
+
+cmd_list() {
+  local entries
+  entries=$(registry_list_live)
+  if [ -z "$entries" ]; then
+    echo "No hay sesiones activas."
+    return
+  fi
+
+  local prev_project=""
+  while IFS= read -r entry; do
+    local project branch status worktree updated_at
+    project=$(echo "$entry" | jq -r '.project // "(sin git)"')
+    branch=$(echo "$entry" | jq -r '.branch // ""')
+    status=$(echo "$entry" | jq -r '.status // "unknown"')
+    worktree=$(echo "$entry" | jq -r '.worktree // .cwd')
+    updated_at=$(echo "$entry" | jq -r '.updated_at // ""')
+    if [ "$project" != "$prev_project" ]; then
+      echo ""
+      echo "📁 $project"
+      prev_project="$project"
+    fi
+    printf "   %s [%-30s] %s  (act. %s)\n" "$(status_icon "$status")" "$branch" "$worktree" "$updated_at"
+  done < <(echo "$entries" | jq -s -c 'sort_by(.project, .worktree)[]')
+}
+
+jump_to_tty() {
+  # ps da "ttys014"; el AppleScript de Terminal.app devuelve "/dev/ttys014".
+  local target_tty="/dev/${1#/dev/}"
+  local target_dir_name="$2"
+  osascript <<APPLESCRIPT
+tell application "Terminal"
+  activate
+  set foundTab to false
+  repeat with w in windows
+    repeat with t in tabs of w
+      try
+        if (tty of t) is "$target_tty" then
+          set frontmost of w to true
+          set selected tab of w to t
+          set foundTab to true
+          exit repeat
+        end if
+      end try
+    end repeat
+    if foundTab then exit repeat
+  end repeat
+  if not foundTab then
+    repeat with w in windows
+      try
+        if name of w contains "$target_dir_name" then
+          set frontmost of w to true
+          set foundTab to true
+          exit repeat
+        end if
+      end try
+    end repeat
+  end if
+  return foundTab
+end tell
+APPLESCRIPT
+}
+
+cmd_jump() {
+  local pattern="${1:-}"
+  if [ -z "$pattern" ]; then
+    echo "Uso: nav jump <patrón de proyecto/worktree>" >&2
+    exit 1
+  fi
+
+  local matches
+  matches=$(registry_list_live | jq -c --arg p "$pattern" \
+    'select(((.worktree // .cwd) | test($p; "i")) or ((.project // "") | test($p; "i")))')
+
+  local count
+  count=$(echo "$matches" | jq -s 'length')
+
+  if [ "$count" -eq 0 ]; then
+    echo "No hay ninguna sesión activa que coincida con '$pattern'." >&2
+    exit 1
+  fi
+
+  if [ "$count" -gt 1 ]; then
+    echo "Hay varias coincidencias, sé más específico:" >&2
+    echo "$matches" | jq -r '.worktree // .cwd' >&2
+    exit 1
+  fi
+
+  local tty worktree dir_name found
+  tty=$(echo "$matches" | jq -r '.tty')
+  worktree=$(echo "$matches" | jq -r '.worktree // .cwd')
+  dir_name=$(basename "$worktree")
+
+  found=$(jump_to_tty "$tty" "$dir_name")
+  if [ "$found" != "true" ]; then
+    echo "No se encontró la pestaña (tty=$tty) en Terminal.app. ¿Sigue abierta?" >&2
+    exit 1
+  fi
+}
+
+cmd_spawn() {
+  local mode="tab"
+  local target_path=""
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      --window) mode="window"; shift ;;
+      --tab) mode="tab"; shift ;;
+      *) target_path="$1"; shift ;;
+    esac
+  done
+
+  if [ -z "$target_path" ] || [ ! -d "$target_path" ]; then
+    echo "Uso: nav spawn [--window|--tab] <ruta-existente>" >&2
+    exit 1
+  fi
+  target_path=$(cd "$target_path" && pwd)
+
+  if [ "$mode" = "window" ]; then
+    osascript <<APPLESCRIPT
+tell application "Terminal"
+  activate
+  do script "cd '$target_path' && claude"
+end tell
+APPLESCRIPT
+  else
+    # "do script ... in front window" no crea pestaña de forma fiable en
+    # Terminal.app (a veces abre ventana igualmente). El truco que sí
+    # funciona: simular Cmd+T (requiere permiso de Accesibilidad) para
+    # forzar una pestaña nueva y lanzar el comando en ella.
+    if [ "$(osascript -e 'tell application "Terminal" to count windows')" -gt 0 ]; then
+      osascript <<APPLESCRIPT
+tell application "Terminal" to activate
+tell application "System Events" to keystroke "t" using command down
+delay 0.3
+tell application "Terminal"
+  do script "cd '$target_path' && claude" in front window
+end tell
+APPLESCRIPT
+    else
+      osascript <<APPLESCRIPT
+tell application "Terminal"
+  activate
+  do script "cd '$target_path' && claude"
+end tell
+APPLESCRIPT
+    fi
+  fi
+}
+
+cmd_worktrees() {
+  local project_path="${1:-}"
+  if [ -z "$project_path" ] || [ ! -d "$project_path" ]; then
+    echo "Uso: nav worktrees <ruta-dentro-del-proyecto>" >&2
+    exit 1
+  fi
+
+  local live_by_path
+  live_by_path=$(registry_list_live | jq -s 'map({(.worktree // .cwd): .status}) | add // {}')
+
+  git -C "$project_path" worktree list --porcelain 2>/dev/null | awk '
+    /^worktree / { path=substr($0,10) }
+    /^branch /   { branch=substr($0,8); sub(/^refs\/heads\//, "", branch); print path"\t"branch; path=""; branch="" }
+    /^detached/  { print path"\t(detached)"; path="" }
+  ' | while IFS=$'\t' read -r path branch; do
+    local status
+    status=$(echo "$live_by_path" | jq -r --arg p "$path" '.[$p] // "sin sesión"')
+    printf "   %s  %-25s %s\n" "$(status_icon "$status")" "$branch" "$path"
+  done
+}
+
+case "${1:-list}" in
+  list) cmd_list ;;
+  jump) shift; cmd_jump "$@" ;;
+  spawn) shift; cmd_spawn "$@" ;;
+  worktrees) shift; cmd_worktrees "$@" ;;
+  *)
+    echo "Uso: nav [list|jump <patrón>|spawn <ruta>|worktrees <ruta>]" >&2
+    exit 1
+    ;;
+esac
