@@ -32,9 +32,19 @@ exacto.
     "<texto>"`) en vez de con el prompt vacío. Útil para "llevarse" un
     hilo de trabajo a una sesión/worktree nuevo: compón un resumen de
     contexto y pásalo aquí en vez de pedirle al usuario que lo reescriba.
+  - Si `--worktree` crea una rama **nueva** (no reutiliza una existente),
+    se antepone automáticamente al prompt una nota avisando a la sesión
+    nueva de que ya está en la rama pensada para eso y no debe crear otra
+    encima. No hace falta que tú añadas ese aviso a mano.
 - `nav worktrees <ruta-del-proyecto>` — lista todos los worktrees git de ese
   proyecto (existan o no tengan sesión activa), cruzados con el registro para
   marcar cuáles tienen una sesión de Claude Code corriendo encima.
+- `nav scan` — da de alta sesiones de Claude Code que ya estaban corriendo
+  antes de instalar los hooks (o que aún no han pasado por ninguno): busca
+  procesos `claude` con tty real y los registra. Úsalo justo después de
+  instalar, o si `nav list` muestra menos sesiones de las que sabes que
+  tienes abiertas. Las sesiones dadas de alta así aparecen con estado `❔`
+  hasta que interactúes con ellas (entonces se corrige solo).
 
 ## Cuándo usarlo
 
@@ -54,6 +64,9 @@ exacto.
   nada más por tu parte.
 - El usuario pregunta por los worktrees de un proyecto, o quiere saber cuáles
   están libres para usar → `nav worktrees <ruta>`.
+- `nav list` muestra menos sesiones de las que el usuario dice tener
+  abiertas (típicamente justo tras instalar) → sugiere o ejecuta
+  `nav scan`.
 
 ## Limitaciones a tener en cuenta
 
