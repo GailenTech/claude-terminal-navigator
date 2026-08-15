@@ -1,0 +1,26 @@
+{
+  "name": "GailenTech",
+  "version": "1.0.0",
+  "description": "GailenTech plugins for Claude Code",
+  "author": "Jorge Uriarte",
+  "url": "https://github.com/GailenTech",
+  "plugins": [
+    {
+      "id": "terminal-nav",
+      "name": "Terminal Navigator",
+      "version": "2.0.0",
+      "description": "Session awareness and worktree navigation for Claude Code on macOS",
+      "author": "jorge.uriarte@omelas.net",
+      "license": "MIT",
+      "source": {
+        "type": "local",
+        "path": "."
+      },
+      "keywords": ["terminal", "sessions", "worktrees", "macos", "navigation"],
+      "requirements": {
+        "platform": "macos",
+        "terminal": "Terminal.app"
+      }
+    }
+  ]
+}
