@@ -5,7 +5,9 @@ description: Da conciencia de las sesiones de Claude Code activas en otras termi
 
 # Terminal Navigator
 
-CLI: `/Volumes/DevelopmentProjects/Claude/claude-terminal-navigator/bin/nav`
+CLI: `${CLAUDE_PLUGIN_ROOT}/bin/nav` (una vez instalado el plugin, `bin/`
+queda en el PATH, así que también funciona como `nav` a secas en cualquier
+terminal).
 
 Da visibilidad y control sobre todas las sesiones de Claude Code activas del
 usuario en Terminal.app, agrupadas por proyecto y worktree, con su estado real

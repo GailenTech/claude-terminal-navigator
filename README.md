@@ -61,7 +61,12 @@ nav list
 
 ## Usage
 
-See [SKILL.md](SKILL.md) for detailed command reference and examples.
+See [skills/terminal-nav/SKILL.md](skills/terminal-nav/SKILL.md) for detailed
+command reference and examples.
+
+For a quick manual check without going through the model, use
+`/terminal-nav:navs` — it runs `nav list` directly and shows the raw output
+([skills/navs/SKILL.md](skills/navs/SKILL.md)).
 
 Quick start:
 ```bash
