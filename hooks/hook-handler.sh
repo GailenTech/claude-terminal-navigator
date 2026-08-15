@@ -16,17 +16,26 @@ EVENT="${1:-}"
 PAYLOAD=$(cat)
 
 CWD=$(echo "$PAYLOAD" | jq -r '.cwd // empty')
-SESSION_ID=$(echo "$PAYLOAD" | jq -r '.session_id // empty')
 
 # Sin cwd no podemos indexar nada; salir en silencio sin bloquear a Claude.
 [ -z "$CWD" ] && exit 0
 
-CLAUDE_PID="$PPID"
-TTY=$(ps -o tty= -p "$CLAUDE_PID" 2>/dev/null | tr -d ' ')
+# Camino rápido para SessionEnd: solo hace falta el cwd para borrar la
+# entrada. SessionEnd comparte un presupuesto de tiempo muy ajustado entre
+# todos sus hooks, así que evitamos cualquier trabajo (ps, date, más jq)
+# que no sea estrictamente necesario para el borrado.
+if [ "$EVENT" = "SessionEnd" ]; then
+  registry_remove "$CWD"
+  exit 0
+fi
+
 NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
 case "$EVENT" in
   SessionStart)
+    SESSION_ID=$(echo "$PAYLOAD" | jq -r '.session_id // empty')
+    CLAUDE_PID="$PPID"
+    TTY=$(ps -o tty= -p "$CLAUDE_PID" 2>/dev/null | tr -d ' ')
     GIT_INFO=$(registry_git_info "$CWD")
     MODEL=$(echo "$PAYLOAD" | jq -r '.model // empty')
     PATCH=$(jq -n \
