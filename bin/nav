@@ -171,7 +171,7 @@ spawn_create_worktree() {
 # shell-de-Terminal, que es donde se cuelan los bugs de inyección si
 # intentas meter texto arbitrario directamente en la cadena de AppleScript.
 spawn_build_launcher() {
-  local target_path="$1" prompt="$2" remote_name="$3"
+  local target_path="$1" prompt="$2" remote_name="$3" skip_permissions="$4"
   local launch_dir
   mkdir -p "$HOME/.claude-nav/tmp"
   launch_dir=$(mktemp -d "$HOME/.claude-nav/tmp/launch.XXXXXX")
@@ -179,12 +179,16 @@ spawn_build_launcher() {
   printf '%s' "$target_path" > "$launch_dir/path"
   [ -n "$prompt" ] && printf '%s' "$prompt" > "$launch_dir/prompt"
   [ -n "$remote_name" ] && printf '%s' "$remote_name" > "$launch_dir/remote_name"
+  [ "$skip_permissions" = "false" ] && touch "$launch_dir/no_skip_permissions"
 
   cat > "$launch_dir/run.sh" <<'LAUNCHER'
 #!/bin/bash
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$(cat "$DIR/path")" || exit 1
 CMD=(claude)
+if [ ! -f "$DIR/no_skip_permissions" ]; then
+  CMD+=(--dangerously-skip-permissions)
+fi
 if [ -f "$DIR/remote_name" ]; then
   CMD+=(--remote-control "$(cat "$DIR/remote_name")")
 fi
@@ -206,6 +210,7 @@ cmd_spawn() {
   local base_branch=""
   local prompt=""
   local remote_control=true
+  local skip_permissions=true
   while [ $# -gt 0 ]; do
     case "$1" in
       --window) mode="window"; shift ;;
@@ -214,12 +219,13 @@ cmd_spawn() {
       --from) base_branch="$2"; shift 2 ;;
       --prompt) prompt="$2"; shift 2 ;;
       --no-remote-control) remote_control=false; shift ;;
+      --no-skip-permissions) skip_permissions=false; shift ;;
       *) target_path="$1"; shift ;;
     esac
   done
 
   if [ -z "$target_path" ] || [ ! -d "$target_path" ]; then
-    echo "Uso: nav spawn [--window|--tab] [--worktree <rama> [--from <rama-base>]] [--prompt <texto>] [--no-remote-control] <ruta-existente>" >&2
+    echo "Uso: nav spawn [--window|--tab] [--worktree <rama> [--from <rama-base>]] [--prompt <texto>] [--no-remote-control] [--no-skip-permissions] <ruta-existente>" >&2
     exit 1
   fi
   target_path=$(cd "$target_path" && pwd)
@@ -256,7 +262,7 @@ cmd_spawn() {
   fi
 
   local launcher
-  launcher=$(spawn_build_launcher "$target_path" "$prompt" "$remote_name")
+  launcher=$(spawn_build_launcher "$target_path" "$prompt" "$remote_name" "$skip_permissions")
 
   if [ "$mode" = "window" ]; then
     osascript <<APPLESCRIPT

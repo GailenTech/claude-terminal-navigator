@@ -45,6 +45,10 @@ exacto.
     control` lo desactiva para esa sesión. Requiere suscripción Pro/Max/
     Team/Enterprise y `/login` ya hecho; si no se cumple, la sesión
     arranca igual y solo se ve una notificación de fallo, no bloquea nada.
+  - Por defecto lanza también con `--dangerously-skip-permissions` (así
+    trabaja el usuario habitualmente). `--no-skip-permissions` lo
+    desactiva para esa sesión si hace falta más cuidado (p. ej. un
+    worktree en el que no confías tanto).
 - `nav worktrees <ruta-del-proyecto>` — lista todos los worktrees git de ese
   proyecto (existan o no tengan sesión activa), cruzados con el registro para
   marcar cuáles tienen una sesión de Claude Code corriendo encima.
