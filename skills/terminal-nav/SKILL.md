@@ -38,6 +38,13 @@ exacto.
     se antepone automáticamente al prompt una nota avisando a la sesión
     nueva de que ya está en la rama pensada para eso y no debe crear otra
     encima. No hace falta que tú añadas ese aviso a mano.
+  - Por defecto lanza con `claude --remote-control "<nombre>"`, usando
+    la rama de `--worktree` (o la rama actual de `<ruta>`, o el nombre
+    del directorio si no hay rama) como nombre de sesión — así se
+    identifica en el móvil/otro dispositivo cuál es cuál. `--no-remote-
+    control` lo desactiva para esa sesión. Requiere suscripción Pro/Max/
+    Team/Enterprise y `/login` ya hecho; si no se cumple, la sesión
+    arranca igual y solo se ve una notificación de fallo, no bloquea nada.
 - `nav worktrees <ruta-del-proyecto>` — lista todos los worktrees git de ese
   proyecto (existan o no tengan sesión activa), cruzados con el registro para
   marcar cuáles tienen una sesión de Claude Code corriendo encima.

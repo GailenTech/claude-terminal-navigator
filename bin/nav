@@ -171,23 +171,27 @@ spawn_create_worktree() {
 # shell-de-Terminal, que es donde se cuelan los bugs de inyección si
 # intentas meter texto arbitrario directamente en la cadena de AppleScript.
 spawn_build_launcher() {
-  local target_path="$1" prompt="$2"
+  local target_path="$1" prompt="$2" remote_name="$3"
   local launch_dir
   mkdir -p "$HOME/.claude-nav/tmp"
   launch_dir=$(mktemp -d "$HOME/.claude-nav/tmp/launch.XXXXXX")
 
   printf '%s' "$target_path" > "$launch_dir/path"
   [ -n "$prompt" ] && printf '%s' "$prompt" > "$launch_dir/prompt"
+  [ -n "$remote_name" ] && printf '%s' "$remote_name" > "$launch_dir/remote_name"
 
   cat > "$launch_dir/run.sh" <<'LAUNCHER'
 #!/bin/bash
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$(cat "$DIR/path")" || exit 1
-if [ -f "$DIR/prompt" ]; then
-  claude "$(cat "$DIR/prompt")"
-else
-  claude
+CMD=(claude)
+if [ -f "$DIR/remote_name" ]; then
+  CMD+=(--remote-control "$(cat "$DIR/remote_name")")
 fi
+if [ -f "$DIR/prompt" ]; then
+  CMD+=("$(cat "$DIR/prompt")")
+fi
+"${CMD[@]}"
 rm -rf "$DIR"
 LAUNCHER
   chmod +x "$launch_dir/run.sh"
@@ -201,6 +205,7 @@ cmd_spawn() {
   local new_branch=""
   local base_branch=""
   local prompt=""
+  local remote_control=true
   while [ $# -gt 0 ]; do
     case "$1" in
       --window) mode="window"; shift ;;
@@ -208,12 +213,13 @@ cmd_spawn() {
       --worktree) new_branch="$2"; shift 2 ;;
       --from) base_branch="$2"; shift 2 ;;
       --prompt) prompt="$2"; shift 2 ;;
+      --no-remote-control) remote_control=false; shift ;;
       *) target_path="$1"; shift ;;
     esac
   done
 
   if [ -z "$target_path" ] || [ ! -d "$target_path" ]; then
-    echo "Uso: nav spawn [--window|--tab] [--worktree <rama> [--from <rama-base>]] [--prompt <texto>] <ruta-existente>" >&2
+    echo "Uso: nav spawn [--window|--tab] [--worktree <rama> [--from <rama-base>]] [--prompt <texto>] [--no-remote-control] <ruta-existente>" >&2
     exit 1
   fi
   target_path=$(cd "$target_path" && pwd)
@@ -234,8 +240,23 @@ cmd_spawn() {
     fi
   fi
 
+  # Nombre de sesión para --remote-control: la rama pensada para este
+  # worktree si se usó --worktree, si no la rama actual de destino, si no
+  # el nombre del directorio. Se sanea la barra ("feature/x" -> "feature-x")
+  # porque la doc de --remote-control no confirma que acepte "/" en el
+  # nombre y no vale la pena arriesgarse.
+  local remote_name=""
+  if [ "$remote_control" = "true" ]; then
+    remote_name="$new_branch"
+    if [ -z "$remote_name" ]; then
+      remote_name=$(git -C "$target_path" branch --show-current 2>/dev/null) || true
+    fi
+    [ -z "$remote_name" ] && remote_name=$(basename "$target_path")
+    remote_name=$(echo "$remote_name" | tr '/' '-')
+  fi
+
   local launcher
-  launcher=$(spawn_build_launcher "$target_path" "$prompt")
+  launcher=$(spawn_build_launcher "$target_path" "$prompt" "$remote_name")
 
   if [ "$mode" = "window" ]; then
     osascript <<APPLESCRIPT
