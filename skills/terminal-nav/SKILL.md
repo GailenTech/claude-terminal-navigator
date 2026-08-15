@@ -41,12 +41,23 @@ exacto.
 - `nav worktrees <ruta-del-proyecto>` — lista todos los worktrees git de ese
   proyecto (existan o no tengan sesión activa), cruzados con el registro para
   marcar cuáles tienen una sesión de Claude Code corriendo encima.
-- `nav scan` — da de alta sesiones de Claude Code que ya estaban corriendo
-  antes de instalar los hooks (o que aún no han pasado por ninguno): busca
-  procesos `claude` con tty real y los registra. Úsalo justo después de
-  instalar, o si `nav list` muestra menos sesiones de las que sabes que
+- `nav scan` — reconciliación completa del registro: purga entradas con
+  pid muerto Y da de alta sesiones de Claude Code que ya estaban corriendo
+  antes de instalar los hooks (o que aún no han pasado por ninguno) —
+  busca procesos `claude` con tty real y los registra. Úsalo justo después
+  de instalar, o si `nav list` muestra menos sesiones de las que sabes que
   tienes abiertas. Las sesiones dadas de alta así aparecen con estado `❔`
   hasta que interactúes con ellas (entonces se corrige solo).
+- `nav prune <ruta-del-worktree> [--delete-branch [--force]]` — libera un
+  worktree con seguridad. **Por defecto solo quita el worktree** (barato,
+  reversible: la rama y sus commits siguen intactos). Se niega a tocar
+  nada si hay una sesión de Claude viva ahí dentro, o si hay cambios sin
+  commitear — en ambos casos para y te lo dice, nunca descarta nada solo.
+  - `--delete-branch`: además borra la rama, con `git branch -d` (el
+    seguro: se niega si no está mergeada).
+  - `--delete-branch --force`: borra la rama aunque no esté mergeada
+    (`git branch -D` — commits perdidos para siempre). Solo cuando el
+    usuario lo pida explícitamente sabiendo lo que implica.
 
 ## Cuándo usarlo
 
@@ -69,6 +80,11 @@ exacto.
 - `nav list` muestra menos sesiones de las que el usuario dice tener
   abiertas (típicamente justo tras instalar) → sugiere o ejecuta
   `nav scan`.
+- El usuario ha terminado con un worktree y quiere "cerrarlo" o
+  "liberarlo" → `nav prune <ruta>` (sin `--delete-branch` salvo que
+  pida explícitamente borrar también la rama). Nunca uses `--force` sin
+  que el usuario lo pida de forma inequívoca sabiendo que puede perder
+  commits.
 
 ## Limitaciones a tener en cuenta
 
@@ -80,8 +96,7 @@ exacto.
   `~/.claude/settings.json` (evento `SessionStart`, `UserPromptSubmit`,
   `PreToolUse`, `PermissionRequest`, `Stop`, `SessionEnd` →
   `hooks/hook-handler.sh <evento>`). Sin eso, `nav list` no verá nada.
-- **No hay comando de limpieza de worktrees.** `nav` sabe crear worktrees
-  (`spawn --worktree`) pero no sabe retirarlos con seguridad (comprobar
-  sesión viva, cambios sin commitear, orden borrar-worktree-antes-que-rama).
-  Hazlo a mano con `git worktree remove` / `git branch -D`, en ese orden,
-  y confirma primero que no hay una sesión de Claude corriendo ahí dentro.
+- `nav prune` comprueba mergeo contra el branch actualmente activo del
+  repo principal (lo que hace `git branch -d` por defecto) — no contra
+  `origin/main` específicamente. Una rama pusheada pero no mergeada
+  localmente se sigue tratando como no mergeada.

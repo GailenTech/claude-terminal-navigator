@@ -305,6 +305,16 @@ cmd_worktrees() {
 cmd_scan() {
   local found=0
   local line pid tty comm cwd existing_pid git_info now patch
+
+  # Reconciliación completa, no solo "añadir": purga primero las entradas
+  # con pid muerto (registry_list_live ya lo hace como efecto colateral de
+  # listar) para poder informar de cuántas se han limpiado.
+  local before_count after_count purged
+  before_count=$(find "$REGISTRY_DIR" -name '*.json' 2>/dev/null | wc -l | tr -d ' ')
+  registry_list_live > /dev/null
+  after_count=$(find "$REGISTRY_DIR" -name '*.json' 2>/dev/null | wc -l | tr -d ' ')
+  purged=$((before_count - after_count))
+
   while IFS= read -r line; do
     pid=$(echo "$line" | awk '{print $1}')
     tty=$(echo "$line" | awk '{print $3}')
@@ -333,11 +343,87 @@ cmd_scan() {
   done < <(ps -eo pid=,ppid=,tty=,comm=)
 
   echo ""
+  if [ "$purged" -gt 0 ]; then
+    echo "🗑  $purged sesión(es) muerta(s) purgada(s) del registro."
+  fi
   if [ "$found" -eq 0 ]; then
     echo "Nada nuevo que registrar (todas las sesiones activas ya estaban en el registro)."
   else
     echo "$found sesión(es) registrada(s). Su estado real (working/blocked/idle) se"
     echo "actualizará en cuanto interactúes con cada una; hasta entonces aparecen como ❔."
+  fi
+}
+
+# Libera un worktree con seguridad. Por defecto SOLO quita el worktree
+# (barato, reversible: la rama y sus commits siguen ahí). Borrar la rama
+# es un paso aparte, explícito, y usa "branch -d" (seguro, se niega si no
+# está mergeada) salvo que se pida --force expresamente — nunca "-D" por
+# defecto, nunca en silencio.
+cmd_prune() {
+  local target_path="${1:-}"
+  shift || true
+  local delete_branch=false force=false
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      --delete-branch) delete_branch=true; shift ;;
+      --force) force=true; shift ;;
+      *) shift ;;
+    esac
+  done
+
+  if [ -z "$target_path" ] || [ ! -d "$target_path" ]; then
+    echo "Uso: nav prune <ruta-del-worktree> [--delete-branch [--force]]" >&2
+    exit 1
+  fi
+  target_path=$(cd "$target_path" && pwd)
+
+  local live_pid
+  live_pid=$(registry_get "$target_path" | jq -r '.pid // empty' 2>/dev/null) || true
+  if [ -n "$live_pid" ] && registry_pid_alive "$live_pid"; then
+    echo "Hay una sesión de Claude Code viva en '$target_path' (pid $live_pid)." >&2
+    echo "Ciérrala antes de continuar." >&2
+    exit 1
+  fi
+
+  local branch project_root
+  branch=$(git -C "$target_path" branch --show-current 2>/dev/null) || true
+  project_root=$(git -C "$target_path" worktree list 2>/dev/null | head -1 | awk '{print $1}') || true
+  if [ -z "$project_root" ]; then
+    echo "'$target_path' no es un worktree git." >&2
+    exit 1
+  fi
+
+  if [ -n "$(git -C "$target_path" status --porcelain 2>/dev/null)" ]; then
+    echo "'$target_path' tiene cambios sin commitear." >&2
+    echo "Revísalos y commitea o descarta a mano antes de continuar — no se toca nada." >&2
+    exit 1
+  fi
+
+  git -C "$project_root" worktree remove "$target_path"
+  registry_remove "$target_path"
+  echo "✓ Worktree liberado: $target_path"
+
+  if [ -z "$branch" ]; then
+    echo "No se pudo determinar la rama; no se borra ninguna."
+    return
+  fi
+
+  if [ "$delete_branch" != "true" ]; then
+    echo "Rama '$branch' conservada (usa --delete-branch para borrarla)."
+    return
+  fi
+
+  if [ "$force" = "true" ]; then
+    git -C "$project_root" branch -D "$branch"
+    echo "✓ Rama '$branch' borrada (forzado con --force — commits incluidos)."
+  else
+    if git -C "$project_root" branch -d "$branch"; then
+      echo "✓ Rama '$branch' borrada (estaba mergeada, sin trabajo perdido)."
+    else
+      echo "'$branch' no está mergeada — no se ha borrado." >&2
+      echo "Si estás seguro de perder ese trabajo, repite con --delete-branch --force." >&2
+      exit 1
+    fi
   fi
 }
 
@@ -347,8 +433,9 @@ case "${1:-list}" in
   spawn) shift; cmd_spawn "$@" ;;
   worktrees) shift; cmd_worktrees "$@" ;;
   scan) cmd_scan ;;
+  prune) shift; cmd_prune "$@" ;;
   *)
-    echo "Uso: nav [list|jump <patrón>|spawn <ruta>|worktrees <ruta>|scan]" >&2
+    echo "Uso: nav [list|jump <patrón>|spawn <ruta>|worktrees <ruta>|scan|prune <ruta> [--delete-branch [--force]]]" >&2
     exit 1
     ;;
 esac
