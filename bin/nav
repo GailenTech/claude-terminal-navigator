@@ -117,28 +117,108 @@ cmd_jump() {
   fi
 }
 
+# Crea (o reutiliza si ya existe) un worktree hermano del repo y devuelve
+# su ruta por stdout. El resto de mensajes van a stderr para no ensuciar
+# el valor devuelto.
+spawn_create_worktree() {
+  local from_path="$1" branch="$2" base="$3"
+  local project_root project_name safe_suffix new_path
+
+  project_root=$(git -C "$from_path" worktree list 2>/dev/null | head -1 | awk '{print $1}')
+  if [ -z "$project_root" ]; then
+    echo "'$from_path' no es un repositorio git." >&2
+    exit 1
+  fi
+  project_name=$(basename "$project_root")
+  safe_suffix=$(echo "$branch" | tr '/' '-')
+  new_path="$(dirname "$project_root")/${project_name}-${safe_suffix}"
+
+  if [ -e "$new_path" ]; then
+    echo "$new_path"
+    return
+  fi
+
+  if [ -z "$base" ]; then
+    base=$(git -C "$from_path" branch --show-current)
+    [ -z "$base" ] && base="HEAD"
+  fi
+
+  if git -C "$project_root" show-ref --verify --quiet "refs/heads/$branch"; then
+    git -C "$project_root" worktree add "$new_path" "$branch" >&2
+  else
+    git -C "$project_root" worktree add "$new_path" -b "$branch" "$base" >&2
+  fi
+
+  echo "$new_path"
+}
+
+# Prepara un lanzador de usar-y-tirar en ~/.claude-nav/tmp/ que hace
+# cd + claude [prompt inicial]. Todo el contenido dinámico (ruta, prompt)
+# se escribe a ficheros aparte con printf %s (sin interpretar nada); el
+# propio script es un heredoc ESTÁTICO (delimitador entre comillas, cero
+# interpolación). Así evitamos el triple escapado bash -> AppleScript ->
+# shell-de-Terminal, que es donde se cuelan los bugs de inyección si
+# intentas meter texto arbitrario directamente en la cadena de AppleScript.
+spawn_build_launcher() {
+  local target_path="$1" prompt="$2"
+  local launch_dir
+  mkdir -p "$HOME/.claude-nav/tmp"
+  launch_dir=$(mktemp -d "$HOME/.claude-nav/tmp/launch.XXXXXX")
+
+  printf '%s' "$target_path" > "$launch_dir/path"
+  [ -n "$prompt" ] && printf '%s' "$prompt" > "$launch_dir/prompt"
+
+  cat > "$launch_dir/run.sh" <<'LAUNCHER'
+#!/bin/bash
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$(cat "$DIR/path")" || exit 1
+if [ -f "$DIR/prompt" ]; then
+  claude "$(cat "$DIR/prompt")"
+else
+  claude
+fi
+rm -rf "$DIR"
+LAUNCHER
+  chmod +x "$launch_dir/run.sh"
+
+  echo "$launch_dir/run.sh"
+}
+
 cmd_spawn() {
   local mode="tab"
   local target_path=""
+  local new_branch=""
+  local base_branch=""
+  local prompt=""
   while [ $# -gt 0 ]; do
     case "$1" in
       --window) mode="window"; shift ;;
       --tab) mode="tab"; shift ;;
+      --worktree) new_branch="$2"; shift 2 ;;
+      --from) base_branch="$2"; shift 2 ;;
+      --prompt) prompt="$2"; shift 2 ;;
       *) target_path="$1"; shift ;;
     esac
   done
 
   if [ -z "$target_path" ] || [ ! -d "$target_path" ]; then
-    echo "Uso: nav spawn [--window|--tab] <ruta-existente>" >&2
+    echo "Uso: nav spawn [--window|--tab] [--worktree <rama> [--from <rama-base>]] [--prompt <texto>] <ruta-existente>" >&2
     exit 1
   fi
   target_path=$(cd "$target_path" && pwd)
+
+  if [ -n "$new_branch" ]; then
+    target_path=$(spawn_create_worktree "$target_path" "$new_branch" "$base_branch")
+  fi
+
+  local launcher
+  launcher=$(spawn_build_launcher "$target_path" "$prompt")
 
   if [ "$mode" = "window" ]; then
     osascript <<APPLESCRIPT
 tell application "Terminal"
   activate
-  do script "cd '$target_path' && claude"
+  do script "'$launcher'"
 end tell
 APPLESCRIPT
   else
@@ -152,14 +232,14 @@ tell application "Terminal" to activate
 tell application "System Events" to keystroke "t" using command down
 delay 0.3
 tell application "Terminal"
-  do script "cd '$target_path' && claude" in front window
+  do script "'$launcher'" in front window
 end tell
 APPLESCRIPT
     else
       osascript <<APPLESCRIPT
 tell application "Terminal"
   activate
-  do script "cd '$target_path' && claude"
+  do script "'$launcher'"
 end tell
 APPLESCRIPT
     fi

@@ -20,9 +20,18 @@ exacto.
 - `nav jump <patrón>` — activa en Terminal.app la pestaña de la sesión cuyo
   proyecto o ruta de worktree contiene `<patrón>` (case-insensitive). Si hay
   varias coincidencias, lista las opciones en vez de adivinar.
-- `nav spawn [--window|--tab] <ruta>` — abre una sesión nueva de `claude` en
-  `<ruta>`. Por defecto abre una **pestaña nueva en la ventana actual** de
-  Terminal.app; con `--window` fuerza una ventana nueva.
+- `nav spawn [--window|--tab] [--worktree <rama> [--from <rama-base>]] [--prompt <texto>] <ruta>` —
+  abre una sesión nueva de `claude` en `<ruta>`. Por defecto abre una
+  **pestaña nueva en la ventana actual** de Terminal.app; con `--window`
+  fuerza una ventana nueva.
+  - `--worktree <rama>`: crea (o reutiliza si ya existe) un worktree
+    hermano del repo en `<ruta>` para esa rama, y lanza ahí en vez de en
+    `<ruta>` directamente. Parte de la rama actual del worktree de origen
+    salvo que se indique `--from <rama-base>`.
+  - `--prompt <texto>`: la sesión nueva arranca ya con ese prompt (`claude
+    "<texto>"`) en vez de con el prompt vacío. Útil para "llevarse" un
+    hilo de trabajo a una sesión/worktree nuevo: compón un resumen de
+    contexto y pásalo aquí en vez de pedirle al usuario que lo reescriba.
 - `nav worktrees <ruta-del-proyecto>` — lista todos los worktrees git de ese
   proyecto (existan o no tengan sesión activa), cruzados con el registro para
   marcar cuáles tienen una sesión de Claude Code corriendo encima.
@@ -37,6 +46,12 @@ exacto.
 - El usuario pide abrir/lanzar trabajo en otro proyecto o worktree, o
   "arranca una sesión para X" → `nav spawn <ruta>`. Confirma la ruta antes
   si no es inequívoca (p. ej. el usuario da solo un nombre de proyecto).
+- El usuario ha estado profundizando en un tema lateral y pide "llévate
+  esto a otra sesión/worktree y sigamos aquí con lo de antes" → compón un
+  resumen conciso de ese hilo lateral y llama a
+  `nav spawn --worktree <rama-nueva> --prompt "<resumen>" <ruta-del-repo>`.
+  Después retoma tú (la sesión actual) el tema original — no hace falta
+  nada más por tu parte.
 - El usuario pregunta por los worktrees de un proyecto, o quiere saber cuáles
   están libres para usar → `nav worktrees <ruta>`.
 
@@ -50,3 +65,8 @@ exacto.
   `~/.claude/settings.json` (evento `SessionStart`, `UserPromptSubmit`,
   `PreToolUse`, `PermissionRequest`, `Stop`, `SessionEnd` →
   `hooks/hook-handler.sh <evento>`). Sin eso, `nav list` no verá nada.
+- **No hay comando de limpieza de worktrees.** `nav` sabe crear worktrees
+  (`spawn --worktree`) pero no sabe retirarlos con seguridad (comprobar
+  sesión viva, cambios sin commitear, orden borrar-worktree-antes-que-rama).
+  Hazlo a mano con `git worktree remove` / `git branch -D`, en ese orden,
+  y confirma primero que no hay una sesión de Claude corriendo ahí dentro.
