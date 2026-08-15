@@ -1,57 +1,11 @@
 {
   "name": "terminal-nav",
-  "version": "1.0.0",
   "description": "Session and worktree navigator for Claude Code on macOS. Provides awareness of active sessions across terminals, projects, and worktrees with real-time state (working/blocked/idle). List, jump between, spawn new sessions, and transfer work across worktrees.",
-  "author": "jorge.uriarte@omelas.net",
+  "version": "2.0.0",
+  "author": {
+    "name": "Jorge Uriarte",
+    "email": "jorge.uriarte@omelas.net"
+  },
   "license": "MIT",
-  "type": "skill",
-  "keywords": ["terminal", "sessions", "worktrees", "macos", "navigation"],
-  "requirements": {
-    "platform": "macos",
-    "terminal": "Terminal.app",
-    "shell": "bash"
-  },
-  "entry_points": {
-    "skill": "SKILL.md",
-    "cli": "bin/nav"
-  },
-  "hooks": {
-    "enabled": true,
-    "required": [
-      "SessionStart",
-      "UserPromptSubmit",
-      "PreToolUse",
-      "PermissionRequest",
-      "Stop",
-      "SessionEnd"
-    ],
-    "handler": "hooks/hook-handler.sh"
-  },
-  "installation": {
-    "setup_required": true,
-    "instructions": "After installation, run: nav --setup (will add hooks to ~/.claude/settings.json)"
-  },
-  "commands": {
-    "nav": {
-      "description": "Session and worktree navigation CLI",
-      "subcommands": [
-        {
-          "name": "list",
-          "description": "List all active Claude Code sessions"
-        },
-        {
-          "name": "jump",
-          "description": "Jump to a session by project or worktree pattern"
-        },
-        {
-          "name": "spawn",
-          "description": "Spawn a new Claude Code session"
-        },
-        {
-          "name": "worktrees",
-          "description": "List worktrees in a project with session status"
-        }
-      ]
-    }
-  }
+  "keywords": ["terminal", "sessions", "worktrees", "macos", "navigation"]
 }
