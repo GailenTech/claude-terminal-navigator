@@ -1,6 +1,6 @@
 ---
 name: terminal-nav
-description: Da conciencia de las sesiones de Claude Code activas en otras terminales, proyectos y worktrees de este usuario en macOS, y permite listarlas, saltar a ellas (Terminal.app) o abrir una sesión nueva. Úsalo cuando el usuario pregunte qué otras sesiones/terminales/agentes tiene abiertos, en qué estado están (trabajando/bloqueado/parado), pida saltar o llevarle a otra sesión, o pida abrir/lanzar una sesión nueva en otro proyecto o worktree.
+description: Da consciencia de OTRAS sesiones de Claude Code (no esta) activas en otras pestañas/terminales/proyectos/worktrees de este usuario en macOS — listarlas, saltar a ellas, abrir una nueva, o liberar un worktree. TRIGGER — dispara cuando el usuario pregunte "qué tengo abierto", "cómo van mis otras sesiones/terminales/agentes", "hay alguna esperando que le apruebe algo/bloqueada", pida "salta a", "llévame a", "ve a la sesión/terminal de X"; pida "abre/lanza/arranca una sesión/terminal nueva" (en otro proyecto, worktree, o rama); pida "llévate esto a otra sesión/worktree" o "sigue esto en paralelo"; pregunte por los worktrees de un repo o cuáles están libres; o pida "cierra/libera/borra ese worktree". Palabras clave: sesiones, pestañas, terminales, worktree(s), rama nueva, otra sesión, en paralelo, background. NO dispares para preguntas sobre esta misma conversación/sesión actual.
 ---
 
 # Terminal Navigator

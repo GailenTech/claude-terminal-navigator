@@ -68,6 +68,32 @@ For a quick manual check without going through the model, use
 `/terminal-nav:navs` — it runs `nav list` directly and shows the raw output
 ([skills/navs/SKILL.md](skills/navs/SKILL.md)).
 
+### Want a shorter command, like `/terms`?
+
+Plugin skills are always namespaced (`/plugin-name:skill-name`) to avoid
+collisions between plugins — there's no way around that for a
+marketplace-installed skill. If you want a bare, un-namespaced shortcut,
+add a **personal** skill (these aren't namespaced) pointing at the same
+CLI, since `nav` is already on your `PATH` while the plugin is enabled:
+
+```bash
+mkdir -p ~/.claude/skills/terms
+cat > ~/.claude/skills/terms/SKILL.md <<'EOF'
+---
+name: terms
+description: Alias personal rápido de "/terminal-nav:navs".
+disable-model-invocation: true
+---
+
+Sesiones de Claude Code activas ahora mismo:
+
+!`nav list`
+EOF
+```
+
+This lives on your machine only, not in this repo — everyone who wants the
+shortcut sets up their own.
+
 Quick start:
 ```bash
 # See what you have running
