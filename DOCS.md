@@ -1,43 +1,25 @@
-# 📚 Claude Terminal Navigator Documentation
+# Documentation Index
 
-This document serves as an index to all documentation in the `/docs` directory.
+## User-facing
 
-## 📔 Development Documentation
+- **[README](README.md)** — what this is, installation, quick start
+- **[skills/terminal-nav/SKILL.md](skills/terminal-nav/SKILL.md)** — full command
+  reference (`list`, `jump`, `spawn`, `worktrees`, `scan`, `prune`) and when
+  Claude should use each
+- **[skills/navs/SKILL.md](skills/navs/SKILL.md)** — the `/terminal-nav:navs`
+  manual slash command
 
-- **[Development Diary](docs/DIARY.md)** - Daily development log with decisions, challenges, and progress
-- **[Metrics Proposal](docs/metrics-proposal.md)** - Detailed proposal for session analytics implementation
+## Development
 
-## 📸 Screenshots
+- **[CLAUDE.md](CLAUDE.md)** — architecture, design decisions, known gotchas,
+  testing and release process
+- **[CHANGELOG.md](CHANGELOG.md)** — version history
+- **[docs/DIARY.md](docs/DIARY.md)** — development diary (decisions, bugs
+  found, what was tried and why)
 
-- **[Quick Menu View](docs/quick-menu.png)** - The main menu bar dropdown interface
-- **[Detailed Session View](docs/detailed-view.png)** - Extended session information window
+## History
 
-## 📖 Other Documentation
-
-- **[README](README.md)** - Main project documentation and usage instructions
-- **[CHANGELOG](CHANGELOG.md)** - Version history and release notes
-- **[CLAUDE Instructions](CLAUDE.md)** - Project-specific instructions for Claude Code
-
-## 🛠️ Technical Documentation
-
-### Architecture
-The app follows a modular architecture with:
-- `ClaudeSessionMonitor` - Process detection and monitoring
-- `SessionDatabase` - SQLite persistence layer
-- `SessionTracker` - Real-time metrics collection
-- `ClaudeNavigatorApp` - Main UI and coordination
-
-### Key Features
-1. **Session Detection** - Automatic discovery of Claude CLI processes
-2. **Metrics Collection** - CPU, memory, duration tracking
-3. **Navigation** - One-click terminal tab switching
-4. **Analytics** - Historical session data and insights
-
-### Development Workflow
-1. Check `DIARY.md` for recent context
-2. Run tests after changes
-3. Update diary with significant progress
-4. Create feature branches for new work
-5. Use semantic versioning for releases
-
-For contributing guidelines and technical details, see the source code documentation in each Swift file.
+This project started as a shell-wrapper prototype, became a Swift menu bar
+app, and was rewritten as a Claude Code plugin (bash CLI + skills) in
+August 2026. The Swift app's full source and history live on the
+`legacy/swift-app` branch — nothing was deleted, just archived.

@@ -1,5 +1,70 @@
 # 📔 Development Diary - Claude Terminal Navigator
 
+## 2026-08-16 - Reescritura como skill CLI de Claude Code + archivado de la app Swift
+
+### What was done
+- Reescrito el proyecto entero de cero: de app de menú Swift a un plugin de
+  Claude Code (CLI bash `nav` + dos skills + hooks nativos).
+- `lib/registry.sh` + `hooks/hook-handler.sh`: registro de sesiones indexado
+  por `cwd`, alimentado por hooks nativos (`SessionStart`, `UserPromptSubmit`,
+  `PreToolUse`, `PermissionRequest`, `Stop`, `SessionEnd`) en vez de polling
+  de CPU.
+- `bin/nav`: `list`, `jump`, `spawn` (con `--worktree`, `--prompt`,
+  `--remote-control` por defecto, `--dangerously-skip-permissions` por
+  defecto), `worktrees`, `scan`, `prune`.
+- `skills/terminal-nav/`: skill proactivo, Claude decide cuándo usarlo.
+  `skills/navs/`: `/terminal-nav:navs`, comando manual que inyecta
+  `nav list` en crudo sin interpretación.
+- Estructura de plugin formal (`plugin.json`, `marketplace.json`) para
+  instalar desde GitHub y compartir con el equipo.
+- CI (`test.yml`) sustituida: de compilar/empaquetar la app Swift a
+  `bash -n` + validación JSON + comprobación de frontmatter de los SKILL.md.
+- Archivada la app Swift completa (código, DMGs, scripts de build/release)
+  en la rama `legacy/swift-app` — nada se perdió, solo se sacó de `main`.
+
+### Decisions made
+- **Hooks en vez de heurística de CPU**: la causa raíz de buena parte del
+  historial de bugs de este diario (threading crashes, umbrales de CPU,
+  cache de foco) era intentar adivinar el estado sin datos reales. Los
+  hooks dan estado exacto gratis.
+- **Registro indexado por `cwd`, no por PID/session_id**: evita tener que
+  correlacionar el PID de un wrapper con el `session_id` interno de Claude
+  Code — nunca hay dos sesiones vivas en el mismo directorio exacto porque
+  los worktrees ya dan rutas distintas.
+- **Lanzador de fichero estático para `spawn`**: nunca interpolar texto
+  dinámico (prompts, rutas) directamente en la cadena de AppleScript.
+  Bash -> AppleScript -> shell-de-Terminal es donde se cuelan bugs de
+  inyección si se hace a lo bruto.
+- **`nav prune` conservador por diseño**: por defecto solo libera el
+  worktree (barato, reversible). Borrar la rama es un paso aparte,
+  explícito, con `git branch -d` (seguro) salvo `--force` pedido a mano.
+- **Archivar, no borrar**: la app Swift se movió a una rama propia en vez
+  de eliminarse sin más — sigue siendo trabajo real, con su propio
+  historial de decisiones (ver entradas anteriores de este mismo diario).
+
+### Challenges/Learnings
+- Varios bugs reales solo aparecieron al probar en vivo, no en revisión de
+  código: el `/dev/` de prefijo que Terminal.app añade al tty y `ps` no;
+  `do script ... in front window` abriendo ventana en vez de pestaña;
+  `git`/`lsof`/`tail`/`sed` fallando bajo `set -e` de formas no obvias.
+- Verificado con una prueba mínima que `set -e` **no** aborta el script
+  cuando el comando que falla vive dentro de una función invocada a su vez
+  vía otra sustitución de comandos (`x=$(myfunc)`) — solo lo hace en
+  asignaciones directas de primer nivel. Un fallo de diagnóstico inicial
+  (se sobreestimó la gravedad de un bug) que la verificación corrigió
+  antes de comunicarlo mal.
+- Los workflows de CI de la app Swift llevaban fallando desde antes de esta
+  reescritura (confirmado con `gh run list`) — el filtro `paths:` no se
+  respeta de forma fiable en pushes de tag. Nadie lo había notado.
+
+### Next steps
+- Migrar la instalación de hooks de `setup.sh` (edita
+  `~/.claude/settings.json` a mano) al mecanismo nativo de plugins
+  (`hooks/hooks.json`), que se instala/desinstala solo con el plugin.
+- Añadir soporte para más terminales además de Terminal.app si hace falta.
+
+---
+
 ## 2025-09-12 - Recent Sessions Threading Fix & Active Session Filtering
 
 ### What was done
