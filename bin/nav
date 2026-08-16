@@ -188,7 +188,7 @@ spawn_create_worktree() {
 # shell-de-Terminal, que es donde se cuelan los bugs de inyección si
 # intentas meter texto arbitrario directamente en la cadena de AppleScript.
 spawn_build_launcher() {
-  local target_path="$1" prompt="$2" remote_name="$3" skip_permissions="$4"
+  local target_path="$1" prompt="$2" remote_name="$3" skip_permissions="$4" fork_session_id="$5"
   local launch_dir
   mkdir -p "$HOME/.claude-nav/tmp"
   launch_dir=$(mktemp -d "$HOME/.claude-nav/tmp/launch.XXXXXX")
@@ -196,6 +196,7 @@ spawn_build_launcher() {
   printf '%s' "$target_path" > "$launch_dir/path"
   [ -n "$prompt" ] && printf '%s' "$prompt" > "$launch_dir/prompt"
   [ -n "$remote_name" ] && printf '%s' "$remote_name" > "$launch_dir/remote_name"
+  [ -n "$fork_session_id" ] && printf '%s' "$fork_session_id" > "$launch_dir/fork_session_id"
   [ "$skip_permissions" = "false" ] && touch "$launch_dir/no_skip_permissions"
 
   cat > "$launch_dir/run.sh" <<'LAUNCHER'
@@ -208,6 +209,9 @@ if [ ! -f "$DIR/no_skip_permissions" ]; then
 fi
 if [ -f "$DIR/remote_name" ]; then
   CMD+=(--remote-control "$(cat "$DIR/remote_name")")
+fi
+if [ -f "$DIR/fork_session_id" ]; then
+  CMD+=(--resume "$(cat "$DIR/fork_session_id")" --fork-session)
 fi
 if [ -f "$DIR/prompt" ]; then
   CMD+=("$(cat "$DIR/prompt")")
@@ -228,6 +232,7 @@ cmd_spawn() {
   local prompt=""
   local remote_control=true
   local skip_permissions=true
+  local fork=false
   while [ $# -gt 0 ]; do
     case "$1" in
       --window) mode="window"; shift ;;
@@ -237,15 +242,39 @@ cmd_spawn() {
       --prompt) prompt="$2"; shift 2 ;;
       --no-remote-control) remote_control=false; shift ;;
       --no-skip-permissions) skip_permissions=false; shift ;;
+      --fork) fork=true; shift ;;
       *) target_path="$1"; shift ;;
     esac
   done
 
   if [ -z "$target_path" ] || [ ! -d "$target_path" ]; then
-    echo "Uso: nav spawn [--window|--tab] [--worktree <rama> [--from <rama-base>]] [--prompt <texto>] [--no-remote-control] [--no-skip-permissions] <ruta-existente>" >&2
+    echo "Uso: nav spawn [--window|--tab] [--worktree <rama> [--from <rama-base>]] [--prompt <texto>] [--fork] [--no-remote-control] [--no-skip-permissions] <ruta-existente>" >&2
     exit 1
   fi
   target_path=$(cd "$target_path" && pwd)
+  local source_path="$target_path"
+
+  # --fork: hereda el historial completo (claude --resume <id> --fork-session)
+  # de la sesión de Claude Code registrada en $source_path, en vez de solo
+  # un --prompt escrito a mano. El session_id sale del propio registro de
+  # nav (lo capturan los hooks, es un campo documentado del payload de
+  # hooks) — no leemos nada interno de ~/.claude/projects/.
+  #
+  # Ojo con la working copy: --resume solo restaura la CONVERSACIÓN, no
+  # el estado de ficheros. Si $source_path tiene cambios sin commitear, el
+  # worktree nuevo (checkout limpio) no los tendrá, y la conversación
+  # heredada puede hacer referencia a ediciones que ahí no existen.
+  # Avisamos, no bloqueamos — a diferencia de nav prune, forkear no es
+  # destructivo.
+  local fork_session_id=""
+  if [ "$fork" = "true" ]; then
+    fork_session_id=$(registry_get "$source_path" | jq -r '.session_id // empty' 2>/dev/null) || true
+    if [ -z "$fork_session_id" ]; then
+      echo "Aviso: no hay session_id registrado para '$source_path' (¿tiene una sesión activa con nav instalado?). Lanzando sin --fork." >&2
+    elif [ -n "$(git -C "$source_path" status --porcelain 2>/dev/null)" ]; then
+      echo "Aviso: '$source_path' tiene cambios sin commitear que NO se copiarán al worktree nuevo — la conversación heredada puede hacer referencia a ediciones que ahí no existen." >&2
+    fi
+  fi
 
   if [ -n "$new_branch" ]; then
     local worktree_result branch_status
@@ -279,7 +308,7 @@ cmd_spawn() {
   fi
 
   local launcher
-  launcher=$(spawn_build_launcher "$target_path" "$prompt" "$remote_name" "$skip_permissions")
+  launcher=$(spawn_build_launcher "$target_path" "$prompt" "$remote_name" "$skip_permissions" "$fork_session_id")
 
   if [ "$mode" = "window" ]; then
     osascript <<APPLESCRIPT

@@ -49,6 +49,19 @@ exacto.
     trabaja el usuario habitualmente). `--no-skip-permissions` lo
     desactiva para esa sesión si hace falta más cuidado (p. ej. un
     worktree en el que no confías tanto).
+  - `--fork`: en vez de (o además de) `--prompt`, hereda el **historial
+    completo** de la sesión de Claude Code registrada en `<ruta>` (vía
+    `claude --resume <session_id> --fork-session`), usando el
+    `session_id` que ya guarda el registro de `nav` — no un resumen
+    escrito a mano. Solo funciona si esa sesión pasó por los hooks
+    (arrancó o interactuó después de instalarlos; una sesión detectada
+    solo por `nav scan` no tiene `session_id`, avisa por stderr y lanza
+    sin fork en vez de fallar). **Ojo con la working copy**: `--resume`
+    restaura la conversación, no el estado de ficheros — si el origen
+    tiene cambios sin commitear, no se copian al worktree nuevo, y la
+    conversación heredada puede hablar de ediciones que ahí no existen.
+    Se avisa por stderr si detecta esto, no se bloquea (a diferencia de
+    `nav prune`, forkear no es destructivo).
 - `nav worktrees <ruta-del-proyecto>` — lista todos los worktrees git de ese
   proyecto (existan o no tengan sesión activa), cruzados con el registro para
   marcar cuáles tienen una sesión de Claude Code corriendo encima.
@@ -81,11 +94,17 @@ exacto.
   "arranca una sesión para X" → `nav spawn <ruta>`. Confirma la ruta antes
   si no es inequívoca (p. ej. el usuario da solo un nombre de proyecto).
 - El usuario ha estado profundizando en un tema lateral y pide "llévate
-  esto a otra sesión/worktree y sigamos aquí con lo de antes" → compón un
-  resumen conciso de ese hilo lateral y llama a
-  `nav spawn --worktree <rama-nueva> --prompt "<resumen>" <ruta-del-repo>`.
-  Después retoma tú (la sesión actual) el tema original — no hace falta
-  nada más por tu parte.
+  esto a otra sesión/worktree y sigamos aquí con lo de antes":
+  - Si necesitas que la sesión nueva tenga el **historial real y
+    completo** (código exacto probado, errores concretos, matices que un
+    resumen perdería) → `nav spawn --worktree <rama-nueva> --fork
+    <ruta-del-repo>`. Si además quieres añadir instrucciones concretas
+    encima de ese historial, combina `--fork --prompt "<texto>"`.
+  - Si un resumen escrito por ti basta (el hilo lateral es corto o
+    autocontenido) → compón un resumen conciso y llama a
+    `nav spawn --worktree <rama-nueva> --prompt "<resumen>" <ruta-del-repo>`.
+  - En ambos casos, después retoma tú (la sesión actual) el tema
+    original — no hace falta nada más por tu parte.
 - El usuario pregunta por los worktrees de un proyecto, o quiere saber cuáles
   están libres para usar → `nav worktrees <ruta>`.
 - `nav list` muestra menos sesiones de las que el usuario dice tener
