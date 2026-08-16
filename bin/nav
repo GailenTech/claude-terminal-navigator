@@ -28,9 +28,10 @@ cmd_list() {
 
   local prev_project=""
   while IFS= read -r entry; do
-    local project branch status worktree updated_at
+    local project branch status cwd worktree updated_at display_path subpath
     project=$(echo "$entry" | jq -r '.project // "(sin git)"')
     status=$(echo "$entry" | jq -r '.status // "unknown"')
+    cwd=$(echo "$entry" | jq -r '.cwd')
     worktree=$(echo "$entry" | jq -r '.worktree // .cwd')
     updated_at=$(echo "$entry" | jq -r '.updated_at // ""')
     # La rama se resuelve EN VIVO, no se confía en la guardada en el
@@ -39,13 +40,26 @@ cmd_list() {
     # y la del registro se quedó congelada en la del arranque de la sesión.
     branch=$(git -C "$worktree" branch --show-current 2>/dev/null) || true
     [ -z "$branch" ] && branch=$(echo "$entry" | jq -r '.branch // ""')
+
+    # Si la sesión corre en una subcarpeta del worktree (típico en
+    # monorepos: backend/gateway, backend/platform-worker...) en vez de
+    # en su raíz, mostrar la subcarpeta explícitamente. Si no, dos
+    # sesiones distintas en subcarpetas distintas del MISMO worktree se
+    # ven indistinguibles (las dos muestran solo la raíz del worktree).
+    if [ "$cwd" != "$worktree" ] && [ -n "$worktree" ] && [[ "$cwd" == "$worktree"/* ]]; then
+      subpath="${cwd#"$worktree"/}"
+      display_path="$worktree ($subpath)"
+    else
+      display_path="$worktree"
+    fi
+
     if [ "$project" != "$prev_project" ]; then
       echo ""
       echo "📁 $project"
       prev_project="$project"
     fi
-    printf "   %s [%-30s] %s  (act. %s)\n" "$(status_icon "$status")" "$branch" "$worktree" "$updated_at"
-  done < <(echo "$entries" | jq -s -c 'sort_by(.project, .worktree)[]')
+    printf "   %s [%-30s] %s  (act. %s)\n" "$(status_icon "$status")" "$branch" "$display_path" "$updated_at"
+  done < <(echo "$entries" | jq -s -c 'sort_by(.project, .cwd)[]')
 }
 
 jump_to_tty() {
@@ -106,7 +120,10 @@ cmd_jump() {
 
   if [ "$count" -gt 1 ]; then
     echo "Hay varias coincidencias, sé más específico:" >&2
-    echo "$matches" | jq -r '.worktree // .cwd' >&2
+    # .cwd, no .worktree: en monorepos, varias sesiones distintas en
+    # subcarpetas del mismo worktree comparten la misma raíz de worktree
+    # y se verían idénticas si mostrásemos eso en vez del cwd real.
+    echo "$matches" | jq -r '"  " + .cwd + "  [" + (.status // "unknown") + "]"' >&2
     exit 1
   fi
 
