@@ -187,8 +187,28 @@ spawn_create_worktree() {
 # interpolación). Así evitamos el triple escapado bash -> AppleScript ->
 # shell-de-Terminal, que es donde se cuelan los bugs de inyección si
 # intentas meter texto arbitrario directamente en la cadena de AppleScript.
+# Traduce el modo de permisos (tal como lo nombra Claude Code) al flag con el
+# que se arranca una sesión nueva. Sin argumento, hereda el de la sesión que
+# está ejecutando nav: el hook guarda `permission_mode` en el registro con cada
+# evento, así que refleja el modo de AHORA y no el de arranque — que es la
+# diferencia que importa cuando alguien lo ha cambiado con shift+tab.
+#
+# Devuelve vacío si no hay nada que heredar; decide el llamante.
+spawn_permission_flag() {
+  local mode="$1"
+  if [ -z "$mode" ]; then
+    mode=$(registry_get "$PWD" | jq -r '.permission_mode // empty' 2>/dev/null) || true
+  fi
+  case "$mode" in
+    "")                : ;;
+    bypassPermissions) printf '%s' "--dangerously-skip-permissions" ;;
+    default|manual)    printf '%s' "--permission-mode manual" ;;
+    *)                 printf '%s' "--permission-mode $mode" ;;
+  esac
+}
+
 spawn_build_launcher() {
-  local target_path="$1" prompt="$2" remote_name="$3" skip_permissions="$4" fork_session_id="$5"
+  local target_path="$1" prompt="$2" remote_name="$3" permission_flag="$4" fork_session_id="$5"
   local launch_dir
   mkdir -p "$HOME/.claude-nav/tmp"
   launch_dir=$(mktemp -d "$HOME/.claude-nav/tmp/launch.XXXXXX")
@@ -197,15 +217,19 @@ spawn_build_launcher() {
   [ -n "$prompt" ] && printf '%s' "$prompt" > "$launch_dir/prompt"
   [ -n "$remote_name" ] && printf '%s' "$remote_name" > "$launch_dir/remote_name"
   [ -n "$fork_session_id" ] && printf '%s' "$fork_session_id" > "$launch_dir/fork_session_id"
-  [ "$skip_permissions" = "false" ] && touch "$launch_dir/no_skip_permissions"
+  [ -n "$permission_flag" ] && printf '%s' "$permission_flag" > "$launch_dir/permission_flag"
 
   cat > "$launch_dir/run.sh" <<'LAUNCHER'
 #!/bin/bash
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$(cat "$DIR/path")" || exit 1
 CMD=(claude)
-if [ ! -f "$DIR/no_skip_permissions" ]; then
-  CMD+=(--dangerously-skip-permissions)
+if [ -s "$DIR/permission_flag" ]; then
+  # El fichero trae el flag ya resuelto y puede ser de dos palabras
+  # ("--permission-mode auto"), así que se parte en el array en vez de
+  # meterse como un solo argumento.
+  read -r -a PERM < "$DIR/permission_flag" || true
+  CMD+=("${PERM[@]}")
 fi
 if [ -f "$DIR/remote_name" ]; then
   CMD+=(--remote-control "$(cat "$DIR/remote_name")")
@@ -232,6 +256,7 @@ cmd_spawn() {
   local prompt=""
   local remote_control=true
   local skip_permissions=true
+  local forced_mode=""
   local fork=false
   while [ $# -gt 0 ]; do
     case "$1" in
@@ -242,13 +267,14 @@ cmd_spawn() {
       --prompt) prompt="$2"; shift 2 ;;
       --no-remote-control) remote_control=false; shift ;;
       --no-skip-permissions) skip_permissions=false; shift ;;
+      --permission-mode) forced_mode="$2"; shift 2 ;;
       --fork) fork=true; shift ;;
       *) target_path="$1"; shift ;;
     esac
   done
 
   if [ -z "$target_path" ] || [ ! -d "$target_path" ]; then
-    echo "Uso: nav spawn [--window|--tab] [--worktree <rama> [--from <rama-base>]] [--prompt <texto>] [--fork] [--no-remote-control] [--no-skip-permissions] <ruta-existente>" >&2
+    echo "Uso: nav spawn [--window|--tab] [--worktree <rama> [--from <rama-base>]] [--prompt <texto>] [--fork] [--no-remote-control] [--permission-mode <modo>] [--no-skip-permissions] <ruta-existente>" >&2
     exit 1
   fi
   target_path=$(cd "$target_path" && pwd)
@@ -307,8 +333,23 @@ cmd_spawn() {
     remote_name=$(echo "$remote_name" | tr '/' '-')
   fi
 
+  # Modo de permisos de la sesión nueva: el mismo que el de quien la abre,
+  # salvo que se pida otro. Antes se forzaba SIEMPRE el bypass, que es cómodo
+  # pero convierte cualquier sesión lanzada desde una sesión prudente en una
+  # que no pregunta nada — una decisión de seguridad tomada por omisión.
+  local permission_flag=""
+  if [ "$skip_permissions" = "false" ]; then
+    permission_flag="--permission-mode manual"
+  else
+    permission_flag=$(spawn_permission_flag "$forced_mode")
+    if [ -z "$permission_flag" ]; then
+      echo "Aviso: no se pudo leer el modo de permisos de esta sesión (¿hooks de nav sin instalar?). Lanzando con --dangerously-skip-permissions, que es lo que nav ha hecho siempre." >&2
+      permission_flag="--dangerously-skip-permissions"
+    fi
+  fi
+
   local launcher
-  launcher=$(spawn_build_launcher "$target_path" "$prompt" "$remote_name" "$skip_permissions" "$fork_session_id")
+  launcher=$(spawn_build_launcher "$target_path" "$prompt" "$remote_name" "$permission_flag" "$fork_session_id")
 
   if [ "$mode" = "window" ]; then
     osascript <<APPLESCRIPT

@@ -22,7 +22,7 @@ exacto.
 - `nav jump <patrón>` — activa en Terminal.app la pestaña de la sesión cuyo
   proyecto o ruta de worktree contiene `<patrón>` (case-insensitive). Si hay
   varias coincidencias, lista las opciones en vez de adivinar.
-- `nav spawn [--window|--tab] [--worktree <rama> [--from <rama-base>]] [--prompt <texto>] <ruta>` —
+- `nav spawn [--window|--tab] [--worktree <rama> [--from <rama-base>]] [--prompt <texto>] [--permission-mode <modo>] <ruta>` —
   abre una sesión nueva de `claude` en `<ruta>`. Por defecto abre una
   **pestaña nueva en la ventana actual** de Terminal.app; con `--window`
   fuerza una ventana nueva.
@@ -30,6 +30,13 @@ exacto.
     hermano del repo en `<ruta>` para esa rama, y lanza ahí en vez de en
     `<ruta>` directamente. Parte de la rama actual del worktree de origen
     salvo que se indique `--from <rama-base>`.
+  - **Modo de permisos**: la sesión nueva arranca en el MISMO modo que la que
+    la abre (auto, acceptEdits, plan, bypass…). El modo lo dejan los hooks en el
+    registro con cada evento, así que es el de AHORA y no el de arranque — la
+    diferencia importa cuando se ha cambiado a mano con shift+tab. Con
+    `--permission-mode <modo>` se fuerza otro; si no hay nada que heredar
+    (hooks sin instalar) avisa y cae en `--dangerously-skip-permissions`, que
+    es lo que nav hacía siempre.
   - `--prompt <texto>`: la sesión nueva arranca ya con ese prompt (`claude
     "<texto>"`) en vez de con el prompt vacío. Útil para "llevarse" un
     hilo de trabajo a una sesión/worktree nuevo: compón un resumen de

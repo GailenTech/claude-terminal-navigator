@@ -53,38 +53,49 @@ if [ -z "$EXISTING_PID" ] || ! kill -0 "$EXISTING_PID" 2>/dev/null; then
   registry_merge "$CWD" "$BOOTSTRAP_PATCH"
 fi
 
+# El modo de permisos viene en el payload de CADA evento, así que refleja el
+# modo EN VIVO — incluido el que se cambia a mano con shift+tab, que no se ve
+# en la línea de comandos con la que arrancó el proceso. Lo guardamos para que
+# `nav spawn` pueda abrir la sesión nueva en el mismo modo que la creadora.
+#
+# Se fusiona dentro del patch de cada evento (`* $perm`) en vez de escribirse
+# aparte: una sola escritura por evento, y así el registro no tiene dos
+# ventanas de carrera donde antes había una.
+PERM=$(echo "$PAYLOAD" | jq -r '.permission_mode // empty')
+PERM_JSON=$(jq -n --arg m "$PERM" 'if $m == "" then {} else {permission_mode:$m} end')
+
 case "$EVENT" in
   SessionStart)
     MODEL=$(echo "$PAYLOAD" | jq -r '.model // empty')
-    PATCH=$(jq -n --arg status "idle" --arg updated_at "$NOW" --arg model "$MODEL" \
-      '{status:$status, updated_at:$updated_at, model:$model}')
+    PATCH=$(jq -n --argjson perm "$PERM_JSON" --arg status "idle" --arg updated_at "$NOW" --arg model "$MODEL" \
+      '{status:$status, updated_at:$updated_at, model:$model} * $perm')
     registry_merge "$CWD" "$PATCH"
     ;;
 
   UserPromptSubmit)
     PROMPT=$(echo "$PAYLOAD" | jq -r '.prompt // empty' | cut -c1-120)
-    PATCH=$(jq -n --arg status "working" --arg updated_at "$NOW" --arg last_prompt "$PROMPT" \
-      '{status:$status, updated_at:$updated_at, last_prompt:$last_prompt}')
+    PATCH=$(jq -n --argjson perm "$PERM_JSON" --arg status "working" --arg updated_at "$NOW" --arg last_prompt "$PROMPT" \
+      '{status:$status, updated_at:$updated_at, last_prompt:$last_prompt} * $perm')
     registry_merge "$CWD" "$PATCH"
     ;;
 
   PreToolUse)
     TOOL=$(echo "$PAYLOAD" | jq -r '.tool_name // empty')
-    PATCH=$(jq -n --arg status "working" --arg updated_at "$NOW" --arg last_tool "$TOOL" \
-      '{status:$status, updated_at:$updated_at, last_tool:$last_tool}')
+    PATCH=$(jq -n --argjson perm "$PERM_JSON" --arg status "working" --arg updated_at "$NOW" --arg last_tool "$TOOL" \
+      '{status:$status, updated_at:$updated_at, last_tool:$last_tool} * $perm')
     registry_merge "$CWD" "$PATCH"
     ;;
 
   PermissionRequest)
     TOOL=$(echo "$PAYLOAD" | jq -r '.tool_name // empty')
-    PATCH=$(jq -n --arg status "blocked" --arg updated_at "$NOW" --arg blocked_tool "$TOOL" \
-      '{status:$status, updated_at:$updated_at, blocked_tool:$blocked_tool}')
+    PATCH=$(jq -n --argjson perm "$PERM_JSON" --arg status "blocked" --arg updated_at "$NOW" --arg blocked_tool "$TOOL" \
+      '{status:$status, updated_at:$updated_at, blocked_tool:$blocked_tool} * $perm')
     registry_merge "$CWD" "$PATCH"
     ;;
 
   Stop)
-    PATCH=$(jq -n --arg status "idle" --arg updated_at "$NOW" \
-      '{status:$status, updated_at:$updated_at, blocked_tool:null}')
+    PATCH=$(jq -n --argjson perm "$PERM_JSON" --arg status "idle" --arg updated_at "$NOW" \
+      '{status:$status, updated_at:$updated_at, blocked_tool:null} * $perm')
     registry_merge "$CWD" "$PATCH"
     ;;
 
