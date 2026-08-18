@@ -2,6 +2,36 @@
 
 All notable changes to Claude Terminal Navigator will be documented in this file.
 
+## [2.1.0] - 2026-08-18
+
+### Added
+- **`nav sweep`** — dice **qué worktrees sobran, y por qué**, sin borrar nada.
+  Los reparte en `EN USO` / `CONSERVAR` / `PODABLES` y, para los podables,
+  imprime el `nav prune` correspondiente (uno por línea). El borrado sigue
+  siendo nominal y de uno en uno: un barrido que decide *y* ejecuta se lleva
+  media docena de worktrees por un solo fallo de señal.
+- Marca con ⚠ los worktrees con commits fuera de la base **sin PR y con la rama
+  remota borrada** — trabajo que no existe en ningún otro sitio.
+- `nav spawn` hereda el modo de permisos de la sesión que lo abre.
+
+### Fixed
+- **Los PID se reciclan.** `registry_pid_alive` daba por viva una sesión muerta
+  cuyo número había reutilizado otro proceso. Donde se decide un borrado se usa
+  ahora `registry_session_alive`, que exige además que el proceso sea `claude` y
+  que su cwd caiga dentro del worktree. Sin poder comprobarlo responde «viva»:
+  el falso positivo estorba, el falso negativo borra trabajo.
+- **`nav prune` comparaba contra la rama principal LOCAL** (lo que hace
+  `git branch -d`), que suele ir por detrás de `origin`. Medido: un `main` dos
+  PR atrasado daba 37 commits propios a una rama creada esa mañana. Ahora hace
+  `fetch` y compara contra `origin/<principal>`; y cuando la rama está integrada
+  por *squash* —donde `-d` se niega aunque no haya nada que perder— la borra tras
+  comprobar por su cuenta que no queda nada fuera de la base.
+
+### Notes
+- Requiere `gh` para detectar PRs mergeados. Sin él, `sweep` sigue funcionando
+  pero las ramas integradas por squash aparecen como conservables: falla hacia
+  el lado seguro.
+
 ## [1.4.1] - 2025-07-25
 
 ### Added
