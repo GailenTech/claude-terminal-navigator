@@ -1,6 +1,7 @@
 #!/bin/bash
 # nav - CLI del skill de navegación de sesiones Claude Code.
 # Subcomandos: list | jump <patrón> | spawn <ruta> | worktrees <ruta-de-proyecto>
+#              sweep [<ruta>] (qué sobra) | prune <ruta> (retirar uno) | scan
 
 set -euo pipefail
 
@@ -473,6 +474,155 @@ cmd_scan() {
 # es un paso aparte, explícito, y usa "branch -d" (seguro, se niega si no
 # está mergeada) salvo que se pida --force expresamente — nunca "-D" por
 # defecto, nunca en silencio.
+# ¿Está el contenido de esta rama a salvo fuera de su worktree?
+#
+# Devuelve, separados por '|': nº de commits que NO están en la base, el PR
+# mergeado (o vacío), y si la rama remota sigue existiendo.
+#
+# La base es `origin/<rama-principal>`, NUNCA la rama principal local: medido el
+# 18-ago-2026, un `main` local dos PR por detrás hacía que una rama recién
+# creada apareciese con 37 commits propios. Comparar contra una base vieja
+# inventa trabajo que no existe (y, al revés, puede ocultarlo).
+sweep_safety() {
+  local root="$1" branch="$2" base="$3"
+  local propios pr remota
+
+  propios=$(git -C "$root" log --oneline "$branch" --not "$base" 2>/dev/null | wc -l | tr -d ' ')
+
+  # El PR mergeado es la ÚNICA señal fiable con squash-merge: al aplastar, el
+  # commit resultante no comparte identidad con los de la rama, así que
+  # `git branch --merged` nunca la ve. Y al revés — hay ramas integradas por
+  # merge commit sin PR asociado; por eso esto se combina con `propios`, no
+  # sustituye a nada.
+  pr=""
+  if command -v gh >/dev/null 2>&1; then
+    pr=$(cd "$root" && gh pr list --head "$branch" --state merged --json number --jq '.[0].number' 2>/dev/null) || true
+  fi
+
+  if [ -n "$(git -C "$root" ls-remote --heads origin "$branch" 2>/dev/null)" ]; then
+    remota="viva"
+  else
+    remota="borrada"
+  fi
+
+  echo "${propios}|${pr}|${remota}"
+}
+
+# nav sweep — QUÉ se puede retirar, y por qué. No borra nunca: el borrado es
+# `nav prune <ruta>`, nominal y de uno en uno.
+#
+# Esa separación es deliberada. Un barrido que decide Y ejecuta puede llevarse
+# por delante media docena de worktrees por un solo fallo de señal; obligando a
+# nombrar cada uno, el peor caso es perder uno. Y como `prune` re-comprueba todo
+# en el instante de borrar, un informe viejo no puede hacer daño.
+cmd_sweep() {
+  local target_path="$PWD" do_fetch=true
+  # La ruta es opcional y los flags también, así que no se puede dar por hecho
+  # que $1 sea la ruta: `nav sweep --no-fetch` tomaba el flag como ruta y moría
+  # con «'--no-fetch' no está dentro de un repo git».
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      --no-fetch) do_fetch=false; shift ;;
+      -*) echo "Opción desconocida: $1" >&2; exit 1 ;;
+      *) target_path="$1"; shift ;;
+    esac
+  done
+
+  local root
+  root=$(git -C "$target_path" worktree list 2>/dev/null | head -1 | awk '{print $1}') || true
+  if [ -z "$root" ]; then
+    echo "'$target_path' no está dentro de un repo git." >&2
+    exit 1
+  fi
+
+  local main_branch base
+  main_branch=$(git -C "$root" symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null | sed 's|^origin/||') || true
+  [ -z "$main_branch" ] && main_branch="main"
+  base="origin/$main_branch"
+
+  if [ "$do_fetch" = "true" ]; then
+    echo "Actualizando referencias de origin (--no-fetch para saltarlo)…" >&2
+    git -C "$root" fetch --prune --quiet origin 2>/dev/null || \
+      echo "Aviso: el fetch falló; se evalúa contra las referencias locales, que pueden estar viejas." >&2
+  fi
+
+  if ! git -C "$root" rev-parse --verify --quiet "$base" >/dev/null 2>&1; then
+    echo "No existe '$base'. Sin una base fiable no se puede decidir nada: se aborta." >&2
+    exit 1
+  fi
+
+  local podables=() conservar=() enuso=()
+
+  while IFS=$'\t' read -r wt ref; do
+    local branch; branch=${ref#refs/heads/}
+    [ "$wt" = "$root" ] && continue
+    [ "$branch" = "$main_branch" ] && continue
+
+    local pid entry alive=false
+    entry=$(registry_get "$wt" 2>/dev/null) || true
+    pid=$(echo "$entry" | jq -r '.pid // empty' 2>/dev/null) || true
+    if [ -n "$pid" ] && registry_session_alive "$pid" "$wt"; then alive=true; fi
+
+    local sucios; sucios=$(git -C "$wt" status --porcelain 2>/dev/null | wc -l | tr -d ' ')
+    local info propios pr remota
+    info=$(sweep_safety "$root" "$branch" "$base")
+    propios=${info%%|*}; info=${info#*|}
+    pr=${info%%|*}; remota=${info#*|}
+
+    if [ "$alive" = "true" ]; then
+      enuso+=("$wt|$branch|sesión viva (pid $pid)")
+    elif [ "$sucios" != "0" ]; then
+      conservar+=("$wt|$branch|$sucios cambios sin commitear")
+    elif [ "$propios" != "0" ]; then
+      if [ -z "$pr" ] && [ "$remota" = "borrada" ]; then
+        conservar+=("$wt|$branch|⚠ $propios commits que NO están en $base, sin PR y con la rama remota borrada — este trabajo no está en ningún otro sitio")
+      else
+        conservar+=("$wt|$branch|$propios commits que no están en $base")
+      fi
+    elif [ -n "$pr" ]; then
+      podables+=("$wt|$branch|PR #$pr mergeado · árbol limpio · nada fuera de $base")
+    else
+      podables+=("$wt|$branch|contenido íntegro en $base · árbol limpio")
+    fi
+  done < <(git -C "$root" worktree list --porcelain | awk '/^worktree /{w=$2} /^branch /{print w"\t"$2}')
+
+  local fila
+  if [ ${#enuso[@]} -gt 0 ]; then
+    echo
+    echo "EN USO — no se tocan"
+    for fila in "${enuso[@]}"; do
+      printf "  %-46s %s\n" "$(basename "${fila%%|*}")" "${fila##*|}"
+    done
+  fi
+
+  if [ ${#conservar[@]} -gt 0 ]; then
+    echo
+    echo "CONSERVAR — tienen algo que perder"
+    for fila in "${conservar[@]}"; do
+      printf "  %-46s %s\n" "$(basename "${fila%%|*}")" "${fila##*|}"
+    done
+  fi
+
+  if [ ${#podables[@]} -eq 0 ]; then
+    echo
+    echo "Nada que retirar."
+    return
+  fi
+
+  echo
+  echo "PODABLES — su contenido está a salvo"
+  for fila in "${podables[@]}"; do
+    printf "  %-46s %s\n" "$(basename "${fila%%|*}")" "${fila##*|}"
+  done
+  echo
+  # Sin backticks: dentro de comillas dobles bash los EJECUTA (aquí llegó a
+  # lanzar un 'nav prune' sin argumentos en mitad del informe).
+  echo "Para retirarlos, uno a uno — cada prune vuelve a comprobarlo todo:"
+  for fila in "${podables[@]}"; do
+    echo "  nav prune ${fila%%|*} --delete-branch"
+  done
+}
+
 cmd_prune() {
   local target_path="${1:-}"
   shift || true
@@ -493,7 +643,9 @@ cmd_prune() {
 
   local live_pid
   live_pid=$(registry_get "$target_path" | jq -r '.pid // empty' 2>/dev/null) || true
-  if [ -n "$live_pid" ] && registry_pid_alive "$live_pid"; then
+  # registry_session_alive, no registry_pid_alive: los PID se reciclan, y aquí
+  # confundirse significa borrar el worktree de una sesión que está trabajando.
+  if [ -n "$live_pid" ] && registry_session_alive "$live_pid" "$target_path"; then
     echo "Hay una sesión de Claude Code viva en '$target_path' (pid $live_pid)." >&2
     echo "Ciérrala antes de continuar." >&2
     exit 1
@@ -530,12 +682,46 @@ cmd_prune() {
   if [ "$force" = "true" ]; then
     git -C "$project_root" branch -D "$branch"
     echo "✓ Rama '$branch' borrada (forzado con --force — commits incluidos)."
+    return
+  fi
+
+  # `git branch -d` compara contra el HEAD del repo, es decir contra la rama
+  # principal LOCAL. Si esa va por detrás de origin —lo normal después de un
+  # rato trabajando— su veredicto no vale para nada: medido el 18-ago-2026, un
+  # `main` local dos PR por detrás daba 37 commits propios a una rama recién
+  # sacada de main.
+  #
+  # Antes de dejarle decidir, se actualizan las referencias y se comprueba
+  # contra `origin/<principal>`. Si la rama tiene commits que ahí no están, se
+  # para aquí: `-d` los habría dado por perdidos o por salvados según el humor
+  # del repo local.
+  local main_branch base propios
+  main_branch=$(git -C "$project_root" symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null | sed 's|^origin/||') || true
+  [ -z "$main_branch" ] && main_branch="main"
+  base="origin/$main_branch"
+  git -C "$project_root" fetch --prune --quiet origin 2>/dev/null || true
+
+  if git -C "$project_root" rev-parse --verify --quiet "$base" >/dev/null 2>&1; then
+    propios=$(git -C "$project_root" log --oneline "$branch" --not "$base" 2>/dev/null | wc -l | tr -d ' ')
+    if [ "$propios" != "0" ]; then
+      echo "Worktree liberado, pero la rama '$branch' NO se ha borrado." >&2
+      echo "Tiene $propios commit(s) que no están en $base." >&2
+      echo "Míralos con:  git log --oneline $branch --not $base" >&2
+      echo "Si de verdad sobran, repite con --delete-branch --force." >&2
+      exit 1
+    fi
+  fi
+
+  if git -C "$project_root" branch -d "$branch"; then
+    echo "✓ Rama '$branch' borrada (su contenido está en $base)."
   else
-    if git -C "$project_root" branch -d "$branch"; then
-      echo "✓ Rama '$branch' borrada (estaba mergeada, sin trabajo perdido)."
+    # Caso típico con squash-merge: el contenido está en la base pero los
+    # commits no coinciden, así que `-d` se niega. Ya sabemos por la
+    # comprobación de arriba que no hay nada fuera de la base.
+    if git -C "$project_root" branch -D "$branch"; then
+      echo "✓ Rama '$branch' borrada (integrada por squash: sin commits propios fuera de $base)."
     else
-      echo "'$branch' no está mergeada — no se ha borrado." >&2
-      echo "Si estás seguro de perder ese trabajo, repite con --delete-branch --force." >&2
+      echo "No se pudo borrar la rama '$branch'." >&2
       exit 1
     fi
   fi
@@ -546,10 +732,11 @@ case "${1:-list}" in
   jump) shift; cmd_jump "$@" ;;
   spawn) shift; cmd_spawn "$@" ;;
   worktrees) shift; cmd_worktrees "$@" ;;
+  sweep) shift; cmd_sweep "$@" ;;
   scan) cmd_scan ;;
   prune) shift; cmd_prune "$@" ;;
   *)
-    echo "Uso: nav [list|jump <patrón>|spawn <ruta>|worktrees <ruta>|scan|prune <ruta> [--delete-branch [--force]]]" >&2
+    echo "Uso: nav [list|jump <patrón>|spawn <ruta>|worktrees <ruta>|sweep [<ruta>] [--no-fetch]|scan|prune <ruta> [--delete-branch [--force]]]" >&2
     exit 1
     ;;
 esac

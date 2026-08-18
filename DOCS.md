@@ -4,7 +4,7 @@
 
 - **[README](README.md)** — what this is, installation, quick start
 - **[skills/terminal-nav/SKILL.md](skills/terminal-nav/SKILL.md)** — full command
-  reference (`list`, `jump`, `spawn`, `worktrees`, `scan`, `prune`) and when
+  reference (`list`, `jump`, `spawn`, `worktrees`, `sweep`, `scan`, `prune`) and when
   Claude should use each
 - **[skills/navs/SKILL.md](skills/navs/SKILL.md)** — the `/terminal-nav:navs`
   manual slash command
