@@ -22,7 +22,7 @@ exacto.
 - `nav jump <patrón>` — activa en Terminal.app la pestaña de la sesión cuyo
   proyecto o ruta de worktree contiene `<patrón>` (case-insensitive). Si hay
   varias coincidencias, lista las opciones en vez de adivinar.
-- `nav spawn [--window|--tab] [--worktree <rama> [--from <rama-base>]] [--prompt <texto>] <ruta>` —
+- `nav spawn [--window|--tab] [--worktree <rama> [--from <rama-base>]] [--prompt <texto>] [--permission-mode <modo>] <ruta>` —
   abre una sesión nueva de `claude` en `<ruta>`. Por defecto abre una
   **pestaña nueva en la ventana actual** de Terminal.app; con `--window`
   fuerza una ventana nueva.
@@ -30,6 +30,13 @@ exacto.
     hermano del repo en `<ruta>` para esa rama, y lanza ahí en vez de en
     `<ruta>` directamente. Parte de la rama actual del worktree de origen
     salvo que se indique `--from <rama-base>`.
+  - **Modo de permisos**: la sesión nueva arranca en el MISMO modo que la que
+    la abre (auto, acceptEdits, plan, bypass…). El modo lo dejan los hooks en el
+    registro con cada evento, así que es el de AHORA y no el de arranque — la
+    diferencia importa cuando se ha cambiado a mano con shift+tab. Con
+    `--permission-mode <modo>` se fuerza otro; si no hay nada que heredar
+    (hooks sin instalar) avisa y cae en `--dangerously-skip-permissions`, que
+    es lo que nav hacía siempre.
   - `--prompt <texto>`: la sesión nueva arranca ya con ese prompt (`claude
     "<texto>"`) en vez de con el prompt vacío. Útil para "llevarse" un
     hilo de trabajo a una sesión/worktree nuevo: compón un resumen de
@@ -72,6 +79,17 @@ exacto.
   de instalar, o si `nav list` muestra menos sesiones de las que sabes que
   tienes abiertas. Las sesiones dadas de alta así aparecen con estado `❔`
   hasta que interactúes con ellas (entonces se corrige solo).
+- `nav sweep [<ruta>] [--no-fetch]` — **decide qué se puede retirar, y no borra
+  nada.** Recorre los worktrees del proyecto y los reparte en tres grupos, con el
+  motivo de cada veredicto: **EN USO** (sesión viva), **CONSERVAR** (cambios sin
+  commitear, o commits que no están en `origin/<principal>`) y **PODABLES**
+  (contenido a salvo). Para los podables imprime el `nav prune` correspondiente,
+  uno por línea. Hace `fetch` primero: sin eso, una rama principal local
+  desactualizada inventa commits propios que no existen.
+  - Marca con ⚠ el caso peligroso: commits que no están en la base, **sin PR y
+    con la rama remota borrada** — trabajo que no está en ningún otro sitio.
+  - Deliberadamente **no ejecuta nada**: un barrido que decide y borra a la vez
+    puede llevarse varios worktrees por un único fallo de señal.
 - `nav prune <ruta-del-worktree> [--delete-branch [--force]]` — libera un
   worktree con seguridad. **Por defecto solo quita el worktree** (barato,
   reversible: la rama y sus commits siguen intactos). Se niega a tocar
@@ -115,6 +133,14 @@ exacto.
   pida explícitamente borrar también la rama). Nunca uses `--force` sin
   que el usuario lo pida de forma inequívoca sabiendo que puede perder
   commits.
+- El usuario pregunta qué worktrees sobran, quiere hacer limpieza, o dice
+  cosas como "esto ya está mergeado, ¿no?" → `nav sweep`. **Enséñale los tres
+  grupos y deja que elija**: tú no decides qué se retira. Después ejecuta un
+  `nav prune` por cada uno que apruebe — nunca en bucle sobre todos los
+  podables. El propio `prune` vuelve a comprobarlo todo en ese momento, así
+  que un informe de hace un rato no puede hacer daño.
+- Si `sweep` marca alguno con ⚠ (commits sin PR y con la remota borrada),
+  dilo explícitamente: ahí hay trabajo que solo existe en ese disco.
 
 ## Limitaciones a tener en cuenta
 
@@ -126,7 +152,18 @@ exacto.
   `~/.claude/settings.json` (evento `SessionStart`, `UserPromptSubmit`,
   `PreToolUse`, `PermissionRequest`, `Stop`, `SessionEnd` →
   `hooks/hook-handler.sh <evento>`). Sin eso, `nav list` no verá nada.
-- `nav prune` comprueba mergeo contra el branch actualmente activo del
-  repo principal (lo que hace `git branch -d` por defecto) — no contra
-  `origin/main` específicamente. Una rama pusheada pero no mergeada
-  localmente se sigue tratando como no mergeada.
+- `nav prune` y `nav sweep` comprueban contra `origin/<principal>`, con
+  `fetch` previo — no contra la rama principal local, que suele ir por detrás
+  (medido: dos PR de retraso daban 37 commits propios a una rama recién
+  creada). Con squash-merge, `git branch -d` se niega aunque el contenido esté
+  integrado; `prune` lo detecta y borra igual, pero sólo tras comprobar por su
+  cuenta que no queda nada fuera de la base.
+- El "¿hay sesión viva aquí?" no se fía sólo del PID: **los PID se reciclan**
+  (visto en vivo — el registro de un worktree abandonado apuntaba a un pid que
+  ya era de otra sesión). Se exige además que el proceso sea `claude` y que su
+  cwd caiga dentro del worktree. Si eso no se puede comprobar (sin `lsof`, o
+  permisos), se asume **viva**: ante la duda no se borra.
+- `nav sweep` usa `gh` para ver si hay PR mergeado. Sin `gh` disponible o
+  autenticado sigue funcionando, pero pierde esa señal: las ramas integradas
+  por squash aparecerán como conservables en vez de podables. Falla hacia el
+  lado seguro.

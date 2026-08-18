@@ -90,6 +90,45 @@ registry_pid_alive() {
   [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null
 }
 
+# ¿Sigue viva ESTA sesión, y no otro proceso que heredó su número?
+#
+# `kill -0` solo dice que ALGÚN proceso tiene ese pid. Los PID se reciclan, y
+# entonces una sesión muerta parece viva: medido el 18-ago-2026 — el registro de
+# un worktree abandonado apuntaba al pid 15968, que para entonces pertenecía a
+# una sesión de Claude Code de OTRO worktree, abierta ese mismo día.
+#
+# Para decidir un borrado eso no basta. Aquí se exige, además del pid:
+#   · que el proceso sea realmente `claude`, y
+#   · que su directorio de trabajo sea el que dice el registro.
+#
+# El falso positivo (creer viva una sesión muerta) solo estorba; el falso
+# negativo BORRA trabajo. Por eso, si no se puede comprobar el cwd —sin `lsof`,
+# permisos denegados— se responde "viva": ante la duda, no se toca.
+registry_session_alive() {
+  local pid="$1" cwd="$2"
+  [ -n "$pid" ] || return 1
+  kill -0 "$pid" 2>/dev/null || return 1
+
+  local args
+  args=$(ps -o args= -p "$pid" 2>/dev/null) || return 0
+  case "$args" in
+    *claude*) ;;
+    *) return 1 ;;   # el pid se reutilizó: no es una sesión de Claude Code
+  esac
+
+  [ -n "$cwd" ] || return 0
+  command -v lsof >/dev/null 2>&1 || return 0
+
+  local proc_cwd
+  proc_cwd=$(lsof -a -d cwd -p "$pid" -Fn 2>/dev/null | sed -n 's/^n//p' | head -1) || return 0
+  [ -z "$proc_cwd" ] && return 0
+  # El cwd real puede ser un subdirectorio del worktree (nav registra por cwd).
+  case "$proc_cwd" in
+    "$cwd"|"$cwd"/*) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
 # Imprime todas las entradas vivas (una por línea, JSON compacto),
 # purgando de paso los ficheros de sesiones muertas.
 registry_list_live() {
