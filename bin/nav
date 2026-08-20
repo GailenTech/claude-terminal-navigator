@@ -19,6 +19,33 @@ status_icon() {
   esac
 }
 
+# Aplana el árbol padre/hijo (ver spawn_build_launcher / hook-handler.sh)
+# en el orden en que hay que imprimirlo: raíces agrupadas por proyecto,
+# cada una seguida inmediatamente de sus descendientes, con ".depth"
+# marcando cuántos niveles bajar. Una entrada es raíz si no tiene
+# parent_cwd, o si su padre ya no está entre las sesiones vivas — un padre
+# cerrado no debe esconder al hijo del listado.
+list_flatten_tree() {
+  jq -cs '
+    def byCwd($all): $all | map({(.cwd): .}) | add // {};
+    def childrenOf($all): $all | group_by(.parent_cwd // "")
+      | map({key: (.[0].parent_cwd // ""), value: .}) | from_entries;
+    def descend($childrenOf; node; depth):
+        (node + {depth: depth}),
+        ( ($childrenOf[node.cwd] // []) | sort_by(.project, .cwd)[]
+          | descend($childrenOf; .; depth + 1) )
+      ;
+    . as $all
+    | byCwd($all) as $byCwd
+    | childrenOf($all) as $childrenOf
+    | ( $all
+        | map(select( ((.parent_cwd // "") == "")
+                      or ($byCwd[(.parent_cwd // "")] == null) ))
+        | sort_by(.project, .cwd)[] )
+    | descend($childrenOf; .; 0)
+  '
+}
+
 cmd_list() {
   local entries
   entries=$(registry_list_live)
@@ -27,14 +54,20 @@ cmd_list() {
     return
   fi
 
-  local prev_project=""
+  # Pass 1: resolver por sesión lo que solo se puede saber en vivo (rama
+  # actual, ruta a mostrar) y quedarnos con parent_cwd tal cual está en el
+  # registro. El propio árbol (orden, profundidad) lo calcula jq después
+  # en list_flatten_tree — bash aquí solo prepara los datos por entrada.
+  local augmented=()
   while IFS= read -r entry; do
-    local project branch status cwd worktree updated_at display_path subpath
+    local project branch status cwd worktree updated_at display_path subpath parent_cwd
     project=$(echo "$entry" | jq -r '.project // "(sin git)"')
     status=$(echo "$entry" | jq -r '.status // "unknown"')
     cwd=$(echo "$entry" | jq -r '.cwd')
     worktree=$(echo "$entry" | jq -r '.worktree // .cwd')
     updated_at=$(echo "$entry" | jq -r '.updated_at // ""')
+    parent_cwd=$(echo "$entry" | jq -r '.parent_cwd // ""')
+
     # La rama se resuelve EN VIVO, no se confía en la guardada en el
     # registro: si Claude ha hecho "git checkout -b" dentro del mismo
     # worktree (sin crear uno nuevo), el cwd no cambia pero la rama sí,
@@ -54,13 +87,43 @@ cmd_list() {
       display_path="$worktree"
     fi
 
-    if [ "$project" != "$prev_project" ]; then
-      echo ""
-      echo "📁 $project"
-      prev_project="$project"
+    augmented+=("$(jq -n \
+      --arg project "$project" --arg status "$status" --arg cwd "$cwd" \
+      --arg branch "$branch" --arg display_path "$display_path" \
+      --arg updated_at "$updated_at" --arg parent_cwd "$parent_cwd" \
+      '{project:$project, status:$status, cwd:$cwd, branch:$branch,
+        display_path:$display_path, updated_at:$updated_at,
+        parent_cwd:$parent_cwd}')")
+  done <<< "$entries"
+
+  local prev_project="" depth project status branch display_path updated_at parent_cwd row indent i note
+  while IFS= read -r row; do
+    project=$(echo "$row" | jq -r '.project')
+    status=$(echo "$row" | jq -r '.status')
+    branch=$(echo "$row" | jq -r '.branch')
+    display_path=$(echo "$row" | jq -r '.display_path')
+    updated_at=$(echo "$row" | jq -r '.updated_at')
+    parent_cwd=$(echo "$row" | jq -r '.parent_cwd')
+    depth=$(echo "$row" | jq -r '.depth')
+
+    if [ "$depth" -eq 0 ]; then
+      if [ "$project" != "$prev_project" ]; then
+        echo ""
+        echo "📁 $project"
+        prev_project="$project"
+      fi
+      # Raíz "de verdad" (nunca tuvo padre) vs. huérfana (su padre existió
+      # pero esa sesión ya se cerró) — ambas se pintan sin indentar, pero
+      # vale la pena distinguirlas: la huérfana sí venía de algún sitio.
+      note=""
+      [ -n "$parent_cwd" ] && note="  [huérfana: padre cerrado]"
+      printf "   %s [%-30s] %s  (act. %s)%s\n" "$(status_icon "$status")" "$branch" "$display_path" "$updated_at" "$note"
+    else
+      indent=""
+      for ((i = 0; i < depth; i++)); do indent="  $indent"; done
+      printf "   %s↳ %s [%-30s] %s  (act. %s)\n" "$indent" "$(status_icon "$status")" "$branch" "$display_path" "$updated_at"
     fi
-    printf "   %s [%-30s] %s  (act. %s)\n" "$(status_icon "$status")" "$branch" "$display_path" "$updated_at"
-  done < <(echo "$entries" | jq -s -c 'sort_by(.project, .cwd)[]')
+  done < <(printf '%s\n' "${augmented[@]}" | list_flatten_tree)
 }
 
 jump_to_tty() {
@@ -210,6 +273,7 @@ spawn_permission_flag() {
 
 spawn_build_launcher() {
   local target_path="$1" prompt="$2" remote_name="$3" permission_flag="$4" fork_session_id="$5"
+  local parent_cwd="$6" parent_session_id="$7"
   local launch_dir
   mkdir -p "$HOME/.claude-nav/tmp"
   launch_dir=$(mktemp -d "$HOME/.claude-nav/tmp/launch.XXXXXX")
@@ -219,11 +283,18 @@ spawn_build_launcher() {
   [ -n "$remote_name" ] && printf '%s' "$remote_name" > "$launch_dir/remote_name"
   [ -n "$fork_session_id" ] && printf '%s' "$fork_session_id" > "$launch_dir/fork_session_id"
   [ -n "$permission_flag" ] && printf '%s' "$permission_flag" > "$launch_dir/permission_flag"
+  # Linaje para el árbol de "nav list": quién ha lanzado esta sesión. Se pasa
+  # por variable de entorno (no por argv de claude) para que el hook de
+  # SessionStart lo capture sin depender de parsear la línea de comandos.
+  [ -n "$parent_cwd" ] && printf '%s' "$parent_cwd" > "$launch_dir/parent_cwd"
+  [ -n "$parent_session_id" ] && printf '%s' "$parent_session_id" > "$launch_dir/parent_session_id"
 
   cat > "$launch_dir/run.sh" <<'LAUNCHER'
 #!/bin/bash
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$(cat "$DIR/path")" || exit 1
+[ -f "$DIR/parent_cwd" ] && export CLAUDE_NAV_PARENT_CWD="$(cat "$DIR/parent_cwd")"
+[ -f "$DIR/parent_session_id" ] && export CLAUDE_NAV_PARENT_SESSION_ID="$(cat "$DIR/parent_session_id")"
 CMD=(claude)
 if [ -s "$DIR/permission_flag" ]; then
   # El fichero trae el flag ya resuelto y puede ser de dos palabras
@@ -349,8 +420,17 @@ cmd_spawn() {
     fi
   fi
 
+  # Linaje para el árbol de "nav list": si quien ejecuta "nav spawn" lo hace
+  # desde una sesión de Claude Code registrada, el hijo se apunta de quién
+  # viene. Best-effort — si se lanza a mano desde una shell normal (sin
+  # sesión registrada en $PWD), el hijo simplemente no tiene padre conocido
+  # y "nav list" lo trata como raíz.
+  local parent_cwd="$PWD" parent_session_id
+  parent_session_id=$(registry_get "$PWD" | jq -r '.session_id // empty' 2>/dev/null) || true
+  [ -z "$parent_session_id" ] && parent_cwd=""
+
   local launcher
-  launcher=$(spawn_build_launcher "$target_path" "$prompt" "$remote_name" "$permission_flag" "$fork_session_id")
+  launcher=$(spawn_build_launcher "$target_path" "$prompt" "$remote_name" "$permission_flag" "$fork_session_id" "$parent_cwd" "$parent_session_id")
 
   if [ "$mode" = "window" ]; then
     osascript <<APPLESCRIPT
