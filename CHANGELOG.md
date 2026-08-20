@@ -2,6 +2,27 @@
 
 All notable changes to Claude Terminal Navigator will be documented in this file.
 
+## [2.2.0] - 2026-08-20
+
+### Added
+- **Árbol padre/hijo en `nav list`**: `nav spawn` deja constancia de quién
+  lanzó cada sesión (cwd + `session_id` de quien ejecuta el spawn, si hay
+  una sesión registrada ahí). `nav list` pinta los hijos indentados con
+  `↳` justo debajo de su padre, aunque sean de un proyecto distinto — un
+  spawn puede apuntar a cualquier ruta. Un hijo cuyo padre ya cerró se
+  marca `[huérfana: padre cerrado]` en vez de desaparecer del listado.
+  Sesiones sin este dato (creadas antes de este cambio, o dadas de alta a
+  mano/por `nav scan`) se siguen listando igual que siempre, como raíces.
+
+### Fixed
+- **`nav spawn --tab` podía abrir ventana nueva en vez de pestaña.**
+  `activate` es asíncrono: no esperaba a que Terminal fuera de verdad la
+  app frontal a nivel de macOS antes de simular Cmd+T. Si el Cmd+T llegaba
+  antes de tiempo, Terminal no tenía "ventana clave" a la que añadir el
+  tab y abría una ventana suelta — en silencio, sin error. Ahora se espera
+  (hasta 1.5s) a que conste que Terminal es frontmost antes de simular la
+  tecla.
+
 ## [2.1.0] - 2026-08-18
 
 ### Added

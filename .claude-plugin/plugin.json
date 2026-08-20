@@ -1,7 +1,7 @@
 {
   "name": "terminal-nav",
   "description": "Session and worktree navigator for Claude Code on macOS. Provides awareness of active sessions across terminals, projects, and worktrees with real-time state (working/blocked/idle). List, jump between, spawn new sessions, and transfer work across worktrees.",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "author": {
     "name": "Jorge Uriarte",
     "email": "jorge.uriarte@omelas.net"
