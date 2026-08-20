@@ -44,12 +44,23 @@ if [ -z "$EXISTING_PID" ] || ! kill -0 "$EXISTING_PID" 2>/dev/null; then
   BOOTSTRAP_PID="$PPID"
   BOOTSTRAP_TTY=$(ps -o tty= -p "$BOOTSTRAP_PID" 2>/dev/null | tr -d ' ') || true
   BOOTSTRAP_GIT=$(registry_git_info "$CWD")
+  # Linaje: si esta sesión la abrió "nav spawn" desde otra sesión registrada,
+  # el launcher exporta estas dos variables antes de arrancar claude (ver
+  # spawn_build_launcher en bin/nav). Ausentes -> sesión sin padre conocido
+  # (abierta a mano, o nacida antes de tener hooks instalados). Solo se fija
+  # aquí, en el bootstrap: es de arranque, como started_at, no se toca en
+  # eventos posteriores.
   BOOTSTRAP_PATCH=$(jq -n \
     --arg cwd "$CWD" --arg session_id "$BOOTSTRAP_SESSION_ID" \
     --arg pid "$BOOTSTRAP_PID" --arg tty "$BOOTSTRAP_TTY" --arg started_at "$NOW" \
+    --arg parent_cwd "${CLAUDE_NAV_PARENT_CWD:-}" \
+    --arg parent_session_id "${CLAUDE_NAV_PARENT_SESSION_ID:-}" \
     --argjson git "$BOOTSTRAP_GIT" \
     '{cwd:$cwd, session_id:$session_id, pid:($pid|tonumber), tty:$tty,
-      started_at:$started_at} * $git')
+      started_at:$started_at}
+     * (if $parent_cwd == "" then {} else {parent_cwd:$parent_cwd} end)
+     * (if $parent_session_id == "" then {} else {parent_session_id:$parent_session_id} end)
+     * $git')
   registry_merge "$CWD" "$BOOTSTRAP_PATCH"
 fi
 
