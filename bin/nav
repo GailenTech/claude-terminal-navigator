@@ -444,11 +444,25 @@ APPLESCRIPT
     # Terminal.app (a veces abre ventana igualmente). El truco que sí
     # funciona: simular Cmd+T (requiere permiso de Accesibilidad) para
     # forzar una pestaña nueva y lanzar el comando en ella.
+    #
+    # "activate" es asíncrono: deja el Apple Event enviado y no espera a que
+    # Terminal sea de verdad la app frontal a nivel de macOS. Medido el
+    # 20-ago-2026: sin esperar a que se complete, el Cmd+T podía llegar antes
+    # de que Terminal tuviera una "ventana clave" a la que añadir el tab, y
+    # entonces abría una ventana nueva en su lugar — silenciosamente, sin
+    # error. De ahí el sondeo: como mucho 1.5s, saliendo en cuanto conste que
+    # Terminal ya es frontmost. Margen deliberadamente generoso: el coste de
+    # esperar de más es un spawn algo más lento; el de esperar de menos es
+    # una ventana suelta con un solo tab.
     if [ "$(osascript -e 'tell application "Terminal" to count windows')" -gt 0 ]; then
       osascript <<APPLESCRIPT
 tell application "Terminal" to activate
+repeat 30 times
+  if frontmost of application "Terminal" then exit repeat
+  delay 0.05
+end repeat
 tell application "System Events" to keystroke "t" using command down
-delay 0.3
+delay 0.4
 tell application "Terminal"
   do script "'$launcher'" in front window
 end tell
